@@ -12,27 +12,34 @@
 
 ## Keywords
 
-Section #, as well as any words that quickly give your peers insights into the application like programming language, development platform, type of application, etc.
+Section 004, Python, Web-based, Django, HTML, CSS, JavaScript, MySQL, Face Recognition, Dlib.
 
 ## Project Abstract
 
-This document proposes a novel application of a text message (SMS or Email) read-out and hands-free call interacted between an Android Smartphone and an infotainment platform (headunit) in a car environment. When a phone receives an SMS or Email, the text message is transferred from the phone to the headunit through a Bluetooth connection. On the headunit, user can control which and when the received SMS or E-mail to be read out through the in-vehicle audio system. The user may press one button on the headunit to activate the hands-free feature to call back the SMS sender.
+This document proposes a novel application of a face recognition as a biometric technique to track the attendance of employees and students in companies and schools respectively. When the user uses their camera built in their mobile/laptop, this system identifies each unique face and matches it with the images from the data in the database. If the system does not identify the person, it would alert the required person about it. The attendance report will also be shown to the admin.
 
 ## High Level Requirement
 
-Describe the requirements – i.e., what the product does and how it does it from a user point of view – at a high level.
+This application is a web-based application and when the user opens this using the link provided by their organization, the user looks at the camera in a good lighting and the system which will be developed using the python libraries for face recognition.  The database will have the data of the users and will match both to recognize the user. Once recognized, the attendance will be recorded and if not recognized, if gives them few tries to try again and if the limit is met, it alerts the person who checks the attendance.
 
 ## Conceptual Design
 
-Describe the initial design concept: Hardware/software architecture, programming language, operating system, etc.
+The initial plan for developing this application as a web-based developed using HTML, CSS, JavaScript, React and by using Django framework on the front end. The back end would be developed using python as the programming language and use libraries like OpenCV, Dlib and Face Recognition package. A database like MySQL is used to store the data of the users. Any operating system could be used as it is a web-based application. Camera built in the devices will be used to scan the faces of the users.
 
 ## Background
-
-The background will contain a more detailed description of the product and a comparison to existing similar projects/products. A literature search should be conducted and the results listed. Proper citation of sources is required. If there are similar open-source products, you should state whether existing source will be used and to what extent. If there are similar closed-source/proprietary products, you should state how the proposed product will be similar and different.
+The goal of this project is to build a monitoring system to track the attendance of the users and integrate with the other school application to record it. This system makes the attendance more accurate and efficient, which does not give chances for cheating or flaws. There are many other similar products like https://ubsapp.com/face-recognition-attendance-management/, https://enalytix.com/face-recognition-attendance-system are already in the market, developed but We wanted to add alerting and reporting system for this, so the higher authorities can see the reports without too much of human work. Being able to alert via email if anything to suspect is going on will be a different feature and the idea of integrating that report into other educational/organizational tracking applications would be beneficial for the use. We think the difference from the systems used in schools like code attendance or manually checking in are available, but the face recognition system would be even more accurate and reduce time and human work for the school systems for tracking attendance.
 
 ## Required Resources
 
-Discuss what you need to develop this project. This includes background information you will need to acquire, hardware resources, and software resources. If these are not part of the standard Computer Science Department lab resources, these must be identified early and discussed with the instructor.
+To develop this, we should have at least minimum knowledge in python or web development. The other knowledge that we must gather are - 
+•	Designing web-based platform and choosing right tool for us for it
+•	Knowledge of using python libraries
+•	Alerting system (may be to send emails)
+•	Database (MySQL) usage and association with application
+•	Django
+•	Usage of Dlib, OpenCV, Face recognition package
+•	More information on access for usage of AWS platforms
+•	Research about Material UI for the web development
 
 ## Collaborators
 
@@ -47,8 +54,8 @@ Discuss what you need to develop this project. This includes background informat
         </a>
     </td>
     <td align="center">
-        <a href="https://github.com/leighflagg">
-            <img src="https://avatars.githubusercontent.com/u/77810293?v=4" width="100;" alt="leighflagg"/>
+        <a href="https://github.com/tun77242">
+            <img src="https://avatars.githubusercontent.com/u/77810293?v=4" width="100;" alt="tun77242"/>
             <br />
             <sub><b>Null</b></sub>
         </a>
