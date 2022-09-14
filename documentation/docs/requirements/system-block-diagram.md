@@ -4,7 +4,8 @@ sidebar_position: 2
 
 # System Block Diagram
 
-![image](https://user-images.githubusercontent.com/78066498/189983672-9e493a65-df59-4120-ac18-c6534f274c78.png)
+
+![Screen Shot 2022-09-13 at 11 45 11 PM](https://user-images.githubusercontent.com/17518043/190054877-41b3d6b5-e57f-4911-845b-2bf7e0467463.png)
 
 If student is new, once they create their username and password, the application will ask them to scan or upload multiple portrait pictures which will be sent to the backend.  
 OpenCV will detect, transform and crop these images which will be encoded by dlib.
