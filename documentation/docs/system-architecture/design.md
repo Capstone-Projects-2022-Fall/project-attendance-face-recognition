@@ -8,20 +8,34 @@ The Design Document - Part I Architecture describes the software architecture an
 
 **Requirements**
 
-In addition to the general requirements the Design Document - Part I Architecture will contain:
+The Design Document - Part I Architecture will contain:
 
 A description the different components and their interfaces. For example: client, server, database.
 
 For each component provide class diagrams showing the classes to be developed (or used) and their relationship.
 
-Sequence diagrams showing the data flow for _all_ use cases. One sequence diagram corresponds to one use case and different use cases should have different corresponding sequence diagrams.
-
 Describe algorithms employed in your project, e.g. neural network paradigm, training and training data set, etc.
 
-If there is a database:
-
-Entity-relation diagram.
-
-Table design.
-
 A check list for architecture design is attached here [architecture\_design\_checklist.pdf](https://templeu.instructure.com/courses/106563/files/16928870/download?wrap=1 "architecture_design_checklist.pdf")  and should be used as a guidance.
+
+## UML Class Diagram
+
+## Entity-Relation Diagram
+
+## Table Design
+
+## Sequence Diagrams
+
+### Sequence Diagram for Use Case #1
+![image](https://user-images.githubusercontent.com/78066498/192402371-df135234-e90f-4f52-bed1-8529693a1981.png)
+
+### Sequence Diagram for Use Case #2
+![image](https://user-images.githubusercontent.com/78066498/192402541-19ed10a9-935e-4e43-b73e-033c98cdb08b.png)
+
+### Sequence Diagram for Use Case #3
+
+### Sequence Diagram for Use Case #4
+
+### Sequence Diagram for Use Case #5
+
+### Sequence Diagram for Use Case #6
