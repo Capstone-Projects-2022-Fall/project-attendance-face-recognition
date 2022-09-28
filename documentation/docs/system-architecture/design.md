@@ -48,6 +48,7 @@ Use case:
 -	The system marks the attendance
 
 ### Sequence Diagram for Use Case #3
+![image](https://user-images.githubusercontent.com/78066498/192679265-ce3a0ba6-12c6-4176-9f41-ee93a66ed3ff.png)
 3.	User story:
 As a professor, I want to have real time access of the attendance and adjust anything if needed and get report of students’ attendance.
 Use case: 
@@ -82,6 +83,7 @@ Use Case:
 - Once recorded, they can exit out of the application
 
 ### Sequence Diagram for Use Case #6
+![image](https://user-images.githubusercontent.com/78066498/192679337-da45d591-8f20-4a3c-8242-172cd9b54b09.png)
 6. User Story:
 As a professor, I want to the system to send automatic links for every class.
 Use Case:
