@@ -35,7 +35,9 @@ A check list for architecture design is attached here [architecture\_design\_che
 ### Sequence Diagram for Use Case #3
 
 ### Sequence Diagram for Use Case #4
+![image](https://user-images.githubusercontent.com/17518043/192659155-39a491aa-2339-4616-b64e-af07909343e4.png)
 
 ### Sequence Diagram for Use Case #5
+![image](https://user-images.githubusercontent.com/17518043/192659169-8855818d-9fef-483e-b140-d9892e951a60.png)
 
 ### Sequence Diagram for Use Case #6
