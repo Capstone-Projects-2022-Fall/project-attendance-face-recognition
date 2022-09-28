@@ -22,8 +22,7 @@ A check list for architecture design is attached here [architecture\_design\_che
 ![image](https://user-images.githubusercontent.com/78066498/192671179-b13a4c35-04a5-497a-8777-96beaa4c6744.png)
 
 ## Entity-Relation Diagram
-
-## Table Design
+![image](https://user-images.githubusercontent.com/78066498/192671782-2cae73c6-6593-458a-8f64-0bf4d66199cd.png)
 
 ## Sequence Diagrams
 
