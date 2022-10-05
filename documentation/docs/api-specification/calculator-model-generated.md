@@ -2,60 +2,30 @@
 sidebar_position: 3
 ---
 
-# CalculatorModel.java
-(generated using [Javadoc to Markdown](https://delight-im.github.io/Javadoc-to-Markdown/))
+# Main.py
 
-## `public class CalculatorModel`
+* **Author:** Hamsa Nandana Shaik
 
-This is the model of this MVC implementation of a calculator. It performs the functions of the calculator and keeps track of what the user has entered.
+## encode()
 
-* **Author:** Tom Bylander
+The purpose of this function is to encode the images from the data. <br/>
+Parameters : images <br/>
+Returns : encoded list
 
-## `private double displayValue`
+## markAttendance()
 
-This is the numeric value of the number the user is entering, or the number that was just calculated.
+The purpose of this function is to match the faces with images from the data and mark the attendance when matched. <br/>
+Parameters : none <br/>
+Returns :
 
-## `private double internalValue`
+## getImagesAndLabels()
 
-This is the previous value entered or calculated.
+The purpose of this function is to get the images and labels the person when recognized. <br/>
+Parameters : path <br/>
+Returns : list
 
-## `private String displayString`
+## TrainImages()
 
-This is the String corresponding to what the user. is entering
-
-## `private String operation`
-
-This is the last operation entered by the user.
-
-## `private boolean start`
-
-This is true if the next digit entered starts a new value.
-
-## `private boolean dot`
-
-This is true if a decimal dot has been entered for the current value.
-
-## `public CalculatorModel()`
-
-Initializes the instance variables.
-
-## `public String getValue()`
-
-* **Returns:** the String value of what was just calculated
-
-  or what the user is entering
-
-## `public void update(String text)`
-
-Updates the values maintained by the calculator based on the button that the user has just clicked.
-
-* **Parameters:** `text` — is the name of the button that the user has just clicked
-
-## `public double operationAdd(double rhs, double lhs)`
-
-Operation to add two numbers. <pre> operationAdd(3,2); // should equal 5.0 </pre>
-
-* **Parameters:**
-  * `rhs` — `double` representing the right hand side of the operator
-  * `lhs` — `double` representing the left hand side of the operator
-* **Returns:** `double`
+This purpose of this function is to train the images in the data. <br/>
+Parameters : none <br/>
+Returns :
