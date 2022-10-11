@@ -9,6 +9,9 @@
 .env.production.local
 .idea
 venv
+.env
+**.pyc
+db.sqlite3
 
 # dependencies
 */node_modules

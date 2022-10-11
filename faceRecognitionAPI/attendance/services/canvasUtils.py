@@ -43,16 +43,18 @@ class CanvasUtils:
         # initialize a new canvas object
         canvas = Canvas(self.API_URL, access_token)
         # get current canvas user
-        canvas_user = canvas.get_current_user()
+        canvas_user = canvas.get_current_user().get_profile()
+        print(canvas_user)
 
-        if User.objects.filter(email=canvas_user.email).exists():
-            user = get_object_or_404(User, email=canvas_user.email, username=canvas_user.email)
+
+        if User.objects.filter(email=canvas_user["primary_email"]).exists():
+            user = get_object_or_404(User, email=canvas_user["primary_email"], username=canvas_user["primary_email"])
         else:
-            name = str(canvas_user.sortable_name).split(",")
-            user = User(username=canvas_user.email, email=canvas_user.email, first_name=name[1].strip(),
+            name = str(canvas_user["sortable_name"]).split(",")
+            user = User(username=canvas_user["primary_email"], email=canvas_user["primary_email"], first_name=name[1].strip(),
                         last_name=name[0].strip())
             user.save()
-            profile = UserInfo(canvasId=canvas_user.id, avatar=canvas_user.get_avatars()[0].url, user=user)
+            profile = UserInfo(canvasId=canvas_user["id"], avatar=canvas.get_current_user().get_avatars()[0].url, user=user)
             profile.save()
 
         if not CanvasToken.objects.filter(user=user).exists():
@@ -61,11 +63,10 @@ class CanvasUtils:
             canvasToken.save()
         else:
             canvasToken = get_object_or_404(CanvasToken, user=user)
-            if not canvasToken.is_valid():
-                canvasToken.accessToken = data["access_token"]
-                canvasToken.refreshToken = data["refresh_token"]
-                canvasToken.expires = data["expires_in"]
-                canvasToken.save()
+            canvasToken.accessToken = data["access_token"]
+            canvasToken.refreshToken = data["refresh_token"]
+            canvasToken.expires = data["expires_in"]
+            canvasToken.save()
         return user
 
     def getCanvasToken(self, user):
