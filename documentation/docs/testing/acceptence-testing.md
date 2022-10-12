@@ -43,4 +43,6 @@ Professor should be able to see a detailed report of their attendance
 ## Accessing issues
 Professor will click on ticket on the navigation bar to view open tickets created by students regarding their issues<br />
 *Expected result:*<br />
-Professor will be able to see the list of issues created by students. Professor should be able to modify the attendance. 
+Professor will be able to see the list of issues created by students. Professor should be able to modify the attendance.
+
+![image](https://user-images.githubusercontent.com/78066498/195245224-a820aefe-f7ea-4d0e-b4fd-1013dbd0c5c4.png)
