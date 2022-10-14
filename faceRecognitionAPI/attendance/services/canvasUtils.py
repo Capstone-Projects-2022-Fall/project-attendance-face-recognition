@@ -6,6 +6,8 @@ from django.shortcuts import get_object_or_404
 from attendance.models import CanvasToken
 from account.models import UserInfo
 
+from course.models import Course
+
 env = environ.Env(
     DEBUG=(bool, False)
 )
@@ -46,15 +48,16 @@ class CanvasUtils:
         canvas_user = canvas.get_current_user().get_profile()
         print(canvas_user)
 
-
         if User.objects.filter(email=canvas_user["primary_email"]).exists():
             user = get_object_or_404(User, email=canvas_user["primary_email"], username=canvas_user["primary_email"])
         else:
             name = str(canvas_user["sortable_name"]).split(",")
-            user = User(username=canvas_user["primary_email"], email=canvas_user["primary_email"], first_name=name[1].strip(),
+            user = User(username=canvas_user["primary_email"], email=canvas_user["primary_email"],
+                        first_name=name[1].strip(),
                         last_name=name[0].strip())
             user.save()
-            profile = UserInfo(canvasId=canvas_user["id"], avatar=canvas.get_current_user().get_avatars()[0].url, user=user)
+            profile = UserInfo(canvasId=canvas_user["id"], avatar=canvas.get_current_user().get_avatars()[0].url,
+                               sisId=canvas_user["sis_user_id"], user=user)
             profile.save()
 
         if not CanvasToken.objects.filter(user=user).exists():
@@ -75,7 +78,7 @@ class CanvasUtils:
         :return:
         """
         canvasToken = get_object_or_404(CanvasToken, user=user)
-        if not canvasToken.is_valid():
+        if not canvasToken:
             data = {
                 "grant_type": "refresh_token",
                 "client_id": self.client_id,
@@ -101,3 +104,16 @@ class CanvasUtils:
         """
         pass
 
+    def getCourseInfo(self, canvas_course_id, user):
+        """
+        Get course info
+        :return:
+        """
+        # canvas API Key
+        access_token = self.getCanvasToken(user)
+        # initialize a new canvas object
+        canvas = Canvas(self.API_URL, access_token)
+        course = canvas.get_course(canvas_course_id)
+        print(course)
+        return course
+        # if Course.objects.filter(canvasId=canvas_course_id):

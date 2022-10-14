@@ -10,6 +10,7 @@ from rest_framework.authtoken.models import Token
 class UserInfo(models.Model):
     canvasId = models.CharField(max_length=50, unique=True, null=False)
     avatar = models.CharField(max_length=250, null=True, blank=True)
+    sisId = models.CharField(max_length=250, null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
