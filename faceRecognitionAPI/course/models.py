@@ -1,38 +1,40 @@
 from django.db import models
-from account.models import UserInfo
-
-
-# Create your models here.
+from account.models import Instructor, Student
 
 
 class Course(models.Model):
+    """
+    Course object
+    """
     canvasId = models.CharField(max_length=50, unique=True, null=False)
-    title = models.CharField(max_length=250, null=False, blank=False)
-    subject = models.CharField(max_length=50, null=False, blank=False)
+    name = models.CharField(max_length=250, null=False, blank=False)
     course_number = models.CharField(max_length=10, null=False, blank=False)
 
-    def _shortName(self):
-        return '%s %s' % (self.subject, self.course_number)
-
     def __str__(self):
-        return self.title
+        return self.name
 
-'''
+
 class Section(models.Model):
-    number = models.CharField(max_length=10, null=False, blank=False)
+    """
+    Section for each course
+    """
+    name = models.CharField(max_length=10, null=False, blank=False)
     capacity = models.IntegerField(default=0)
     seat_taken = models.IntegerField(default=0)
-    semester = models.CharField(max_length=50, null=False, blank=False)
-    year = models.CharField(max_length=5, null=False, blank=False)
+    start_date = models.DateField(null=False)
+    end_date = models.DateField(null=False)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    instructor = models.ForeignKey(UserInfo, on_delete=models.CASCADE, null=True, blank=True)
-    students = models.ManyToManyField(UserInfo)
+    instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, null=True, blank=True)
+    students = models.ManyToManyField(Student, null=True)
 
     def __str__(self):
-        return self.number
+        return self.name
 
 
 class Schedule(models.Model):
+    """
+    Section schedule
+    """
     weekday = models.IntegerField(null=False, blank=False)
     start_time = models.TimeField(null=False, blank=False)
     end_time = models.TimeField(null=False, blank=False)
@@ -56,4 +58,3 @@ class Schedule(models.Model):
 
     def __str__(self):
         return self.dayOfWeek()
-'''

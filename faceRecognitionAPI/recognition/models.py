@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from account.models import Student
 
 
 class StudentImage(models.Model):
@@ -8,4 +8,7 @@ class StudentImage(models.Model):
     """
     image = models.FileField(upload_to="dataset/", null=False)
     encoding = models.TextField(null=True)
-    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.image.name

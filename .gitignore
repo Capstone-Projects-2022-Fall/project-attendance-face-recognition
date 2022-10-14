@@ -12,6 +12,8 @@ venv
 .env
 **.pyc
 db.sqlite3
+faceRecognitionAPI/**/migrations/**
+**/__pycache__/**
 
 # dependencies
 */node_modules

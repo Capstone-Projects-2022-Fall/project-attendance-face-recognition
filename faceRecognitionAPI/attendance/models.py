@@ -1,29 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
-from django.utils import timezone
+from course.models import Section
 
 
-# Create your models here.
-class CanvasToken(models.Model):
+class Attendance(models.Model):
     """
-    user canvas access token
+    Attendance object
     """
-    accessToken = models.CharField(max_length=250, null=False, blank=True)
-    refreshToken = models.CharField(max_length=250, null=False, blank=True)
-    expires = models.IntegerField(null=False)
-    created = models.DateTimeField(auto_now=True, null=True)
-    user = models.OneToOneField(User,null=True, on_delete=models.CASCADE)
+    recorded = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=250, default="Absent")
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
 
-    def is_valid(self):
-        """
-        Verify if token is valid
-        :return: True if valid, False otherwise
-        """
-        now = timezone.now()
-        print(now)
-        expired_time = self.created + timedelta(seconds=self.expires)
-        if now > expired_time:
-            print(True)
-            return True
-        return False
+    def __str__(self):
+        return self.status

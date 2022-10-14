@@ -3,7 +3,7 @@ import requests
 from canvasapi import Canvas
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-from attendance.models import CanvasToken
+from account.models import CanvasToken
 from account.models import UserInfo
 
 from course.models import Course
