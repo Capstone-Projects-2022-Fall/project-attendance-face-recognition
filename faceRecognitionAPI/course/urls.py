@@ -1,9 +1,9 @@
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
-from attendance import views
+from course import views
 
 urlpatterns = [
-    path('token/', views.GenerateTokenAPIView.as_view()),
+    path('courses/current/', views.userCurrentClassAPIView.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

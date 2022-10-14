@@ -21,7 +21,9 @@ class CanvasToken(models.Model):
         :return: True if valid, False otherwise
         """
         now = timezone.now()
+        print(now)
         expired_time = self.created + timedelta(seconds=self.expires)
         if now > expired_time:
+            print(True)
             return True
         return False

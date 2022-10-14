@@ -25,6 +25,7 @@ class GenerateTokenAPIView(APIView):
     def post(self, request):
         data = request.data
         canvas = CanvasUtils()
+        print(data["canvas_code"])
         user = canvas.getUserAndCanvasToken(data["canvas_code"])
 
         token = Token.objects.get_or_create(user=user)
@@ -37,12 +38,3 @@ class GenerateTokenAPIView(APIView):
         )
 
 
-class UserAPIView(BaseView):
-
-    def get(self, request):
-        user = self.request.user
-        return Response(
-            {
-                "name": user.first_name
-            }
-        )

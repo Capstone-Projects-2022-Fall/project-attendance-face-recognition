@@ -22,8 +22,8 @@ import { ThemeProvider  } from '@mui/material/styles';
 const theme = createTheme({
     palette: {
         appBar:{
-            main:'#fff',
-            contrastText: '#001a80',
+            main:'#0474BA',
+            contrastText: '#fff',
         }
 
     },
