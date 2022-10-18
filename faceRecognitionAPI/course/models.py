@@ -9,6 +9,8 @@ class Course(models.Model):
     canvasId = models.CharField(max_length=50, unique=True, null=False)
     name = models.CharField(max_length=250, null=False, blank=False)
     course_number = models.CharField(max_length=10, null=False, blank=False)
+    start_date = models.DateField(null=True)
+    end_date = models.DateField(null=True)
 
     def __str__(self):
         return self.name
@@ -21,11 +23,9 @@ class Section(models.Model):
     name = models.CharField(max_length=10, null=False, blank=False)
     capacity = models.IntegerField(default=0)
     seat_taken = models.IntegerField(default=0)
-    start_date = models.DateField(null=False)
-    end_date = models.DateField(null=False)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, null=True, blank=True)
-    students = models.ManyToManyField(Student, null=True)
+    students = models.ManyToManyField(Student, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -42,19 +42,19 @@ class Schedule(models.Model):
 
     def dayOfWeek(self):
         if self.weekday == 0:
-            return "Sunday"
-        elif self.weekday == 1:
             return "Monday"
-        elif self.weekday == 2:
+        elif self.weekday == 1:
             return "Tuesday"
-        elif self.weekday == 3:
+        elif self.weekday == 2:
             return "Wednesday"
-        elif self.weekday == 4:
+        elif self.weekday == 3:
             return "Thursday"
-        elif self.weekday == 5:
+        elif self.weekday == 4:
             return "Friday"
-        else:
+        elif self.weekday == 5:
             return "Saturday"
+        else:
+            return "Sunday"
 
     def __str__(self):
         return self.dayOfWeek()

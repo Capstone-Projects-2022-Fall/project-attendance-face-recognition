@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -29,17 +30,6 @@ class Instructor(models.Model):
         return self.user.email
 
 
-# Create your models here.
-class UserInfo(models.Model):
-    canvasId = models.CharField(max_length=50, unique=True, null=False)
-    avatar = models.CharField(max_length=250, null=True, blank=True)
-    sisId = models.CharField(max_length=250, null=True, blank=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.user.email
-
-
 class CanvasToken(models.Model):
     """
     user canvas access token
@@ -55,8 +45,8 @@ class CanvasToken(models.Model):
         Verify if token is valid
         :return: True if valid, False otherwise
         """
-        now = datetime.now()
+        now = timezone.now()
         expired_time = self.created + timedelta(seconds=self.expires)
-        if now > expired_time:
+        if now < expired_time:
             return True
         return False

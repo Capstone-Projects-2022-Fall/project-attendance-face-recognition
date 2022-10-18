@@ -1,12 +1,13 @@
+from datetime import datetime
 import environ
 import requests
 from canvasapi import Canvas
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from account.models import CanvasToken
-from account.models import UserInfo
+from account.models import Instructor, Student
+from course.models import Course, Section
 
-from course.models import Course
 
 env = environ.Env(
     DEBUG=(bool, False)
@@ -56,20 +57,26 @@ class CanvasUtils:
                         first_name=name[1].strip(),
                         last_name=name[0].strip())
             user.save()
-            profile = UserInfo(canvasId=canvas_user["id"], avatar=canvas.get_current_user().get_avatars()[0].url,
-                               sisId=canvas_user["sis_user_id"], user=user)
-            profile.save()
 
         if not CanvasToken.objects.filter(user=user).exists():
-            canvasToken = CanvasToken(accessToken=data["access_token"], refreshToken=data["refresh_token"],
-                                      expires=data["expires_in"], user=user)
-            canvasToken.save()
+            canvas_token = CanvasToken(
+                accessToken=data["access_token"],
+                refreshToken=data["refresh_token"],
+                expires=data["expires_in"],
+                user=user
+            )
+            canvas_token.save()
+            # verify if student or teacher
+            if self.isTeacher(user):
+                instructor = Instructor(canvasId=canvas_user["id"], user=user)
+                instructor.save()
+            else:
+                student = Student(canvasId=canvas_user["id"], user=user)
+                student.save()
+                self.addingStudentToCourse(user)
         else:
-            canvasToken = get_object_or_404(CanvasToken, user=user)
-            canvasToken.accessToken = data["access_token"]
-            canvasToken.refreshToken = data["refresh_token"]
-            canvasToken.expires = data["expires_in"]
-            canvasToken.save()
+            self.getCanvasToken(user)
+        print(user)
         return user
 
     def getCanvasToken(self, user):
@@ -78,7 +85,7 @@ class CanvasUtils:
         :return:
         """
         canvasToken = get_object_or_404(CanvasToken, user=user)
-        if not canvasToken:
+        if not canvasToken.is_valid():
             data = {
                 "grant_type": "refresh_token",
                 "client_id": self.client_id,
@@ -117,3 +124,52 @@ class CanvasUtils:
         print(course)
         return course
         # if Course.objects.filter(canvasId=canvas_course_id):
+
+    def isTeacher(self, user):
+        """
+        Verify is user is instructor or student
+        :return:True or False
+        """
+        # canvas API Key
+        access_token = self.getCanvasToken(user)
+        # initialize a new canvas object
+        canvas = Canvas(self.API_URL, access_token)
+
+        type_list = ['teacher','ta']
+        user = canvas.get_current_user()
+        courses = user.get_courses()
+        for course in courses:
+            usersInCourse = course.get_users(enrollment_type=type_list)
+            for u in usersInCourse:
+                if u.id == user.id:
+                    return True
+        return False
+
+    def addingStudentToCourse(self, user):
+        """
+        Adding user to course
+        :return:
+        """
+        # canvas API Key
+        access_token = self.getCanvasToken(user)
+        # initialize a new canvas object
+        canvas = Canvas(self.API_URL, access_token)
+        # get student
+        student = get_object_or_404(Student, user=user)
+        canvas_user = canvas.get_current_user()
+        # get user's course that match the list of course
+        courses_taken = canvas_user.get_courses()
+        for course in courses_taken:
+            today = datetime.today()
+            if datetime.strptime(course.start_at, "%Y-%m-%dT%H:%M:%SZ") <= today <= datetime.strptime(course.end_at, "%Y-%m-%dT%H:%M:%SZ"):
+                '''go through all sections'''
+                for section in course.get_sections():
+                    for enrollment in section.get_enrollments():
+                        if enrollment.user["id"] == canvas_user.id:
+                            if not Section.objects.filter(name=section.name, students=student).exists():
+                                s = get_object_or_404(Section, name=section.name)
+                                s.students.add(student)
+                                print("adding to course")
+
+
+
