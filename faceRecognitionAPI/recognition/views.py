@@ -28,7 +28,7 @@ class ImageTrainingAPIView(APIView):
     def get(self, request):
         studentImage = StudentImage.objects.filter(student__user=self.request.user)
         return Response(
-            StudentImageSerializer(studentImage).data,
+            StudentImageSerializer(studentImage, many=True).data,
             status=status.HTTP_200_OK
         )
 
