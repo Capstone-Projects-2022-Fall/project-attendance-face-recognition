@@ -3,6 +3,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Navbar from "../../component/Navbar"
 import {Button} from "@mui/material";
 import Stack from '@mui/material/Stack';
+import AttendanceLinkContainer from "./containers/AttendanceLinkContainer";
 
 class HomePage extends Component{
     render() {
@@ -12,17 +13,7 @@ class HomePage extends Component{
                 <div className="App">
                     <header className="App-header">
                         <h1>Attendance Face Recognition</h1>
-                        <p>
-                            Click on the button below to record your attendance
-                        </p>
-                        <Stack spacing={2} direction="row">
-                            <Button variant="contained" color={"info"}>
-                                Record Attendance
-                            </Button>
-                            <Button variant="outlined" color={"info"}>
-                                View Report
-                            </Button>
-                        </Stack>
+                        <AttendanceLinkContainer/>
                     </header>
                 </div>
             </Fragment>

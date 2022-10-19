@@ -2,12 +2,12 @@ const API_URL = "http://localhost:5000/api/v1";
 
 const token = localStorage.getItem("token");
 console.log(token)
-export const getUserInfoAPI = async ()=>{
+export const getInitialInfoAPI = async ()=>{
     const headers = {
         'Accept': 'application/json',
         'Authorization': `Token ${token}`,
     }
-    return fetch(`${API_URL}/user/`,{headers})
+    return fetch(`${API_URL}/`,{headers})
         .then(res => res.json())
         .then(data => data)
         .catch(error => console.log("error", error))
