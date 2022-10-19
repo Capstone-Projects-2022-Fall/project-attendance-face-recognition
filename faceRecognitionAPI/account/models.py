@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -6,41 +8,45 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
 
-# Create your models here.
-class UserInfo(models.Model):
+class Student(models.Model):
+    """
+    Student object
+    """
     canvasId = models.CharField(max_length=50, unique=True, null=False)
-    avatar = models.CharField(max_length=250, null=True, blank=True)
-    sisId = models.CharField(max_length=250, null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.email
 
-"""
-class Student(models.Model):
-    canvasId = models.CharField(max_length=50, unique=True, null=False)
-    avatar = models.CharField(max_length=250, null=True, blank=True)
-    name = models.CharField(max_length=250, null=False, blank=False)
-    # email = models.CharField(max_length=250, null=True, blank=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
-
 
 class Instructor(models.Model):
+    """
+    Instructor object
+    """
     canvasId = models.CharField(max_length=50, unique=True, null=False)
-    avatar = models.CharField(max_length=250, null=True, blank=True)
-    name = models.CharField(max_length=250, null=False, blank=False)
-    # email = models.CharField(max_length=250, null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
-"""
+        return self.user.email
 
-"""
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)"""
+
+class CanvasToken(models.Model):
+    """
+    user canvas access token
+    """
+    accessToken = models.CharField(max_length=250, null=False, blank=True)
+    refreshToken = models.CharField(max_length=250, null=False, blank=True)
+    expires = models.IntegerField(null=False)
+    created = models.DateTimeField(auto_now=True, null=True)
+    user = models.OneToOneField(User,null=True, on_delete=models.CASCADE)
+
+    def is_valid(self):
+        """
+        Verify if token is valid
+        :return: True if valid, False otherwise
+        """
+        now = timezone.now()
+        expired_time = self.created + timedelta(seconds=self.expires)
+        if now < expired_time:
+            return True
+        return False

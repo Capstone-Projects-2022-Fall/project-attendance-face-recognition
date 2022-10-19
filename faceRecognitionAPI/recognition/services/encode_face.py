@@ -1,9 +1,11 @@
 import json
+from django.shortcuts import get_object_or_404
 from imutils import paths
 import face_recognition
 import cv2
 import os
 from recognition.models import StudentImage
+from account.models import Student
 import numpy as np
 
 
@@ -18,11 +20,12 @@ class NpEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 def encode_student_face(user, upload_image):
+    student = get_object_or_404(Student, user=user)
     knownEncodings = []
-    studentImage = StudentImage(image=upload_image, student=user)
+    studentImage = StudentImage(imageFile=upload_image, student=student)
     studentImage.save()
     # convert image from BGR to dlib ordering RGB
-    image = cv2.imread("/Users/jerrymaurice/Documents/CIS4398/finalProject/project-attendance-face-recognition/faceRecognitionAPI"+studentImage.image.url)
+    image = cv2.imread("/Users/jerrymaurice/Documents/CIS4398/finalProject/project-attendance-face-recognition/faceRecognitionAPI"+studentImage.imageFile.url)
     rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     # detect the (x, y)-coordinates of the bounding boxes
     # corresponding to each face in the input image
@@ -36,4 +39,4 @@ def encode_student_face(user, upload_image):
         # print(np.asarray(json.loads(test))[0])
         studentImage.encoding = json.dumps(knownEncodings, cls=NpEncoder)
         studentImage.save()
-    return studentImage.image.url
+    return studentImage.imageFile.url

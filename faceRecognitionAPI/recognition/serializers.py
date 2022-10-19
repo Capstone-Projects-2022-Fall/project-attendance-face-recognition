@@ -5,4 +5,4 @@ from recognition.models import StudentImage
 class StudentImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentImage
-        fields = '__all__'
+        fields = ('id','imageFile','student')
