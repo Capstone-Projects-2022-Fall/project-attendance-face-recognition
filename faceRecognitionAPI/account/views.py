@@ -68,7 +68,7 @@ class InitialInfoAPIView(APIView):
         data["current_course"] = CourseSerializer(currentCourse(user)[0]).data
         data["current_section"] = SectionSerializer(currentCourse(user)[1]).data
         data["report"] = []
-        data["registration_completed"] = account_registration_verification(user)
+        data["registration_completed"] = {"completed":account_registration_verification(user)}
 
         return Response(
             data,

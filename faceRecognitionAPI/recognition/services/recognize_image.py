@@ -9,7 +9,7 @@ from course.services.schedule import currentCourse
 
 
 def recognize_image(upload_image, user):
-    print(upload_image)
+    print(user)
     img = cv2.imdecode(np.fromstring(upload_image.read(), np.uint8), cv2.IMREAD_UNCHANGED)
     students = currentCourse(user)[1].students.all()
     students_ids = [student.id for student in students]

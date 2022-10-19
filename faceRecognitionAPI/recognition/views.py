@@ -52,6 +52,7 @@ class RecognizeImageAPIView(APIView):
 
     def post(self, request):
         data = request.FILES['image']
+        print(data)
         id = recognize_image(data, self.request.user)
         student = get_object_or_404(Student, id=id["id"])
         if student.user == self.request.user:
