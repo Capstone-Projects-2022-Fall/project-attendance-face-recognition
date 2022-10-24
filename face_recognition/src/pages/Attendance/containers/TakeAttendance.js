@@ -138,8 +138,15 @@ class TakeAttendance extends Component{
                                     Upload more pictures
                                 </Button>
                             </Box>
+                            <Box sx={{ typography: 'subtitle2', textAlign:'center', m:2 }}>
+                                <Button variant="contained" color={"primary"} component={NavLink} to="/registration">
+                                    Report
+                                </Button>
+                            </Box>
+
 
                         </Box>
+
 
                     ):
                     (
