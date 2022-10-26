@@ -10,8 +10,8 @@ class CourseAdmin(admin.ModelAdmin):
 
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'capacity', 'seat_taken', 'course', 'instructor')
-    list_filter = ('id', 'name','capacity')
+    list_display = ('id', 'name', 'course', 'instructor')
+    list_filter = ('id', 'name')
     search_fields = ('canvasId', 'name')
 
 

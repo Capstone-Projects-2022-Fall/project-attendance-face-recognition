@@ -12,6 +12,7 @@ from account.services import account_registration_verification
 from account.serializers import UserSerializer
 from course.serializers import CourseSerializer, SectionSerializer
 
+from account.models import Instructor
 
 '''
 class BaseView(APIView):
@@ -68,7 +69,8 @@ class InitialInfoAPIView(APIView):
         data["current_course"] = CourseSerializer(currentCourse(user)[0]).data
         data["current_section"] = SectionSerializer(currentCourse(user)[1]).data
         data["report"] = []
-        data["registration_completed"] = {"completed":account_registration_verification(user)}
+        data["registration_completed"] = {"completed": account_registration_verification(user)}
+        data["role_teacher"] = Instructor.objects.filter(user=user).exists()
 
         return Response(
             data,
