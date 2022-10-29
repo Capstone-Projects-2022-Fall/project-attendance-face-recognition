@@ -9,6 +9,8 @@ import {handleInitialData} from "./redux/action/shared";
 const HomePage = lazy(()=>import("./pages/Home/index"));
 const AttendancePage = lazy(()=>import("./pages/Attendance/index"));
 const RegistrationPage = lazy(()=>import("./pages/Registration/index"));
+const AdminPage = lazy(()=>import("./pages/Dashboard/index"));
+const Page404 = lazy(()=>import("./pages/Error/404/index"))
 
 
 class App extends Component {
@@ -20,21 +22,36 @@ class App extends Component {
         const body = {
             "canvas_code": code
         }
-        authenticateUserAPI(body)
-            .then((token)=>{
-                console.log(token)
-                localStorage.setItem("token", token.access_token);
-                console.log(localStorage.getItem("token"))
-                this.props.dispatch(handleInitialData())
-                    .then(data=>{
-                        const {registered} = this.props
-                        if (registered==false){
-                            this.setState({
-                                completed_registration:registered
-                            })
-                        }
-                    })
-            })
+        if (!localStorage.getItem("token")){
+            authenticateUserAPI(body)
+                .then((token)=>{
+                    console.log(token)
+                    localStorage.setItem("token", token.access_token);
+                    console.log(localStorage.getItem("token"))
+                    this.props.dispatch(handleInitialData())
+                        .then(data=>{
+                            const {registered} = this.props
+                            if (registered==false){
+                                this.setState({
+                                    completed_registration:registered
+                                })
+                            }
+                        })
+                })
+        }
+        else{
+            console.log(localStorage.getItem("token"))
+            this.props.dispatch(handleInitialData())
+                .then(data=>{
+                    const {registered} = this.props
+                    if (registered==false){
+                        this.setState({
+                            completed_registration:registered
+                        })
+                    }
+                })
+        }
+
     }
     render() {
         return(
@@ -45,6 +62,8 @@ class App extends Component {
                         <Route path="/record" exact element={<HomePage/>}/>
                         <Route path="/registration" exact element={<RegistrationPage/>}/>
                         <Route path="/attendance" exact element={<AttendancePage/>}/>
+                        <Route path="/admin/dashboard" exact element={<AdminPage/>}/>
+                        <Route path='*' exact element={<Page404/>}/>
                     </Routes>
                 </Suspense>
             </Router>

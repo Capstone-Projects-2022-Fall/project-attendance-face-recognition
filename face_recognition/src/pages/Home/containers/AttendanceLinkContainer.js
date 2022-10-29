@@ -47,7 +47,7 @@ function mapStateToProps({course, section}){
     return{
         course,
         section,
-        isAvailable: Object.keys(course).length!==0
+        isAvailable: Object.keys(course).length!==0 && course["name"].length !==0
     }
 }
 export default connect(mapStateToProps)(AttendanceLinkContainer)
