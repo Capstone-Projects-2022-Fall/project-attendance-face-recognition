@@ -4,6 +4,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import StudentListContainer from "../containers/StudentListContainer";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -55,7 +56,7 @@ export default function TabContentView() {
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-                Student
+                <StudentListContainer/>
             </TabPanel>
             <TabPanel value={value} index={1}>
                 Course & Sections
