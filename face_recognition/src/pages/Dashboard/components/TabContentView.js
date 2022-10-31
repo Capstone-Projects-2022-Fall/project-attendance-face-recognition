@@ -5,6 +5,9 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import StudentListContainer from "../containers/StudentListContainer";
+import CourseSectionListContainer from "../containers/CourseSectionListContainer";
+import Button from "@mui/material/Button";
+import {Navigate, NavLink} from "react-router-dom";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -52,17 +55,21 @@ export default function TabContentView() {
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs">
                     <Tab label="Student" {...a11yProps(1)} />
                     <Tab label="Course & Sections" {...a11yProps(2)} />
-                    <Tab label="Schedule" {...a11yProps(3)} />
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
                 <StudentListContainer/>
             </TabPanel>
             <TabPanel value={value} index={1}>
-                Course & Sections
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-                Schedule
+                <Button
+                    color="info"
+                    variant="text"
+                    component={NavLink}
+                    to={"/admin/setup"}
+                >
+                    New Course/Section
+                </Button>
+                <CourseSectionListContainer/>
             </TabPanel>
         </Box>
     );

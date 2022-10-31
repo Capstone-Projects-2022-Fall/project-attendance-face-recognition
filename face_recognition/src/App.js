@@ -10,6 +10,7 @@ const HomePage = lazy(()=>import("./pages/Home/index"));
 const AttendancePage = lazy(()=>import("./pages/Attendance/index"));
 const RegistrationPage = lazy(()=>import("./pages/Registration/index"));
 const AdminPage = lazy(()=>import("./pages/Dashboard/index"));
+const ConfigurationPage = lazy(()=>import("./pages/Configuration/index"));
 const Page404 = lazy(()=>import("./pages/Error/404/index"))
 
 
@@ -63,6 +64,7 @@ class App extends Component {
                         <Route path="/registration" exact element={<RegistrationPage/>}/>
                         <Route path="/attendance" exact element={<AttendancePage/>}/>
                         <Route path="/admin/dashboard" exact element={<AdminPage/>}/>
+                        <Route path="/admin/setup" exact element={<ConfigurationPage/>}/>
                         <Route path='*' exact element={<Page404/>}/>
                     </Routes>
                 </Suspense>
