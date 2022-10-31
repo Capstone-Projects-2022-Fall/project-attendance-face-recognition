@@ -21,8 +21,9 @@ class Section(models.Model):
     Section for each course
     """
     name = models.CharField(max_length=10, null=False, blank=False)
-    capacity = models.IntegerField(default=0)
-    seat_taken = models.IntegerField(default=0)
+    canvasId = models.CharField(max_length=50, unique=True, null=False)
+    # capacity = models.IntegerField(default=0)
+    # seat_taken = models.IntegerField(default=0)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, null=True, blank=True)
     students = models.ManyToManyField(Student, null=True, blank=True)
