@@ -20,34 +20,9 @@ class AttendanceIssueContainer extends Component{
                 selector: row => row.subject
             }
         ],
-        data:[
-            {
-                id:1,
-                name: "Jerry Maurice",
-                status: "Unresolved",
-                subject: "cannot take attendance",
-            },
-            {
-                id:2,
-                name: "Joe Maurice",
-                status: "Unresolved",
-                subject: "cannot take attendance",
-            },
-            {
-                id:3,
-                name: "Claude Maurice",
-                status: "Unresolved",
-                subject: "cannot take attendance",
-            },
-            {
-                id:4,
-                name: "Claude Maurice",
-                status: "Unresolved",
-                subject: "cannot take attendance",
-            },
-        ]
     }
     render() {
+        const {issues} = this.props
         return(
             <div className={"card"}>
                 <div className={"card-body App"}>
@@ -56,7 +31,7 @@ class AttendanceIssueContainer extends Component{
                 <div className={"card-body"}>
                     <AttendanceIssueView
                         columns={this.state.columns}
-                        data={this.state.data}
+                        data={Object.values(issues)}
                         pagination
                     />
                 </div>
@@ -65,4 +40,10 @@ class AttendanceIssueContainer extends Component{
     }
 }
 
-export default connect()(AttendanceIssueContainer)
+function mapStateToProps({issues}){
+    return{
+        issues
+    }
+}
+
+export default connect(mapStateToProps)(AttendanceIssueContainer)

@@ -91,7 +91,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'faceRecognitionAPI.wsgi.application'
-TIME_ZONE = 'America/New_York'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -136,7 +135,7 @@ CORS_ALLOWED_ORIGINS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/New_York'
 
 USE_I18N = True
 

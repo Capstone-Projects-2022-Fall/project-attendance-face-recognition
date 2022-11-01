@@ -17,4 +17,4 @@ class SectionAdmin(admin.ModelAdmin):
 
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display = ('id', 'weekday', 'start_time', 'end_time','section')
+    list_display = ('id', 'weekday', 'start_time', 'end_time','section','dayOfWeek')

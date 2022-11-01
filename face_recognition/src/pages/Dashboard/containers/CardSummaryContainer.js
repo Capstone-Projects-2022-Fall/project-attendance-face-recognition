@@ -12,19 +12,19 @@ class CardSummaryContainer extends Component{
                     <Grid item sm xs md={4}>
                         <CardSummaryView
                             title={"Course(s)"}
-                            amount={1}
+                            amount={this.props.courses}
                         />
                     </Grid>
                     <Grid item sm xs md={4}>
                         <CardSummaryView
                             title={"Issue(s)"}
-                            amount={2}
+                            amount={this.props.issues}
                         />
                     </Grid>
                     <Grid item sm xs md={4}>
                         <CardSummaryView
                             title={"Student(s)"}
-                            amount={10}
+                            amount={this.props.students}
                         />
                     </Grid>
                 </Grid>
@@ -32,5 +32,13 @@ class CardSummaryContainer extends Component{
         )
     }
 }
-
-export default connect()(CardSummaryContainer)
+function mapStateToProps({issues, students, schedule}){
+    let numberIssues = Object.values(issues).reduce((n, e)=>e.status ==='Unresolved'?n+1:n, 0)
+    let numberCourses = Object.values(schedule).reduce((n,e)=>e.course === e.course?n+1:n, 0)
+    return{
+        issues: numberIssues,
+        students: Object.values(students).length,
+        courses:numberCourses
+    }
+}
+export default connect(mapStateToProps)(CardSummaryContainer)
