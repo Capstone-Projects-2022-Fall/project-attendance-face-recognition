@@ -170,7 +170,7 @@ class CanvasUtils:
                                 s.students.add(student)
                                 print("adding to course")
 
-    def CurrentCanvasCourse(self, user):
+    def currentCanvasCourse(self, user):
         """
         View list of current canvas courses not saved on AFr
         :param user:
@@ -178,6 +178,7 @@ class CanvasUtils:
         """
         # canvas API Key
         access_token = self.getCanvasToken(user)
+        print(access_token)
         # initialize a new canvas object
         canvas = Canvas(self.API_URL, access_token)
         # get student
@@ -186,12 +187,13 @@ class CanvasUtils:
         courses = canvas_user.get_courses(enrollment_state=["active"])
         courseToBeAdded = []
         for course in courses:
+            print(course)
             today = datetime.today()
             if datetime.strptime(course.start_at, "%Y-%m-%dT%H:%M:%SZ") <= today <= datetime.strptime(course.end_at, "%Y-%m-%dT%H:%M:%SZ"):
-                if not Course.objects.filter(canvasId=course["id"]).exists():
+                if not Course.objects.filter(canvasId=course.id).exists():
                     courseObject = {}
-                    courseObject["id"] = course["id"]
-                    courseObject["name"] = course["name"]
+                    courseObject["id"] = course.id
+                    courseObject["name"] = course.name
                     courseObject["course_number"] = course.course_code
                     courseObject["start_date"] = datetime.strptime(course.start_at, "%Y-%m-%dT%H:%M:%SZ").date()
                     courseObject["end_date"] = datetime.strptime(course.end_at, "%Y-%m-%dT%H:%M:%SZ").date()
@@ -203,8 +205,8 @@ class CanvasUtils:
                         })
                 else:
                     courseObject = {}
-                    courseObject["id"] = course["id"]
-                    courseObject["name"] = course["name"]
+                    courseObject["id"] = course.id
+                    courseObject["name"] = course.name
                     courseObject["course_number"] = course.course_code
                     courseObject["start_date"] = datetime.strptime(course.start_at, "%Y-%m-%dT%H:%M:%SZ").date()
                     courseObject["end_date"] = datetime.strptime(course.end_at, "%Y-%m-%dT%H:%M:%SZ").date()

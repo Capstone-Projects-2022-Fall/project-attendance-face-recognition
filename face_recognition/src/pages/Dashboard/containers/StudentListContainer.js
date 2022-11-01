@@ -31,32 +31,15 @@ class StudentListContainer extends Component{
                 selector: row => row.section
             }
         ],
-        data: [
-            {
-                id:1,
-                first_name: "Jerry",
-                last_name: "Maurice",
-                email: "jerrychmaurice@gmail.com",
-                course: "Project in Computer Science",
-                section: "001"
-            },
-            {
-                id:2,
-                first_name: "John",
-                last_name: "Maurice",
-                email: "jerrychmaurice@gmail.com",
-                course: "Project in Computer Science",
-                section: "001"
-            },
-        ]
     }
     render() {
+        const {students} = this.props
         return (
             <div className={"card"}>
                 <div className={"card-body"}>
                     <DataTable
                         columns={this.state.columns}
-                        data={this.state.data}
+                        data={Object.values(students)}
                         pagination
                         />
                 </div>
@@ -64,5 +47,9 @@ class StudentListContainer extends Component{
         );
     }
 }
-
-export default connect()(StudentListContainer)
+function mapStateToProps({students}){
+    return{
+        students
+    }
+}
+export default connect(mapStateToProps)(StudentListContainer)

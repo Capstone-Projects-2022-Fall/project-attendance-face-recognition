@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -7,12 +8,16 @@ from rest_framework.authentication import TokenAuthentication
 
 from attendance.services.canvasUtils import CanvasUtils
 from course.services.schedule import currentCourse
-from account.services import account_registration_verification
+from account.services import account_registration_verification, retrieve_students_from_sections, \
+    retrieve_issues_admin, retrieve_section_schedule
 
-from account.serializers import UserSerializer
+from account.serializers import UserSerializer, StudentSerializer
 from course.serializers import CourseSerializer, SectionSerializer
+from attendance.serializers import IssueSerializer
 
-from account.models import Instructor
+from account.models import Instructor, Student
+from attendance.models import Issue
+
 
 '''
 class BaseView(APIView):
@@ -64,13 +69,24 @@ class InitialInfoAPIView(APIView):
     def get(self, request):
         data = {}
         user = self.request.user
-
+        canvas = CanvasUtils()
+        isInstructor = Instructor.objects.filter(user=user).exists()
         data["user"] = UserSerializer(user).data
         data["current_course"] = CourseSerializer(currentCourse(user)[0]).data
         data["current_section"] = SectionSerializer(currentCourse(user)[1]).data
         data["report"] = []
         data["registration_completed"] = {"completed": account_registration_verification(user)}
-        data["role_teacher"] = Instructor.objects.filter(user=user).exists()
+        data["role_teacher"] = isInstructor
+        if isInstructor:
+            instructor = get_object_or_404(Instructor, user=user)
+            issues = Issue.objects.filter(section__instructor=instructor)
+            data["issues"] = retrieve_issues_admin(instructor)
+            data["students"] = retrieve_students_from_sections(instructor)
+            data["schedule"] = retrieve_section_schedule(instructor)
+        else:
+            student = get_object_or_404(Student, user=user)
+            issues = Issue.objects.filter(section__students=student)
+            data["issues"] = IssueSerializer(issues, many=True).data
 
         return Response(
             data,
