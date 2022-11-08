@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from 'react'
 import Grid from "@mui/material/Grid";
 import {connect} from "react-redux";
+import {FormControl, InputLabel, OutlinedInput, TextField} from "@mui/material";
 
 
 class AddClassContainer extends Component{
@@ -34,7 +35,6 @@ class AddClassContainer extends Component{
                                 Schedule
                             </div>
                             <div className={"card-body"}>
-
                             </div>
                         </div>
                     </Grid>

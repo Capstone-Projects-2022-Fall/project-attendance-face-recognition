@@ -95,6 +95,7 @@ WSGI_APPLICATION = 'faceRecognitionAPI.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': env('DB_ENGINE'),
@@ -128,6 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://ae32-2601-41-c680-c250-18cf-23b-c244-4037.ngrok.io"
 ]
 
 # Internationalization

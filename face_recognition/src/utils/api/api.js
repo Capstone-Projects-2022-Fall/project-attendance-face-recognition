@@ -38,3 +38,36 @@ export const getCurrentCourseAPI = async ()=>{
         .then(data => data)
         .catch(error => console.log("error", error))
 }
+
+export const getTodayReport = async ()=>{
+    const headers = {
+        'Accept': 'application/json',
+        'Authorization': `Token ${localStorage.getItem("token")}`,
+    }
+    return fetch(`${API_URL}/report/today/`,{headers})
+        .then(res => res.json())
+        .then(data => data)
+        .catch(error => console.log("error", error))
+}
+
+export const getAttendanceSummary = async ()=>{
+    const headers = {
+        'Accept': 'application/json',
+        'Authorization': `Token ${localStorage.getItem("token")}`,
+    }
+    return fetch(`${API_URL}/statistics/attendance/`,{headers})
+        .then(res => res.json())
+        .then(data => data)
+        .catch(error => console.log("error", error))
+}
+
+export const getSectionNumSummary = async ()=>{
+    const headers = {
+        'Accept': 'application/json',
+        'Authorization': `Token ${localStorage.getItem("token")}`,
+    }
+    return fetch(`${API_URL}/statistics/sections/`,{headers})
+        .then(res => res.json())
+        .then(data => data)
+        .catch(error => console.log("error", error))
+}

@@ -65,7 +65,7 @@ export default function TabContentView() {
                     color="info"
                     variant="text"
                     component={NavLink}
-                    to={"/admin/setup"}
+                    to={"/setup"}
                 >
                     New Course/Section
                 </Button>

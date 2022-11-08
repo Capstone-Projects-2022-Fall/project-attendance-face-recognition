@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.http import QueryDict
 from django.shortcuts import render
 from rest_framework import status, parsers
@@ -6,14 +8,16 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+
+from attendance.services.statistics import attendanceSummary, studentPerSection
 from course.permissions import InstructionPermission
 
 from attendance.services.canvasUtils import CanvasUtils
 
 from account.models import Student, Instructor
-from attendance.models import Issue
+from attendance.models import Issue, Attendance
 from course.models import Section
-from attendance.serializers import IssueSerializer
+from attendance.serializers import IssueSerializer, AttendanceSerializer
 
 
 class StudentIssuesAPIView(APIView):
@@ -72,4 +76,67 @@ class TeacherIssuesAPIView(APIView):
             status=status.HTTP_200_OK
         )
     # add a way for teacher to modify tiket
+
+
+class TeacherDailyReportAPIView(APIView):
+    """
+    View attendance report
+    """
+    permission_classes = [IsAuthenticatedOrReadOnly, InstructionPermission]
+
+    def get(self, request):
+        user = self.request.user
+        instructor = get_object_or_404(Instructor, user=user)
+        data = {"today_report": AttendanceSerializer(Attendance.objects.filter(section__instructor=instructor,
+                                                                               recordedDate=date.today()), many=True).data}
+        return Response(
+            data,
+            status=status.HTTP_200_OK
+        )
+
+
+class StudentNameAPIView(APIView):
+    """
+    get student name
+    """
+    permission_classes = [IsAuthenticatedOrReadOnly, InstructionPermission]
+
+    def get(self, request, id):
+        student = get_object_or_404(Student, pk=id)
+        user = student.user
+        return Response({
+            "first_name": user.first_name,
+            "last_name": user.last_name
+        },status=status.HTTP_200_OK
+        )
+
+
+class AttendanceStatisticsAPIView(APIView):
+    """
+    return total number of late, present, and absent
+    """
+    permission_classes = [IsAuthenticatedOrReadOnly, InstructionPermission]
+
+    def get(self, request):
+        user = self.request.user
+        instructor = get_object_or_404(Instructor, user=user)
+        return Response(
+            attendanceSummary(instructor),
+            status=status.HTTP_200_OK)
+
+
+class SectionStatisticsAPIView(APIView):
+    """
+    return total number of late, present, and absent
+    """
+    permission_classes = [IsAuthenticatedOrReadOnly, InstructionPermission]
+
+    def get(self, request):
+        user = self.request.user
+        instructor = get_object_or_404(Instructor, user=user)
+        return Response(
+            studentPerSection(instructor),
+            status=status.HTTP_200_OK)
+
+
 

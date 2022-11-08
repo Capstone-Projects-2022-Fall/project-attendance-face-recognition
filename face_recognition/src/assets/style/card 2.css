@@ -1,0 +1,30 @@
+/*
+ * card style
+ */
+
+.card {
+  background-color: white;
+  margin: 1rem 0 1.5rem;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.card-dark{
+  background-color: #242526;
+}
+.card .card-header{
+  padding: 1.5rem 1rem 0.5rem;
+  font-size: 1.2rem;
+  border-bottom: 1px solid #282c34;
+  font-weight: bold;
+}
+.card .card-header span{
+  display: block;
+  padding: 0 1rem;
+  font-size: 0.8rem;
+  color: #282c34;
+}
+.card .card-body{
+  padding: 0.5rem;
+}
+.card .card-footer{
+  padding:1rem;
+}

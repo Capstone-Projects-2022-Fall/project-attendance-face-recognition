@@ -59,3 +59,11 @@ class Schedule(models.Model):
 
     def __str__(self):
         return self.dayOfWeek()
+
+
+class AttendanceSetting(models.Model):
+    duration = models.IntegerField(default=5)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "attendance duration for {} is {}".format(self.section.name, self.duration)
