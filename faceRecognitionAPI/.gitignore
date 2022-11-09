@@ -4,3 +4,6 @@
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 static
+venv
+media
+db.sqlite3
