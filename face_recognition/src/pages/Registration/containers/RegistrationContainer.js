@@ -42,7 +42,7 @@ class RegistrationContainer extends Component{
             })
     }
     registerUserImageAPI = async (propsValue)=>
-        fetch(`http://localhost:5000/api/v1/registration/`,{
+        fetch(`${process.env.REACT_APP_API_URL}/registration/`,{
             method:'POST',
             headers:{
                 'Authorization': `Token ${localStorage.getItem("token")}`,
