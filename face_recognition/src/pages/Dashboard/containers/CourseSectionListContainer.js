@@ -1,11 +1,13 @@
 import React, {Component, Fragment} from 'react'
 import {connect} from "react-redux";
 import Grid from "@mui/material/Grid";
-import {List, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
+import {List, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from "@mui/material/Button";
 import DataTable from "react-data-table-component";
+import Avatar from "@mui/material/Avatar";
+import WatchLaterIcon from '@mui/icons-material/WatchLater';
 
 
 class CourseSectionListContainer extends Component{
@@ -27,8 +29,32 @@ class CourseSectionListContainer extends Component{
             }
         ],
     }
+    expandedComponent = ({data})=>{
+        let mySchedule = data.schedule.split(";")
+        mySchedule.pop();
+        return (
+            mySchedule.map((schedule)=>(
+                <Fragment>
+                    <ListItem>
+                        <ListItemAvatar>
+                            <Avatar>
+                                <WatchLaterIcon
+                                    fontSize={"small"}
+                                />
+                            </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                            primary={(schedule.split(":"))[0]}
+                            secondary={(schedule)}
+                        />
+                    </ListItem>
+                </Fragment>
+            ))
+        )
+    }
     render(){
         const {schedule} = this.props
+
         return(
             <div className={"card"}>
                 <div className={"card-body"}>
@@ -37,7 +63,8 @@ class CourseSectionListContainer extends Component{
                         data={Object.values(schedule)}
                         pagination
                         dense
-                        responsive
+                        expandableRows
+                        expandableRowsComponent={this.expandedComponent}
                     />
                 </div>
             </div>

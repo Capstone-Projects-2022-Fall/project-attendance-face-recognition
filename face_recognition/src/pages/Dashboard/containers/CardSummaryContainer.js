@@ -11,7 +11,7 @@ class CardSummaryContainer extends Component{
                 <Grid container spacing={3}>
                     <Grid item sm xs md={4}>
                         <CardSummaryView
-                            title={"Course(s)"}
+                            title={"Section(s)"}
                             amount={this.props.courses}
                         />
                     </Grid>

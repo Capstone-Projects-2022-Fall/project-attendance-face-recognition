@@ -12,6 +12,7 @@ const RegistrationPage = lazy(()=>import("./pages/Registration/index"));
 const AdminPage = lazy(()=>import("./pages/Dashboard/index"));
 const ConfigurationPage = lazy(()=>import("./pages/Configuration/index"));
 const Page404 = lazy(()=>import("./pages/Error/404/index"))
+const RecordPage = lazy(()=>import("./pages/Record/index"))
 
 
 class App extends Component {
@@ -48,7 +49,6 @@ class App extends Component {
                     })
                     if (registered===false){
                         this.setState({
-                            completed_registration:registered,
                             completed_registration:registered.completed
                         })
                     }
@@ -62,10 +62,9 @@ class App extends Component {
                 <Router>
                     <Suspense fallback={<div>Loading...</div>}>
                         <Routes>
-                            <Route path="/" exact element={<HomePage/>}/>
-                            <Route path="/record" exact element={<HomePage/>}/>
-                            <Route path="/admin/dashboard" exact element={<AdminPage/>}/>
-                            <Route path="/admin/setup" exact element={<ConfigurationPage/>}/>
+                            <Route path="/" exact element={<AdminPage/>}/>
+                            <Route path="/record" exact element={<RecordPage/>}/>
+                            <Route path="/setup" exact element={<ConfigurationPage/>}/>
                             <Route path='*' exact element={<Page404/>}/>
                         </Routes>
                     </Suspense>
@@ -77,7 +76,7 @@ class App extends Component {
                 <Suspense fallback={<div>Loading...</div>}>
                     <Routes>
                         <Route path="/" exact element={<HomePage/>}/>
-                        <Route path="/record" exact element={<HomePage/>}/>
+                        <Route path="/record" exact element={<RecordPage/>}/>
                         <Route path="/registration" exact element={<RegistrationPage/>}/>
                         <Route path="/attendance" exact element={<AttendancePage/>}/>
                         <Route path="/admin/dashboard" exact element={<AdminPage/>}/>

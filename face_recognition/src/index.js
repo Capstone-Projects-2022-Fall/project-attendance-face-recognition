@@ -9,6 +9,7 @@ import {Provider} from 'react-redux'
 import reducer from './redux/reducers'
 import middleware from './redux/middleware'
 
+
 const store = createStore(reducer, middleware)
 
 ReactDOM.render(

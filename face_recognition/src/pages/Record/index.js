@@ -3,28 +3,31 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Navbar from "../../component/Navbar"
 import {Button} from "@mui/material";
 import Stack from '@mui/material/Stack';
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import RecordListContainer from "./container/RecordListContainer";
+import StatisticalReportContainer from "./container/StatisticalReportContainer";
+import SectionNumChartContainer from "./container/SectionNumChartContainer";
 
 class RecordPage extends Component{
     render() {
         return(
             <Fragment>
+                <CssBaseline />
                 <Navbar/>
-                <div className="App">
-                    <header className="App-header">
-                        <h1>Attendance Face Recognition</h1>
-                        <p>
-                            Click on the button below to record your attendance
-                        </p>
-                        <Stack spacing={2} direction="row">
-                            <Button variant="contained" color={"info"}>
-                                Record Attendance
-                            </Button>
-                            <Button variant="outlined" color={"info"}>
-                                View Report
-                            </Button>
-                        </Stack>
-                    </header>
-                </div>
+                <Container fixed>
+                    <Grid container spacing={3}>
+                        <Grid item sm xs md={8}>
+                            <StatisticalReportContainer/>
+                        </Grid>
+                        <Grid item sm xs md={3.8}>
+                            <SectionNumChartContainer/>
+                        </Grid>
+                        <Grid item sm xs md={12}>
+                            <RecordListContainer/>
+                        </Grid>
+                    </Grid>
+                </Container>
             </Fragment>
         )
     }

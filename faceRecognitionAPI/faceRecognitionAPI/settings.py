@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'channels',
+    'rest_live',
     'attendance',
     'account',
     'recognition',
@@ -95,6 +97,7 @@ WSGI_APPLICATION = 'faceRecognitionAPI.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': env('DB_ENGINE'),
@@ -106,6 +109,16 @@ DATABASES = {
     }
 }
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(env('REDIS_URL'), env('REDIS_PORT'))],
+        }
+    }
+}
+
+ASGI_APPLICATION = 'faceRecognitionAPI.routing.application'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -128,6 +141,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://ae32-2601-41-c680-c250-18cf-23b-c244-4037.ngrok.io"
 ]
 
 # Internationalization

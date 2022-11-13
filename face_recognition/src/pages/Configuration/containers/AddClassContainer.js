@@ -37,6 +37,7 @@ class AddClassContainer extends Component{
                                 Schedule
                             </div>
                             <div className={"card-body"}>
+=======
                                 <FormControl fullWidth sx={{ m: 1 }}>
                                     <InputLabel>Day of the Week</InputLabel>
                                     <Select

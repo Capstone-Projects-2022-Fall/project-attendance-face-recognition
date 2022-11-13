@@ -39,7 +39,7 @@ class TakeAttendance extends Component{
             })
     }
     recognizeUserAPI = async (propsValue)=>
-        fetch(`http://localhost:5000/api/v1/recognition/`,{
+        fetch(`${process.env.REACT_APP_API_URL}/recognition/`,{
             method:'POST',
             headers:{
                 'Authorization': `Token ${localStorage.getItem("token")}`,

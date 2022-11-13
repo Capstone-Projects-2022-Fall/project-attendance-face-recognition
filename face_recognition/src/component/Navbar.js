@@ -40,6 +40,10 @@ export default function EmptyAppBar() {
         setAnchorEl(event.currentTarget);
     };
 
+    const logoutUser = ()=>{
+        localStorage.removeItem("token")
+    }
+
     const handleMobileMenuClose = () => {
         setMobileMoreAnchorEl(null);
     };
@@ -70,7 +74,7 @@ export default function EmptyAppBar() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem>Sign Out</MenuItem>
+            <MenuItem onClick={logoutUser}>Sign Out</MenuItem>
         </Menu>
     );
 

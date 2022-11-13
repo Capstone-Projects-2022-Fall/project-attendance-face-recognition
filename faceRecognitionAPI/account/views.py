@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,11 +15,10 @@ from account.services import account_registration_verification, retrieve_student
 
 from account.serializers import UserSerializer, StudentSerializer
 from course.serializers import CourseSerializer, SectionSerializer
-from attendance.serializers import IssueSerializer
+from attendance.serializers import IssueSerializer, AttendanceSerializer
 
 from account.models import Instructor, Student
-from attendance.models import Issue
-
+from attendance.models import Issue, Attendance
 
 '''
 class BaseView(APIView):
@@ -74,7 +75,6 @@ class InitialInfoAPIView(APIView):
         data["user"] = UserSerializer(user).data
         data["current_course"] = CourseSerializer(currentCourse(user)[0]).data
         data["current_section"] = SectionSerializer(currentCourse(user)[1]).data
-        data["report"] = []
         data["registration_completed"] = {"completed": account_registration_verification(user)}
         data["role_teacher"] = isInstructor
         if isInstructor:
@@ -83,13 +83,18 @@ class InitialInfoAPIView(APIView):
             data["issues"] = retrieve_issues_admin(instructor)
             data["students"] = retrieve_students_from_sections(instructor)
             data["schedule"] = retrieve_section_schedule(instructor)
+            data["report"] = AttendanceSerializer(Attendance.objects.filter(section__instructor=instructor,
+                                                                            section__course__end_date__gte=date.today()),
+                                                  many=True).data
         else:
             student = get_object_or_404(Student, user=user)
             issues = Issue.objects.filter(section__students=student)
             data["issues"] = IssueSerializer(issues, many=True).data
+            data["report"] = AttendanceSerializer(Attendance.objects.filter(section__students=student,
+                                                                            section__course__end_date__gte=date.today()),
+                                                  many=True).data
 
         return Response(
             data,
             status=status.HTTP_200_OK
         )
-
