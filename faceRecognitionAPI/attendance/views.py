@@ -3,12 +3,14 @@ from datetime import date
 from django.http import QueryDict
 from django.shortcuts import render
 from django_eventstream import send_event
-from rest_framework import status, parsers
+from rest_framework import status, parsers, generics
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from rest_framework.viewsets import ModelViewSet
+from rest_live.mixins import RealtimeMixin
 
 from attendance.services.statistics import attendanceSummary, studentPerSection
 from course.permissions import InstructionPermission
@@ -140,14 +142,13 @@ class SectionStatisticsAPIView(APIView):
             status=status.HTTP_200_OK)
 
 
-class SectionAttendanceAPIView(APIView):
+class AttendanceViewSet(generics.ListCreateAPIView, RealtimeMixin):
     """
     taking attendance
     """
+    queryset = Attendance.objects.all()
+    serializer_class = AttendanceSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, InstructionPermission]
-
-    def get(self, request):
-        send_event('test', 'message', {'text': 'hello world'})
 
 
 
