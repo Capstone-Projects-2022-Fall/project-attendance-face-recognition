@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react'
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Navbar from "../../component/Navbar";
-import TakeAttendance from "./containers/TakeAttendance";
+import TakingAttendance from "./containers/TakingAttendance";
 
 class AttendancePage extends Component{
     render() {
@@ -11,7 +11,7 @@ class AttendancePage extends Component{
                 <CssBaseline />
                 <Navbar/>
                 <Container fixed>
-                    <TakeAttendance/>
+                    <TakingAttendance/>
                 </Container>
             </Fragment>
         )

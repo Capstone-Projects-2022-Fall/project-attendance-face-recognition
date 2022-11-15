@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react'
+import React, {Fragment, useEffect} from 'react'
 import Box from "@mui/material/Box";
 import Webcam from "react-webcam";
 import {Button} from "@mui/material";
@@ -20,16 +20,14 @@ export default function WebcamComponent(props){
                     display: 'flex',
                     justifyContent: 'center',
                     p: 1,
-                    m: 1,
-                    bgcolor: 'background.paper',
                 }}
             >
                 <Webcam
                     audio={false}
                     ref={webcamRef}
-                    height={220}
                     screenshotFormat="image/jpeg"
-                    width={1280}
+                    width="100%"
+                    height="auto"
                 />
             </Box>
             <Box
