@@ -96,3 +96,17 @@ export const attendanceSubmissionAPI = async (body)=>
     }).then(res => res.json())
         .then(data =>{return data})
         .catch(error=> console.log('error',error))
+
+/*
+
+ */
+export const attendanceMonitoring = async ()=>{
+    const headers = {
+        'Accept': 'application/json',
+        'Authorization': `Token ${localStorage.getItem("token")}`,
+    }
+    return fetch(`${API_URL}/attendance/monitoring/`,{headers})
+        .then(res => res.json())
+        .then(data => data)
+        .catch(error => console.log("error", error))
+}

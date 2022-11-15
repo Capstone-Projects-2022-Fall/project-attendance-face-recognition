@@ -8,6 +8,8 @@ urlpatterns = [
     path('report/today/', views.TeacherDailyReportAPIView.as_view()),
     path('statistics/attendance/', views.AttendanceStatisticsAPIView.as_view()),
     path('statistics/sections/', views.SectionStatisticsAPIView.as_view()),
+    path('attendance/', views.AttendanceStudentAPIView.as_view()),
+    path('attendance/monitoring/', views.AttendanceSectionAPIView.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

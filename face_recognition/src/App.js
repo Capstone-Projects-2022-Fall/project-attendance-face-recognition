@@ -5,9 +5,11 @@ import LoadingBar from 'react-redux-loading-bar'
 import {authenticateUserAPI} from "./utils/api/api";
 import {connect} from "react-redux";
 import {handleInitialData} from "./redux/action/shared";
+import {handleGetAttendance} from "./redux/action/attendance";
 
 const HomePage = lazy(()=>import("./pages/Home/index"));
 const AttendancePage = lazy(()=>import("./pages/Attendance/index"));
+const AttendanceMonitoringPage = lazy(()=>import("./pages/Monitoring/index"));
 const RegistrationPage = lazy(()=>import("./pages/Registration/index"));
 const AdminPage = lazy(()=>import("./pages/Dashboard/index"));
 const ConfigurationPage = lazy(()=>import("./pages/Configuration/index"));
@@ -65,6 +67,7 @@ class App extends Component {
                             <Route path="/" exact element={<AdminPage/>}/>
                             <Route path="/record" exact element={<RecordPage/>}/>
                             <Route path="/setup" exact element={<ConfigurationPage/>}/>
+                            <Route path="/monitoring" exact element={<AttendanceMonitoringPage/>}/>
                             <Route path='*' exact element={<Page404/>}/>
                         </Routes>
                     </Suspense>
@@ -79,8 +82,6 @@ class App extends Component {
                         <Route path="/record" exact element={<RecordPage/>}/>
                         <Route path="/registration" exact element={<RegistrationPage/>}/>
                         <Route path="/attendance" exact element={<AttendancePage/>}/>
-                        <Route path="/admin/dashboard" exact element={<AdminPage/>}/>
-                        <Route path="/admin/setup" exact element={<ConfigurationPage/>}/>
                         <Route path='*' exact element={<Page404/>}/>
                     </Routes>
                 </Suspense>
