@@ -1,3 +1,4 @@
+import random
 from datetime import date
 
 from django.http import QueryDict
@@ -12,6 +13,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 from rest_live.mixins import RealtimeMixin
 
+from attendance.services.emotionDetector import detectUserEmotion
 from attendance.services.statistics import attendanceSummary, studentPerSection
 from course.permissions import InstructionPermission
 
@@ -21,6 +23,9 @@ from account.models import Student, Instructor
 from attendance.models import Issue, Attendance
 from course.models import Section
 from attendance.serializers import IssueSerializer, AttendanceSerializer
+from course.services.schedule import currentCourse
+from recognition.models import StudentImage
+from recognition.services.recognize_image import recognize_image
 
 
 class StudentIssuesAPIView(APIView):
@@ -142,13 +147,111 @@ class SectionStatisticsAPIView(APIView):
             status=status.HTTP_200_OK)
 
 
-class AttendanceViewSet(generics.ListCreateAPIView, RealtimeMixin):
+class AttendanceLiveViewSet(generics.ListCreateAPIView, RealtimeMixin):
     """
     taking attendance
     """
-    queryset = Attendance.objects.all()
+    queryset = Attendance.objects.none()
     serializer_class = AttendanceSerializer
+    #permission_classes = [IsAuthenticatedOrReadOnly, InstructionPermission]
+
+    def get_queryset(self):
+        id = self.kwargs.get("section",1)
+        print(id)
+        section = get_object_or_404(Section, id=id)
+        return Attendance.objects.filter(section=section)
+
+
+class AttendanceSectionAPIView(APIView):
+    """
+    View Attendance
+    """
     permission_classes = [IsAuthenticatedOrReadOnly, InstructionPermission]
+
+    def get(self, request):
+        data = {}
+        user = self.request.user
+        instructor = get_object_or_404(Instructor, user=user)
+        current_section = currentCourse(user)[1]
+        if current_section is not None:
+            attendance = Attendance.objects.filter(section=current_section)
+            data["attendance"] = AttendanceSerializer(attendance, many=True).data
+            data["attendance_status"] = 1
+            return Response(
+                data,
+                status=status.HTTP_200_OK
+            )
+        else:
+            data["attendance"]=None
+            data["attendance_status"] = 0
+            return Response(
+                data,
+                status=status.HTTP_200_OK
+            )
+
+
+class AttendanceStudentAPIView(APIView):
+    """
+    Student taking attendance
+    """
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    parser_classes = [parsers.FormParser, parsers.JSONParser, parsers.MultiPartParser]
+
+    def get(self, request):
+        data = {}
+        emotions = ["happy", "sad", "angry", "surprised","fear"]
+        rand_emotions = emotions[random.randint(0, 3)]
+        user = self.request.user
+        student = get_object_or_404(Student, user=user)
+        images_loaded = StudentImage.objects.filter(student=student).count()
+        attendanceExist = Attendance.objects.filter(student=student, section=currentCourse(user)[1],
+                                                    recordedDate=date.today()).exists()
+        if images_loaded ==0:
+            data["message"] = "Attendance already recorded"
+            data["authorization"] = 0
+            return Response(
+                data,
+                status=status.HTTP_200_OK
+            )
+        elif attendanceExist:
+            data["message"] = "Attendance already recorded"
+            data["authorization"] = 0
+            return Response(
+                data,
+                status=status.HTTP_200_OK
+            )
+        else:
+            data["message"] = "You are ready to take attendance but you are recommended to upload more picture in the " \
+                              "future" if 1<=images_loaded<5 else "Ready to take attendance"
+            data["authorization"] = 1
+            data["emotion"] = rand_emotions,
+            return Response(
+                data,
+                status=status.HTTP_200_OK
+            )
+
+    def post(self, request):
+        print(request.FILES)
+        data = request.data
+        verifyEmotion = detectUserEmotion(request.FILES["emotionImage"])
+        id = recognize_image(request.FILES["regularImage"], self.request.user)
+        if verifyEmotion == data["emotion"] and id["id"] is not None:
+            student = get_object_or_404(Student, id=id["id"])
+            attendance = Attendance(status="Present", section=currentCourse(student.user)[1], student=student)
+            attendance.save()
+            print(attendance)
+            return Response({
+                "message": "You have been marked present",
+                "completed": True
+            },
+                status=status.HTTP_200_OK
+            )
+        return Response({
+                "message": "Please try again. You could not be identified",
+                "completed": False
+            },
+                status=status.HTTP_200_OK
+        )
 
 
 

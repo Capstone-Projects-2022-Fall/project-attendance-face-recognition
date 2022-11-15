@@ -8,9 +8,11 @@ import isInstructor from "./role";
 import issues from "./issues";
 import students from "./students"
 import schedule from "./schedule";
+import attendance from "./attendance";
 
 export default combineReducers({
     authedUser,
+    attendance,
     course,
     section,
     registered,

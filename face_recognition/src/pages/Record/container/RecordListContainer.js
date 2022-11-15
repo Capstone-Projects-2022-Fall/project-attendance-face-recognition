@@ -36,7 +36,7 @@ class RecordListContainer extends Component{
         const {report} = this.props
         return(
             <Fragment>
-                <h2>Record</h2>
+                <h2>Report</h2>
                 <div className={"card"}>
                     <div className={"card-body"}>
                         <DataTable

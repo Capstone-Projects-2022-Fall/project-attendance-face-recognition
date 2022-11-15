@@ -2,20 +2,20 @@ import React, {Component, Fragment} from 'react'
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Navbar from "../../component/Navbar";
-import TakingAttendance from "./containers/TakingAttendance";
+import ViewAttendanceContainer from "./containers/ViewAttendanceContainer";
 
-class AttendancePage extends Component{
+class MonitoringPage extends Component{
     render() {
         return(
             <Fragment>
                 <CssBaseline />
                 <Navbar/>
                 <Container fixed>
-                    <TakingAttendance/>
+                    <ViewAttendanceContainer/>
                 </Container>
             </Fragment>
         )
     }
 }
 
-export default AttendancePage
+export default MonitoringPage

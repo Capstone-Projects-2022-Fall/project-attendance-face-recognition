@@ -3,14 +3,14 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from rest_live.routers import RealtimeRouter
 
 import attendance.routing
-from attendance.views import AttendanceViewSet
+from attendance.views import AttendanceLiveViewSet
 from faceRecognitionAPI.middleware import TokenAuthMiddlewareStack
 from django.urls import path, re_path
 import django_eventstream
 from django.core.asgi import get_asgi_application
 
 router = RealtimeRouter()
-router.register(AttendanceViewSet)
+router.register(AttendanceLiveViewSet)
 '''
 application = ProtocolTypeRouter({
     'websocket': TokenAuthMiddlewareStack(
