@@ -28,19 +28,23 @@ The initial plan for developing this web-based application is by building the fr
 
 ## Background
 The goal of this project is to build a monitoring system to track the attendance of its users. This will be a web-based application that has the potential to integrate with other school applications (eg. Canvas) to record attendance. This tool will make taking attendance more accurate and efficient, and will not allow the ability for users to cheat the system. As online classes and jobs become more common, the need for a web-based attendance tracker becomes more evident. Thus, we decided to create our project - AFR.
-There are many other similar products, such as https://ubsapp.com/face-recognition-attendance-management/ and https://enalytix.com/face-recognition-attendance-system, that exist in the market. However, we hope to differentiate ourselves by adding an alerting and reporting system. By doing this, the 'higher up' admin user (eg. boss, professor, etc.) can view attendance reports without need for much human work. There are also other ways to take attendance that exist already, such as manually recording and using numeric code-based attendance, however these come with more human-work and can potentially be 'cheated'. We hope to reduce the time it takes for attendance to be tracked and stored, while also allowing it to be fair for everyone.
+There are many other similar products, such as https://ubsapp.com/face-recognition-attendance-management/ and https://enalytix.com/face-recognition-attendance-system, that exist in the market. However, we hope to differentiate ourselves by adding an alerting and reporting system. By doing this, the 'higher up' admin user (eg. boss, professor, etc.) can view attendance reports without need for much human work. There are also other ways to take attendance that exist already, such as manually recording and using numeric code-based attendance, however these come with more human-work and can potentially be 'cheated'. We hope to reduce the time it takes for attendance to be tracked and stored, while also allowing it to be fair for everyone.\
+Citations:\
+- Face recognition attendance management system: UBS. The Ultimate Business System. (2022, September 19). Retrieved November 15, 2022, from https://ubsapp.com/face-recognition-attendance-management/ \
+- Face recognition attendance system: Employee productivity. Enalytix. (n.d.). Retrieved November 15, 2022, from https://enalytix.com/face-recognition-attendance-system 
+
 
 ## Required Resources
 
-To develop this, our team should have knowledge in python and/or web development. The other knowledge that we must gather are - 
-•	Designing a web-based platform and choosing the right tool for it
-•	Knowledge of using python libraries
-•	An alerting system (for example - send emails)
-•	Database (MySQL) usage and association with application
-•	Django
-•	Usage of Dlib, OpenCV, & Face recognition package
-•	More information on access for usage of AWS platforms
-•	Research about Material UI for the web development
+To develop this, our team should have knowledge in python and/or web development. The other knowledge that we must gather are:\
+- Designing a web-based platform and choosing the right tool for it
+- Knowledge of using python libraries
+- An alerting system (for example - send emails)
+- Database (MySQL) usage and association with application
+- Django
+- Usage of Dlib, OpenCV, & Face recognition package
+- More information on access for usage of AWS platforms
+- Research about Material UI for the web development
 
 ## Collaborators
 
