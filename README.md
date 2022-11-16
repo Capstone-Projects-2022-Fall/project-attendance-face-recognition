@@ -1,7 +1,7 @@
 ![Open in Codespaces](https://classroom.github.com/assets/open-in-codespaces-abfff4d4e15f9e1bd8274d9a39a0befe03a0632bb0f153d0ec72ff541cedbe34.svg)
 <div align="center">
 
-# Attendance Face Recognition (AFR)
+# Attendance Face Recognition <img width="68" alt="Screenshot 2022-11-16 at 12 57 15 AM" src="https://user-images.githubusercontent.com/34950870/202108327-e1520985-d50b-47c4-bdf4-6da093fcd394.png">
 [![Report Issue on Jira](https://img.shields.io/badge/Report%20Issues-Jira-0052CC?style=flat&logo=jira-software)](https://temple-cis-projects-in-cs.atlassian.net/jira/software/c/projects/AFR/boards/20)
 [![Deploy Docs](https://github.com/ApplebaumIan/tu-cis-4398-docs-template/actions/workflows/deploy.yml/badge.svg)](https://github.com/ApplebaumIan/tu-cis-4398-docs-template/actions/workflows/deploy.yml)
 [![Documentation Website Link](https://img.shields.io/badge/-Documentation%20Website-brightgreen)](https://capstone-projects-2022-fall.github.io/project-attendance-face-recognition/docs/intro)
