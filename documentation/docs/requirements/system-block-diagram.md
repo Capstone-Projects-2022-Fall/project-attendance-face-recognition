@@ -5,7 +5,7 @@ sidebar_position: 2
 # System Block Diagram
 
 
-![Screen Shot 2022-09-13 at 11 45 11 PM](https://user-images.githubusercontent.com/17518043/190054877-41b3d6b5-e57f-4911-845b-2bf7e0467463.png)
+![image](https://user-images.githubusercontent.com/78066498/202242391-510fb363-9dba-45f7-a624-985cd316e85a.png)
 
 If a student user is new to the AFR application, once they login through Canvas, the application will ask them to scan or upload multiple portrait photos of themselves. These photos will then be sent to the backend. 
 OpenCV will detect, transform, and crop these images which will be encoded by dlib.
