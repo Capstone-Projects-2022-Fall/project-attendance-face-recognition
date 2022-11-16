@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  
+<!--
+*******************************************************
+This is a HTML document for a mockup template design of a student view page for our AFR application. It provides a visual (the UI/UX) for the application.
+
+This specific page is for a student user to view their settings on the application. This page allows for a student to upload or change a picture of them
+and allows for an upload of 3 file types, namely: .jpg, .png, & .jpeg.
+*******************************************************
+-->
+
+<META HTTP-EQUIV="content-type" CONTENT="text/html; charset=utf-8">
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- CSS appears here -->
+<style>
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: Avenir;
+}
+
+.hero-image {
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+.hero-text {
+  text-align: center;
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #0474BA;
+  font-size: 16px;
+}
+
+<!-- Creates a navigation bar -->
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #00A7e1;
+  position: sticky;
+}
+
+li {
+  float: left;
+  position: sticky;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 23px 23px;
+  text-decoration: none;
+  font-family: Avenir;
+  position: sticky;
+}
+
+<!-- create a hover effect -->
+li a:hover {
+  background-color: #0474BA;
+  position: sticky;
+}
+
+<!-- footer details -->
+.footer {
+  position: relative;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #0474BA; 
+  color: white;
+  text-align: center;
+}
+
+.hero-text2 {
+  position: absolute;
+  top: 17%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #333;
+  font-style: italic;
+  font-size: 11px;
+}
+
+.hero-part3 {
+  position: absolute;
+  top: 53%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.column {
+  float: left;
+  width: 30%;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- Replace With Your HREF paths and remove comment -->
+<ul>
+  <li><img src="800px-Temple_T_logo.svg.png" style="width:45px; height:47px; padding:8px 10px;"</li>
+  <li><a class="active" href="upload.html">Home</a></li>
+  <li><a class="active" href="Attendance.html">Take Attendance</a></li>
+  <li><a class="active" href="Settings.html"><b>Settings</b></a></li>
+  <li><a class="active" href="Reports.html">Reports</a></li>
+</ul>
+
+<!-- Welcome message for user -->
+<div class="hero-image">
+  <div class="hero-text">
+    <h1>Hello Shiv Patel! 👋</h1>
+  </div>
+  <div class="hero-text2">
+    <center><h4>Here's what we have on file. Click "Choose File" to upload or change your image.</h4></center>
+  </div>
+  <div class="hero-part3">
+  <!-- upload an image -->
+  <center><img src="/users/Icey/Desktop/default_image.png" style="width:350px; height:350px;"</center>
+     <form action="/action_page.php">
+     <!-- Accept only 3 image types -->
+     <input type="file" id="myFile" name="filename" accept=".jpg, .png, .jpeg">
+     <input type="submit">
+     </form>
+  </div>
+</div>
+
+
+<!-- footer -->
+<div class="footer">
+          <br>
+  	  <center><p><b> 💻 Web Application Developed By:</b>&emsp; Hamsa Shaik, Jerry Maurice, Shiv Patel, & Anjeza Beca</p></center>
+          <br>
+</div>
+
+</body>
+</html>
