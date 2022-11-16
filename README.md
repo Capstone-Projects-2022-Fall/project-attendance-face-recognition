@@ -31,15 +31,16 @@ The goal of this project is to build a monitoring system to track the attendance
 
 ## Required Resources
 
-To develop this, we should have at least minimum knowledge in python or web development. The other knowledge that we must gather are - 
-•	Designing web-based platform and choosing right tool for us for it
-•	Knowledge of using python libraries
-•	Alerting system (may be to send emails)
-•	Database (MySQL) usage and association with application
-•	Django
-•	Usage of Dlib, OpenCV, Face recognition package
-•	More information on access for usage of AWS platforms
-•	Research about Material UI for the web development
+To develop this, we should have at least minimum knowledge in python or web development. The other knowledge that we must gather are:\
+
+- Designing web-based platform and choosing right tool for us for it
+- Knowledge of using python libraries
+- Alerting system (may be to send emails)
+- Database (MySQL) usage and association with application
+- Django
+- Usage of Dlib, OpenCV, Face recognition package
+- More information on access for usage of AWS platforms
+- Research about Material UI for the web development
 
 ## Collaborators
 
