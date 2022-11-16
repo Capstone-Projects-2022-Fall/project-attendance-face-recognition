@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+  
+<!--
+*******************************************************
+This is a HTML document for a mockup template design of a student view page for our AFR application. It provides a visual (the UI/UX) for the application.
+
+This specific page is for a student user's attendance. This is a working mockup page that, using JavaScript, allows a student to activate their
+webcam and snap a picture of themselves.
+*******************************************************
+-->
+
+<META HTTP-EQUIV="content-type" CONTENT="text/html; charset=utf-8">
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  
+<!-- CSS goes here -->
+<style>
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: Avenir;
+}
+
+.hero-image {
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+.hero-text {
+  text-align: center;
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #0474BA;
+  font-size: 16px;
+}
+
+<!-- Creates a header -->
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #00A7e1;
+  position: sticky;
+}
+
+li {
+  float: left;
+  position: sticky;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 23px 23px;
+  text-decoration: none;
+  font-family: Avenir;
+  position: sticky;
+}
+
+<!-- creates a hover effect -->
+li a:hover {
+  background-color: #0474BA;
+  position: sticky;
+}
+
+<!-- footer details -->
+.footer {
+  position: relative;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #0474BA; 
+  color: white;
+  text-align: center;
+}
+
+.hero-text2 {
+  position: absolute;
+  top: 17%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #333;
+  font-style: italic;
+  font-size: 11px;
+}
+
+.hero-part3 {
+  position: absolute;
+  top: 53%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.column {
+  float: left;
+  width: 30%;
+}
+
+<!-- table details -->
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- Tabs and links to them -->
+<ul>
+  <li><img src="800px-Temple_T_logo.svg.png" style="width:45px; height:47px; padding:8px 10px;"</li>
+  <li><a class="active" href="upload.html">Home</a></li>
+  <li><a class="active" href="Attendance.html"><b>Take Attendance</b></a></li>
+  <li><a class="active" href="Settings.html">Settings</a></li>
+  <li><a class="active" href="Reports.html">Reports</a></li>
+</ul>
+
+<!-- Title -->
+<center><h1><FONT COLOR= "#0474BA";>Check Into Class Now!</h1></center>
+<title>Take Attendance</title>
+
+<!-- JavaScript -->
+<!-- Allows the user to access webcam -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        var but = document.getElementById("but");
+        var video = document.getElementById("vid");
+        var mediaDevices = navigator.mediaDevices;
+        vid.muted = true;
+        but.addEventListener("click", () => {
+
+          mediaDevices
+            .getUserMedia({
+              video: true,
+              audio: true,
+            })
+            .then((stream) => {
+  
+              video.srcObject = stream;
+              video.addEventListener("loadedmetadata", () => {
+                video.play();
+              });
+            })
+            .catch(alert);
+        });
+      });
+    </script>
+  </head>
+  
+  <style>
+    div {
+      width: 500px;
+      height: 400px;
+      border: 2px solid black;
+      position: relative;
+    }
+    video {
+      width: 500px;
+      height: 400px;
+      object-fit: cover;
+    }
+  </style>
+  
+<!-- Creates a Button -->
+  <body>
+    <center>
+      <div>
+        <video id="vid"></video>
+      </div>
+      <br />
+      <button id="but" autoplay>
+        Take Picture
+      </button>
+    </center>
+<br>
+<br>
+
+<!-- Footer -->
+<div class="footer">
+          <br>
+  	  <center><p><b> 💻 Web Application Developed By:</b>&emsp; Hamsa Shaik, Jerry Maurice, Shiv Patel, & Anjeza Beca</p></center>
+          <br>
+</div>
+
+</body>
+</html>
