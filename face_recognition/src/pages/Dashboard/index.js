@@ -26,7 +26,6 @@ class AdminPage extends Component{
                         </Grid>
                         <Grid item sm xs md={4}>
                             <ChartCurrentContainer/>
-                            <RecentUserContainer/>
                         </Grid>
                     </Grid>
                 </Container>
@@ -36,3 +35,7 @@ class AdminPage extends Component{
 }
 
 export default AdminPage
+/*
+
+                            <RecentUserContainer/>
+ */

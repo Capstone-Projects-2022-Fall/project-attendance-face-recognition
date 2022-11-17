@@ -174,7 +174,7 @@ class AttendanceSectionAPIView(APIView):
         instructor = get_object_or_404(Instructor, user=user)
         current_section = currentCourse(user)[1]
         if current_section is not None:
-            attendance = Attendance.objects.filter(section=current_section)
+            attendance = Attendance.objects.filter(section=current_section, recordedDate=date.today())
             data["attendance"] = AttendanceSerializer(attendance, many=True).data
             data["attendance_status"] = 1
             return Response(
