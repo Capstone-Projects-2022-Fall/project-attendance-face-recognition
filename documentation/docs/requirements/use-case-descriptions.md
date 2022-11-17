@@ -6,7 +6,8 @@ sidebar_position: 5
 
 ## New Student
 1. User Story:
-As a new student using the attendance face recognition system for the first time, I want to access the attendance.</br>
+As a new student using the attendance face recognition system for the first time, I want to access the attendance.<br/>
+
 Use Case:
 - If the user is a new student, they login to canvas using their credentials
 - They click on attendance from the navigation menu on the left
@@ -18,7 +19,8 @@ Use Case:
 
 ## Known Student
 1.	User story:
-As an enrolled student, I can directly login through canvas and use it for attendance.</br>
+As an enrolled student, I can directly login through canvas and use it for attendance.<br/>
+
 Use case:
 -	If the user is a student, they login to canvas using their credentials
 - They click on attendance from the navigation menu on the left
@@ -29,7 +31,8 @@ Use case:
 -	The system marks the attendance as present
 
 2. User Story: 
-As a student, if I’m unable to get my attendance recorded after multiple attempts, I want an alternative method to verify my presence and let the professor know that I'm in class.</br>
+As a student, if I’m unable to get my attendance recorded after multiple attempts, I want an alternative method to verify my presence and let the professor know that I'm in class.<br/>
+
 Use Case:
 If the user is a student, they login to canvas using their credentials
 - They click on attendance from the navigation menu on the left
@@ -42,7 +45,8 @@ If the user is a student, they login to canvas using their credentials
 
 ## Professor
 1.	User story:
-As a professor, I want to have attendance taken automatically at a specific time of the class. </br>Use case:
+As a professor, I want to have attendance taken automatically at a specific time of the class.<br/>
+ Use case:
 -	An admin user signs in through canvas
 -	They click on attendance from the navigation menu on the left
 -	As they are redirected to the home page, they select the desired class
@@ -50,7 +54,8 @@ As a professor, I want to have attendance taken automatically at a specific time
 -	The system opens the attendance automatically to each student for that set time every class
 
 2.	User story:
-As a professor, I want to have real time access of the attendance and get a report of the students’ attendance.</br>
+As a professor, I want to have real time access of the attendance and get a report of the students’ attendance.<br/>
+
 Use case: 
 -	An admin user signs in through canvas
 -	They click on attendance from the navigation menu on the left
@@ -60,7 +65,8 @@ Use case:
 -	If they want to make any adjustments, they can click on ‘Record manually’ to make changes
 
 3. User Story:
-As a professor, I want to be notified/informed if any student has issues taking attendance.</br>
+As a professor, I want to be notified/informed if any student has issues taking attendance.<br/>
+
 Use Case:
 -	An admin user signs in through canvas
 -	They click on attendance from the navigation menu on the left
