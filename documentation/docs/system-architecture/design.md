@@ -14,10 +14,6 @@ A description the different components and their interfaces. For example: client
 
 For each component provide class diagrams showing the classes to be developed (or used) and their relationship.
 
-Describe algorithms employed in your project, e.g. neural network paradigm, training and training data set, etc.
-
-A check list for architecture design is attached here [architecture\_design\_checklist.pdf](https://templeu.instructure.com/courses/106563/files/16928870/download?wrap=1 "architecture_design_checklist.pdf")  and should be used as a guidance.
-
 ## UML Class Diagram
 ![image](https://user-images.githubusercontent.com/78066498/192671179-b13a4c35-04a5-497a-8777-96beaa4c6744.png)
 
@@ -28,59 +24,69 @@ A check list for architecture design is attached here [architecture\_design\_che
 
 ### Sequence Diagram for Use Case #1
 ![image](https://user-images.githubusercontent.com/78066498/192402371-df135234-e90f-4f52-bed1-8529693a1981.png)
-1.	User story:
-As a professor, I want to have attendance taken automatically.
-Use case:
--	Admin user signs in
--	Select the desired class
--	Then they set the time for attendance once during beginning of the semester
--	The system sends links automatically to the students for that time every class day
+
+1. User Story:
+As a new student using the attendance face recognition system for the first time, I want to access the attendance.<br/>
+Use Case:
+- If the user is a new student, they login to canvas using their credentials
+- They click on attendance from the navigation menu on the left
+- They authorize the access of the AFR application
+- They then upload a few pictures of themself to add to the data set
+- Once finished, they can go to home and click on take attendance
+- The student gives permission for the application to use the camera and record their attendance
+- Once the attendance is recorded, they can exit out of the application
 
 ### Sequence Diagram for Use Case #2
 ![image](https://user-images.githubusercontent.com/78066498/192402541-19ed10a9-935e-4e43-b73e-033c98cdb08b.png)
+
 2.	User story:
-As continuing student, I can directly login through canvas and use it for attendance.
+As an enrolled student, I can directly login through canvas and use it for attendance.<br/>
 Use case:
--	If the user is a student, they receive and access the link from professor
--	If the student already is registered for the application, they can login directly using their credentials
--	Student looks at the camera
+-	If the user is a student, they login to canvas using their credentials
+- They click on attendance from the navigation menu on the left
+- The student clicks on take attendance
+- The student gives permission for the application to use the camera
+-	The student looks at the camera
 -	The system matches the face
--	The system marks the attendance
+-	The system marks the attendance as present
 
 ### Sequence Diagram for Use Case #3
 ![image](https://user-images.githubusercontent.com/78066498/192679265-ce3a0ba6-12c6-4176-9f41-ee93a66ed3ff.png)
-3.	User story:
-As a professor, I want to have real time access of the attendance and adjust anything if needed and get report of students’ attendance.
-Use case: 
--	Admin user signs in
--	Automatic link is sent to students to record their attendance
--	Once the class is done, they go to their account, click on ‘View Report’ tab
--	Then they select the specific class to view the report
--	Once selected, the report can be seen
--	If they want to make any adjustments, they can click on ‘Record manually’ to make changes
+
+3. User Story: 
+As a student, if I’m unable to get my attendance recorded after multiple attempts, I want an alternative method to verify my presence and let the professor know that I'm in class.<br/>
+Use Case:
+If the user is a student, they login to canvas using their credentials
+- They click on attendance from the navigation menu on the left
+- The student clicks on take attendance
+- The student gives permission for the application to use the camera
+-	Then the student looks at the camera to record the attendance
+-	The system has trouble recognizing the student and displays error message, even after multiple tries
+-	The student then clicks the ‘Need Help’ button to report the issue to the professor
+-	The professor gets notified that the specific student user has an issue marking their attendance
 
 ### Sequence Diagram for Use Case #4
 ![image](https://user-images.githubusercontent.com/17518043/192659155-39a491aa-2339-4616-b64e-af07909343e4.png)
-4. User Story: 
-As a student, if I’m unable to get my attendance recorded after multiple attempts, I want an alternative method to verify my presence and let the professor know my trouble.
-Use Case:
--	If the user is student, they receive and access the link
--	They login directly to the application using credentials
--	Then the student looks at the camera to record the attendance
--	But the system has trouble recognizing the student even after multiple tries
--	Then the student clicks the ‘Need Help’ button to report the issue to the professor
--	Now the professor gets notified that the specific student user has issue marking attendance
+4.	User story:
+As a professor, I want to have attendance taken automatically at a specific time of the class.<br/>
+ Use case:
+-	An admin user signs in through canvas
+-	They click on attendance from the navigation menu on the left
+-	As they are redirected to the home page, they select the desired class
+-	Next, they set a recurring days and time for attendance during beginning of the semester
+-	The system opens the attendance automatically to each student for that set time every class
 
 ### Sequence Diagram for Use Case #5
 ![image](https://user-images.githubusercontent.com/17518043/192659169-8855818d-9fef-483e-b140-d9892e951a60.png)
-5. User Story:
-As a new student using the attendance system for the first time, I want the access the attendance.
-Use Case:
-- If the user is new student, they login to canvas
-- They access attendance system through a link
-- They have option to either upload or capture picture of their's to add to data set
-- Once finished, they can go ahead to record their attendance by scanning their face
-- Once recorded, they can exit out of the application
+5.	User story:
+As a professor, I want to have real time access of the attendance and get a report of the students’ attendance.<br/>
+Use case: 
+-	An admin user signs in through canvas
+-	They click on attendance from the navigation menu on the left
+-	As they are redirected to the home page and once the class is finished, they click on the 'Reports' tab
+-	Then they select a specific class to view the report
+-	Once selected, the report can be seen
+-	If they want to make any adjustments, they can click on ‘Record manually’ to make changes
 
 ### Sequence Diagram for Use Case #6
 ![image](https://user-images.githubusercontent.com/78066498/192679337-da45d591-8f20-4a3c-8242-172cd9b54b09.png)
