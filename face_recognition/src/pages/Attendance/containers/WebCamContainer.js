@@ -12,7 +12,7 @@ export const WebCamContainer = (props)=>{
                 capture()
                 console.log("5 seconds")
                 props.nextStep()
-            }, 1000*5)
+            }, 1000*8)
             return () => clearInterval(interval)
         }
     },[props.numPic])
