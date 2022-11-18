@@ -122,7 +122,8 @@ classDiagram
 ```
 
 ## Entity-Relation Diagram
-![image](https://user-images.githubusercontent.com/78066498/192671782-2cae73c6-6593-458a-8f64-0bf4d66199cd.png)
+![newER_AFR](https://user-images.githubusercontent.com/17518043/202818573-e526e259-cc87-4fad-80e9-1daf42d2f5c5.png)
+
 
 ## Sequence Diagrams
 
