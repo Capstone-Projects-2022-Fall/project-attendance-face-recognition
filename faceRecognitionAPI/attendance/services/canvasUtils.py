@@ -24,6 +24,7 @@ class CanvasUtils:
         self.API_URL = env("CANVAS_URL")
         self.client_id = env("CANVAS_CLIENTID")
         self.client_secret = env("CANVAS_CLIENT_SECRET")
+        self.grader_access_token = env("GRADER_ACCESS_TOKEN")
 
     def getUserAndCanvasToken(self, canvas_code):
         """
@@ -122,7 +123,7 @@ class CanvasUtils:
         """
         pass
 
-    def createAndGradeAttendanceAssignments(self, canvas_code):
+    def createAttendanceAssignments(self, canvas_code):
         """
         create an attendance assignment in each class the instructor is teaching
         """
@@ -170,30 +171,15 @@ class CanvasUtils:
                 # If the user is an instructor for this course...
                 if enrollee.id == user.id:
                      # Create an attendance assignment for that course
-                     # First, check to make sure an assignment named "Attendance" does not already exist.
+                     # First, check to make sure an assignment matching the attendance assignment's name does not already exist.
                      # If it does, then there is no need to make any additional assignments.
                      assignments = course.get_assignments()
                      # Initialize the "found assignment" flag to 0
                      found_attendance_assignment = 0
                      for assignment in assignments:
                          # Set the flag to 1 if an assignment is found so we know not to make it again
-                         if (assignment.name == "Attendance"):
-                              found_attendance_assignment = 1
-                              # Get submissions associated with the assignment
-                              submissions = assignment.get_submissions()
-                              # For each submission...
-                              for submission in submissions:
-                                  # Grab the submission body
-                                  curr_submission_body = submission.body
-                                  # If a user has never submitted the body will be none. Assign a grade of zero - maybe this will motivate them to show up!
-                                  if (curr_submission_body != None):
-                                      # Based on the automatic submission; pull n.
-                                      #" AFR has marked me present n times"
-                                      num_attendances = curr_submission_body.split()[5]
-                                      # Set the student's grade to n
-                                      submission.edit(submission={'posted_grade':num_attendances})
-                                  else:
-                                      submission.edit(submission={'posted_grade':0})
+                         if (assignment.name == "Attendance (attended out of total)"):
+                             found_attendance_assignment = 1
                      # No attendance assignment was found, so one must be made.
                      if (found_attendance_assignment == 0):
                          # Create the assignment
@@ -322,7 +308,7 @@ class CanvasUtils:
 
     def updateAttendanceAssignment(self, canvas_code):
         """
-        update the attendance assignment when called
+        Auto-grade the attendance assignment when the student is marked present
         """
         data = {
             "grant_type": "authorization_code",
@@ -340,10 +326,55 @@ class CanvasUtils:
 
         # canvas API key
         access_token = data["access_token"]
-        # intiailize a new canvas object
+        # intiailize a new canvas object - at this point we're logged in as the student
         canvas = Canvas(self.API_URL, access_token)
         # get current canvas user
         user = canvas.get_current_user()
+        print("updateAttendanceAssignment: The user that made the request is:")
+        print(user)
+        # save the student's ID - we will need this to grab their submission
+        submitting_user_id = user.id
+
+        # clear Canvas before logging in as the grader
+        canvas = None 
+
+        # Now, log in to Canvas as the grader
+        # This access token is created by the teacher when the teacher sets up the course.
+        # This allows grades to automatically be updated by the teacher whenever the student takes attendance.
+        canvas = Canvas(self.API_URL, self.grader_access_token)
+        # Get the user associated with the grader's token (i.e. the teacher)
+        user = canvas.get_current_user()
+        print("updateAttendanceAssignments: The user corresponding to the grader's access token is:")
+        print(user)
+        # Get the courses that the teacher is teaching
+        courses = user.get_courses()
+        print("updateAttendanceAssignments: Found courses!")
+        print(courses)
+        # For each course...
+        for course in courses:
+            # Get the assignments for the course
+            assignments = course.get_assignments()
+            # Find the attendance assignment
+            for assignment in assignments:
+                if (assignment.name == "Attendance (attended out of total)"):
+                    # Pull the submitting user's submission
+                    submission = assignment.get_submission(submitting_user_id)
+                    print("updateAttendanceAssignments: The current submission is:")
+                    print(submission)
+                    # Get the current submission's grade
+                    submission_grade = submission.score
+                    print("updateAttendanceAssignments: The submission's score is:")
+                    print(submission_grade)
+                    # Update the submission's grade. If attendance was never taken, the score will be None; update this to 1 as this is the first submission.
+                    # Otherwise, increment the number of attendances.
+                    if (submission_grade == None):
+                        submission_grade = 1
+                    else:
+                        submission_grade = submission_grade + 1
+                    # Update the submission's grade
+                    submission.edit(submission={'posted_grade':submission_grade})
+                    print("updateAttendanceAssignments: updated the grade!")
+
         # get the user's courses
         courses = user.get_courses()
         # for each course...

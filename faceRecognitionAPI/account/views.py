@@ -60,7 +60,7 @@ class GenerateTokenAPIView(APIView):
             status=status.HTTP_200_OK
         )
 
-class GenerateAndGradeAssignmentAPIView(APIView):
+class GenerateAssignmentAPIView(APIView):
     """
     Generate assignments for automatic attendance
     """
@@ -72,7 +72,7 @@ class GenerateAndGradeAssignmentAPIView(APIView):
         # If the canvas code is in the data passed in through the request...
         if "canvas_code" in data:
             # Call the canvas util that will create assignments for attendance
-            canvas.createAndGradeAttendanceAssignments(data["canvas_code"])
+            canvas.createAttendanceAssignments(data["canvas_code"])
             return Response(
                 {
                     "message": "Assignments created!"

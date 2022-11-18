@@ -42,7 +42,7 @@ export const getCurrentCourseAPI = async ()=>{
         .catch(error => console.log("error", error))
 }
 
-export const createAndGradeAttendanceAssignmentsAPI = async (body)=>{
+export const createAttendanceAssignmentsAPI = async (body)=>{
     return fetch(`${API_URL}/assignments/`,{
         method:'POST',
         headers:{

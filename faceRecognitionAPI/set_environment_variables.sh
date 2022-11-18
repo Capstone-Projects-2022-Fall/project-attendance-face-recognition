@@ -1,6 +1,7 @@
 export CANVAS_URL=http://3.235.17.130
 export CANVAS_CLIENTID=10000000000001
 export CANVAS_CLIENT_SECRET=XDgHMbDFlnxnZW4zJ0TkosW3egnbGOj1VXJgFuDmjzdrZnowmu7IXEKdPiU3146u
+export GRADER_ACCESS_TOKEN=3IMk0RDOXs57oO4BA27q3bUUoRJgVhjmjL0zrbcLIbuvNjAmZsWEJ80czkyoQnfZ
 export REACT_APP_API_URL="http://localhost:5000/api/v1"
 export AFR_URL=http://localhost:3000
 export DB_ENGINE=django.db.backends.mysql

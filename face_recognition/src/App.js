@@ -2,7 +2,7 @@ import React, {Component, Suspense, lazy} from "react";
 import './App.css';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import LoadingBar from 'react-redux-loading-bar'
-import {authenticateUserAPI, createAndGradeAttendanceAssignmentsAPI, updateAttendanceScoreAPI} from "./utils/api/api";
+import {authenticateUserAPI, createAttendanceAssignmentsAPI, updateAttendanceScoreAPI} from "./utils/api/api";
 import {connect} from "react-redux";
 import {handleInitialData} from "./redux/action/shared";
 import {handleGetAttendance} from "./redux/action/attendance";
@@ -60,7 +60,7 @@ class App extends Component {
         }
 	// Create attendance assignments for all courses the instructor is teaching (if this user is an instructor)
 	// This is commented out for now because we're running a student node on this machine
-	//createAndGradeAttendanceAssignmentsAPI(body)
+	//createAttendanceAssignmentsAPI(body)
         updateAttendanceScoreAPI(body)
 
     }
