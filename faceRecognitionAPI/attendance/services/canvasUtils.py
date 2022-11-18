@@ -122,7 +122,7 @@ class CanvasUtils:
         """
         pass
 
-    def createAttendanceAssignments(self, canvas_code):
+    def createAndGradeAttendanceAssignments(self, canvas_code):
         """
         create an attendance assignment in each class the instructor is teaching
         """
@@ -179,13 +179,34 @@ class CanvasUtils:
                          # Set the flag to 1 if an assignment is found so we know not to make it again
                          if (assignment.name == "Attendance"):
                               found_attendance_assignment = 1
+                              # Get submissions associated with the assignment
+                              submissions = assignment.get_submissions()
+                              # For each submission...
+                              for submission in submissions:
+                                  # Grab the submission body
+                                  curr_submission_body = submission.body
+                                  # If a user has never submitted the body will be none. Assign a grade of zero - maybe this will motivate them to show up!
+                                  if (curr_submission_body != None):
+                                      # Based on the automatic submission; pull n.
+                                      #" AFR has marked me present n times"
+                                      num_attendances = curr_submission_body.split()[5]
+                                      # Set the student's grade to n
+                                      submission.edit(submission={'posted_grade':num_attendances})
+                                  else:
+                                      submission.edit(submission={'posted_grade':0})
                      # No attendance assignment was found, so one must be made.
                      if (found_attendance_assignment == 0):
                          # Create the assignment
+                         # The assignment is scored out of the number of classes held
+                         # every semester. It is NOT included in the final grade, as
+                         # the scores would start out quite low at the beginning and
+                         # all teachers use attendance scores differently.
                          course.create_assignment({
-                             'name': 'Attendance',
-                             'description': 'Number of classes attended.',
+                             'name': 'Attendance (attended out of total)',
+                             'description': 'Number of classes attended this semester.',
                              'submission_types': 'online_text_entry',
+                             'points_possible': 42,
+                             'omit_from_final_grade': True,
                              'published': True
                          })
 
