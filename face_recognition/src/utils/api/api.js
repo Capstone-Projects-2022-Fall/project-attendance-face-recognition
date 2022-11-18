@@ -54,6 +54,18 @@ export const createAttendanceAssignmentsAPI = async (body)=>{
          .catch(error=> console.log('error',error))
 }
 
+export const updateAttendanceScoreAPI = async (body)=>{
+    return fetch(`${API_URL}/attendance_update/`,{
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json',
+        },
+        body:JSON.stringify(body)
+    }).then(res => res.json())
+         .then(data=>{return data})
+         .catch(error=> console.log('error',error))
+}
+
 export const getTodayReport = async ()=>{
     const headers = {
         'Accept': 'application/json',

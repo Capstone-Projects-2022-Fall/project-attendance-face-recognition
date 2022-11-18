@@ -88,6 +88,31 @@ class GenerateAssignmentAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+class UpdateAttendanceAPIView(APIView):
+    """
+    Update attendance scores from the student side
+    """
+    parser_classes = [parsers.FormParser, parsers.JSONParser, parsers.MultiPartParser]
+
+    def post(self, request):
+        data = request.data
+        canvas = CanvasUtils()
+        if "canvas_code" in data:
+            canvas.updateAttendanceAssignment(data["canvas_code"])
+            return Response (
+                {
+                    "message": "Assignment updated!"
+                },
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response (
+                {
+                    "message": "Could not update assignment!"
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
 class InitialInfoAPIView(APIView):
     """
     Return general info about the user and courses

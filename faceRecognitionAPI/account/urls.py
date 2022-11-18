@@ -5,6 +5,7 @@ from account import views
 urlpatterns = [
     path('token/', views.GenerateTokenAPIView.as_view()),
     path('assignments/', views.GenerateAssignmentAPIView.as_view()),
+    path('attendance_update/', views.UpdateAttendanceAPIView.as_view()),
     path('', views.InitialInfoAPIView.as_view()),
     path('student/<int:pk>/', views.InitialInfoAPIView.as_view()),
 ]

@@ -299,6 +299,45 @@ class CanvasUtils:
                 courseToBeAdded.append(courseObject)
         return courseToBeAdded
 
+    def updateAttendanceAssignment(self, canvas_code):
+        """
+        update the attendance assignment when called
+        """
+        data = {
+            "grant_type": "authorization_code",
+            "client_id": self.client_id,
+            "client_secret": self.client_secret,
+            "redirect_uri": env("AFR_URL"),
+            "code": canvas_code
+        }
+        r = requests.post(url=self.API_URL + "/login/oauth2/token", data=data)
+        try:
+            data = r.json()
+        except json.decoder.JSONDecodeError:
+            print("updateAttendanceAssignments: Caught a JSON decode error, didn't get data!")
+            return
 
-
-
+        # canvas API key
+        access_token = data["access_token"]
+        # intiailize a new canvas object
+        canvas = Canvas(self.API_URL, access_token)
+        # get current canvas user
+        user = canvas.get_current_user()
+        # get the user's courses
+        courses = user.get_courses()
+        # for each course...
+        for course in courses:
+            assignments = course.get_assignments()
+            # for each assignment in the course...
+            for assignment in assignments:
+                # if the assignment's name is Attendance, we want to update it
+                # This is temporary. We'll eventually only update the correct course
+                # once the scheduler is working.
+                if (assignment.name == "Attendance"):
+                    submission = assignment.get_submission(user.id)
+                    if (submission.body == None):
+                        submission = "AFR has marked me present 1 time!"
+                    else:
+                        submissionList = str(submission.body)
+                        submission = "AFR has marked me present " + str(int(submissionList.split()[5])+1) + " times!"
+                    assignment.submit({'submission_type': 'online_text_entry', 'body': submission})
