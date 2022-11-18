@@ -23,7 +23,6 @@ For each component provide class diagrams showing the classes to be developed (o
 ## Sequence Diagrams
 
 ### Sequence Diagram for Use Case #1
-![image](https://user-images.githubusercontent.com/78066498/202630882-41135da7-6cad-44c1-980e-d2a2ce7c9714.png)
 
 1. User Story:
 As a new student using the attendance face recognition system for the first time, I want to access the attendance.<br/>
@@ -37,8 +36,9 @@ Use Case:
 - The student gives permission for the application to use the camera and record their attendance
 - Once the attendance is recorded, they can exit out of the application
 
+![image](https://user-images.githubusercontent.com/78066498/202630882-41135da7-6cad-44c1-980e-d2a2ce7c9714.png)
+
 ### Sequence Diagram for Use Case #2
-![image](https://user-images.githubusercontent.com/78066498/202631011-cf16caf1-5d68-4f2b-ac15-69d6f90d94bd.png)
 
 2.	User story:
 As an enrolled student, I can directly login through canvas and use it for attendance.<br/>
@@ -52,8 +52,9 @@ Use case:
 -	The system matches the face
 -	The system marks the attendance as present
 
+![image](https://user-images.githubusercontent.com/78066498/202631011-cf16caf1-5d68-4f2b-ac15-69d6f90d94bd.png)
+
 ### Sequence Diagram for Use Case #3
-![image](https://user-images.githubusercontent.com/78066498/202631114-4e994c38-bfea-42d6-8a70-392894291a18.png)
 
 3. User Story: 
 As a student, if I’m unable to get my attendance recorded after multiple attempts, I want an alternative method to verify my presence and let the professor know that I'm in class.<br/>
@@ -68,8 +69,10 @@ If the user is a student, they login to canvas using their credentials
 -	The student then clicks the ‘Need Help’ button to report the issue to the professor
 -	The professor gets notified that the specific student user has an issue marking their attendance
 
+![image](https://user-images.githubusercontent.com/78066498/202631114-4e994c38-bfea-42d6-8a70-392894291a18.png)
+
 ### Sequence Diagram for Use Case #4
-![image](https://user-images.githubusercontent.com/78066498/202631232-12debbdd-9098-42c8-8299-2b8f3fb694dd.png)
+
 4.	User story:
 As a professor, I want to have attendance taken automatically at a specific time of the class.<br/>
  Use case:
@@ -79,8 +82,11 @@ As a professor, I want to have attendance taken automatically at a specific time
 -	Next, they set a recurring days and time for attendance during beginning of the semester
 -	The system opens the attendance automatically to each student for that set time every class
 
+![image](https://user-images.githubusercontent.com/78066498/202631232-12debbdd-9098-42c8-8299-2b8f3fb694dd.png)
+
+
 ### Sequence Diagram for Use Case #5
-![image](https://user-images.githubusercontent.com/17518043/192659169-8855818d-9fef-483e-b140-d9892e951a60.png)
+
 5.	User story:
 As a professor, I want to have real time access of the attendance and get a report of the students’ attendance.<br/>
 
@@ -92,8 +98,10 @@ Use case:
 -	Once selected, the report can be seen
 -	If they want to make any adjustments, they can click on ‘Record manually’ to make changes
 
+![image](https://user-images.githubusercontent.com/78066498/202640301-03a226f6-498d-42a0-bf19-2269637ae04c.png)
+
 ### Sequence Diagram for Use Case #6
-![image](https://user-images.githubusercontent.com/78066498/192679337-da45d591-8f20-4a3c-8242-172cd9b54b09.png)
+
 6. User Story:
 As a professor, I want to be notified/informed if any student has issues taking attendance.<br/>
 
@@ -103,3 +111,5 @@ Use Case:
 -	As they are redirected to the home page, they click on the 'Issues' tab
 -	They can see the issues reported by the students from different classes and sections
 -	They can click to view the issues
+
+![image](https://user-images.githubusercontent.com/78066498/202643225-f105aea1-802d-41de-8670-f320cc5b05ac.png)
