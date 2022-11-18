@@ -15,7 +15,111 @@ A description the different components and their interfaces. For example: client
 For each component provide class diagrams showing the classes to be developed (or used) and their relationship.
 
 ## UML Class Diagram
-![image](https://user-images.githubusercontent.com/78066498/192671179-b13a4c35-04a5-497a-8777-96beaa4c6744.png)
+```mermaid
+classDiagram
+    User "1" <|-- "1" Student
+    User "1" <|-- "1" Instructor
+    User "1" *-- "1" CanvasToken
+    Section "1" --* "1..*" Schedule
+    Course "1" --* "1..*" Section
+    Instructor -- Section
+    Student "*" -- "1" Section
+    Student "1" --* "1..*" StudentImage
+    AttendanceSetting "1" *-- "1" Section
+    Attendance "1..*" *-- "1" Student
+    Section --* Attendance
+    Student "1" --* "0..*" Issue
+    Section --* Issue
+    class CanvasUtil{
+        -String API_URL
+        -String client_id
+        -String client_secret
+        +getUserAndCanvasToken(canvas_code) User
+        +getCanvasToken(canvas_course_id) Course
+        +getCourseInfo(canvas_course_id, user) Course
+        +isTeacher(user) bool
+        +addingStudentToCourse(user)
+        +currentCanvasCourse(user) Course
+    }
+    class User{
+        -String first_name
+        -String last_name
+        -String email
+        -String username
+        +is_active() bool
+    }
+    class Student{
+        -String canvasId
+        +__str__() String
+    }
+    class Instructor{
+        -String canvasId
+        +__str__() String
+    }
+    class CanvasToken{
+        -String accessToken
+        -String refreshToken
+        -int expires
+        -date created
+        +is_valid() bool
+    }
+    class Issue{
+        -Student student
+        -Section section
+        -bool status
+        -Date created
+        -Date modified
+        -String subject
+        -String message
+        +__str__() String
+    }
+    class Attendance{
+        -date recordedDate
+        -time recordedTime
+        -String status
+        -Section section
+        -Student student
+        +studentName() String
+        +displayCourse() String
+        +displaySection() String
+        +__str__() String
+    }
+    class Course{
+        -String canvasId
+        -String name
+        -String course_number
+        -date start_date
+        -date end_date
+        +__str__() String
+    }
+    class Section{
+        -String canvasId
+        -String name
+        -Course course
+        -Instructor instructor
+        -date end_date
+        -List~Student~ students
+        +__str__() String
+    }
+    class Schedule{
+        -int weekday
+        -time start_time
+        -time end_time
+        -Section section
+        +dayOfWeek() String
+        +__str__() String
+    }
+    class AttendanceSetting{
+        -int duration
+        -Section section
+    }
+    class StudentImage{
+        -File imageFile
+        -String encoding
+        -Student student
+        +__str__() String
+    }
+```
 
 ## Entity-Relation Diagram
 ![image](https://user-images.githubusercontent.com/78066498/192671782-2cae73c6-6593-458a-8f64-0bf4d66199cd.png)
