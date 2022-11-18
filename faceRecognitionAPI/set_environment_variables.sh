@@ -1,0 +1,13 @@
+export CANVAS_URL=http://3.235.17.130
+export CANVAS_CLIENTID=10000000000001
+export CANVAS_CLIENT_SECRET=XDgHMbDFlnxnZW4zJ0TkosW3egnbGOj1VXJgFuDmjzdrZnowmu7IXEKdPiU3146u
+export REACT_APP_API_URL="http://localhost:5000/api/v1"
+export AFR_URL=http://localhost:3000
+export DB_ENGINE=django.db.backends.mysql
+export DB_NAME=AFR_DB
+export DB_USER=root
+export DB_PASSWORD=Bank2427249
+export DB_HOST=localhost
+export DB_PORT=3306
+export REDIS_URL=127.0.0.1
+export REDIS_PORT=6379
