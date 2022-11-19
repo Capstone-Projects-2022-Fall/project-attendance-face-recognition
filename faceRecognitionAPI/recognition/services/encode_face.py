@@ -25,7 +25,9 @@ def encode_student_face(user, upload_image):
     studentImage = StudentImage(imageFile=upload_image, student=student)
     studentImage.save()
     # convert image from BGR to dlib ordering RGB
-    image = cv2.imread("/Users/jerrymaurice/Documents/CIS4398/finalProject/project-attendance-face-recognition/faceRecognitionAPI"+studentImage.imageFile.url)
+    # TODO make this an environment variable maybe? This really shouldn't have to
+    # be linked to anyone's user page since it won't work for anyone else
+    image = cv2.imread("/Users/shiv/canvasIntegration/project-attendance-face-recognition/faceRecognitionAPI"+studentImage.imageFile.url)
     rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     # detect the (x, y)-coordinates of the bounding boxes
     # corresponding to each face in the input image

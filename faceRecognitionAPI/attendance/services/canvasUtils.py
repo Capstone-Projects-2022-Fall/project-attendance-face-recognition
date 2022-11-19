@@ -306,90 +306,60 @@ class CanvasUtils:
                 courseToBeAdded.append(courseObject)
         return courseToBeAdded
 
-    def updateAttendanceAssignment(self, canvas_code):
+    def updateAttendanceScore(self, submittedCourse, submittedStudent):
         """
         Auto-grade the attendance assignment when the student is marked present
         """
-        data = {
-            "grant_type": "authorization_code",
-            "client_id": self.client_id,
-            "client_secret": self.client_secret,
-            "redirect_uri": env("AFR_URL"),
-            "code": canvas_code
-        }
-        r = requests.post(url=self.API_URL + "/login/oauth2/token", data=data)
-        try:
-            data = r.json()
-        except json.decoder.JSONDecodeError:
-            print("updateAttendanceAssignments: Caught a JSON decode error, didn't get data!")
-            return
+        # First, get the student's Canvas ID. We will need this to update their assignment
+        student_canvas_ID = submittedStudent.canvasId
+        print("updateAttendanceScore: The student's Canvas ID is:")
+        print(student_canvas_ID)
+        print("updateAttendanceScore: The submitted course's ID is:")
+        print(submittedCourse.canvasId)
 
-        # canvas API key
-        access_token = data["access_token"]
-        # intiailize a new canvas object - at this point we're logged in as the student
-        canvas = Canvas(self.API_URL, access_token)
-        # get current canvas user
-        user = canvas.get_current_user()
-        print("updateAttendanceAssignment: The user that made the request is:")
-        print(user)
-        # save the student's ID - we will need this to grab their submission
-        submitting_user_id = user.id
-
-        # clear Canvas before logging in as the grader
-        canvas = None 
-
-        # Now, log in to Canvas as the grader
-        # This access token is created by the teacher when the teacher sets up the course.
-        # This allows grades to automatically be updated by the teacher whenever the student takes attendance.
+        # Log in to Canvas as the grader.
+        # The access token is created by the teacher when they set up the course. This allows
+        # AFR to automatically update attendance grades when the student is marked present.
         canvas = Canvas(self.API_URL, self.grader_access_token)
-        # Get the user associated with the grader's token (i.e. the teacher)
+        # Get the user associated with the grader's token (i.e., the teacher)
         user = canvas.get_current_user()
-        print("updateAttendanceAssignments: The user corresponding to the grader's access token is:")
+        print("updateAttendanceScore: The user corresponding to the hidden access token is:")
         print(user)
         # Get the courses that the teacher is teaching
         courses = user.get_courses()
-        print("updateAttendanceAssignments: Found courses!")
+        print("updateAttendanceScore: Found courses for the user! They are:")
         print(courses)
         # For each course...
         for course in courses:
-            # Get the assignments for the course
-            assignments = course.get_assignments()
-            # Find the attendance assignment
-            for assignment in assignments:
-                if (assignment.name == "Attendance (attended out of total)"):
-                    # Pull the submitting user's submission
-                    submission = assignment.get_submission(submitting_user_id)
-                    print("updateAttendanceAssignments: The current submission is:")
-                    print(submission)
-                    # Get the current submission's grade
-                    submission_grade = submission.score
-                    print("updateAttendanceAssignments: The submission's score is:")
-                    print(submission_grade)
-                    # Update the submission's grade. If attendance was never taken, the score will be None; update this to 1 as this is the first submission.
-                    # Otherwise, increment the number of attendances.
-                    if (submission_grade == None):
-                        submission_grade = 1
-                    else:
-                        submission_grade = submission_grade + 1
-                    # Update the submission's grade
-                    submission.edit(submission={'posted_grade':submission_grade})
-                    print("updateAttendanceAssignments: updated the grade!")
-
-        # get the user's courses
-        courses = user.get_courses()
-        # for each course...
-        for course in courses:
-            assignments = course.get_assignments()
-            # for each assignment in the course...
-            for assignment in assignments:
-                # if the assignment's name is Attendance, we want to update it
-                # This is temporary. We'll eventually only update the correct course
-                # once the scheduler is working.
-                if (assignment.name == "Attendance"):
-                    submission = assignment.get_submission(user.id)
-                    if (submission.body == None):
-                        submission = "AFR has marked me present 1 time!"
-                    else:
-                        submissionList = str(submission.body)
-                        submission = "AFR has marked me present " + str(int(submissionList.split()[5])+1) + " times!"
-                    assignment.submit({'submission_type': 'online_text_entry', 'body': submission})
+            print("updateAttendanceScore: The current course ID is:")
+            print(course.id)
+            print("updateAttendanceScore: and the course ID we're comparing against is:")
+            print(int(submittedCourse.canvasId))
+            # If the course's canvas ID matches the canvas ID of the course the user submitted attendance for...
+            # Note that the course's canvasId comes back as a string, so we need to convert to int before using it
+            if (course.id == int(submittedCourse.canvasId)):
+                 print("updateAttendanceScore: Found a matching course! Its ID is:")
+                 print(course.id)
+                 # Get the assignment for the course
+                 assignments = course.get_assignments()
+                 # Find the attendance assignment
+                 for assignment in assignments:
+                     if (assignment.name == "Attendance (attended out of total)"):
+                         # Pull the student's submission
+                         submission = assignment.get_submission(student_canvas_ID)
+                         print("updateAttendanceScore: The current submission is:")
+                         print(submission)
+                         # Get the current submission's grade
+                         submission_grade = submission.score
+                         print("updateattendanceScore: The submission's score is:")
+                         print(submission_grade)
+                         # Update the submission's grade. If attendance was never taken, the score will be None; update
+                         # to 1 to reflect that this is the first time attendance has been taken.
+                         # Otherwise, increment the number of attendances.
+                         if (submission.grade == None):
+                              submission_grade = 1
+                         else:
+                              submission_grade = submission_grade + 1
+                         # Update the submission's grade
+                         submission.edit(submission={'posted_grade':submission_grade})
+                         print("updateAttendanceScore: updated the grade!")
