@@ -29,12 +29,15 @@ classDiagram
         -String API_URL
         -String client_id
         -String client_secret
+        -String grader_access_token
         +getUserAndCanvasToken(canvas_code) User
         +getCanvasToken(canvas_course_id) Course
         +getCourseInfo(canvas_course_id, user) Course
         +isTeacher(user) bool
         +addingStudentToCourse(user)
         +currentCanvasCourse(user) Course
+        +createAttendanceAssignments(canvas_code)
+        +updateAttendanceScore(submittedCourse, submittedStudent)
     }
     class User{
         -String first_name
