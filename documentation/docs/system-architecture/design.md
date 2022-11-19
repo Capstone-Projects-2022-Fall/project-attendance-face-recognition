@@ -234,4 +234,4 @@ Use Case:
 - The professor views the gradebook on Canvas after class
 - They are then able to see attendance grades for all students without needing to enter grades themself
 
-![image]()
+![image](https://user-images.githubusercontent.com/34950870/202839966-7e5ba459-1f32-46f3-811e-ad8f1c2b1f91.png)
