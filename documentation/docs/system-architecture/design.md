@@ -6,15 +6,10 @@ sidebar_position: 1
 
 The Design Document - Part I Architecture describes the software architecture and how the requirements are mapped into the design. This document will be a combination of diagrams and text that describes what the diagrams are showing.
 
-**Requirements**
 
-The Design Document - Part I Architecture will contain:
-
-A description the different components and their interfaces. For example: client, server, database.
-
-For each component provide class diagrams showing the classes to be developed (or used) and their relationship.
 
 ## UML Class Diagram
+Many of the classes illustrated in the UML class diagram represent models that define the source of information about AFR data. It includes a representation of the user, course, section, schedule, image, and tickets that will be used to generate table in the AFR database. This will not be possible without this ORM feature provided by the Django framework. Even if these classes are placed in different apps in the project, they are all connected in a way to properly run the AFR Application. The other classes included in the application, help in creating business logic in other to properly handle the information from Canvas and match it with the appropriate user. 
 ```mermaid
 classDiagram
     User "1" <|-- "1" Student
@@ -122,6 +117,10 @@ classDiagram
 ```
 
 ## Entity-Relation Diagram
+The AFR database is an essential piece in the functioning of the application. It consists of thirteen tables that store information about users and the courses found in canvas for a particular user. A user can be either a student or a professor. Each user will have a stored token that will be created as the user first log in the application. That token will be retrieved every time the user request access to the application.
+As a student, AFR store a reference to the user id found in canvas to retrieve and update any changes that was done on the canvas platform. Since AFR is a facial recognition application, a student has the possibility to store more than one encoded image which will facilitate the authentication of the user once he/she is trying to mark themselves PRESENT in a particular class. A special table called “attendance_Issue” will store any submitted ticket created by a student once there is a concern in taking attendance. 
+Students will not be able to explore AFR complete feature if their professor does not properly configure the section prior to the beginning of the semester. For the app to work accurately for each student, AFR store all sections configurations that will be retrieved once a student is trying to take attendance.
+
 ![newER_AFR](https://user-images.githubusercontent.com/17518043/202818573-e526e259-cc87-4fad-80e9-1daf42d2f5c5.png)
 
 
