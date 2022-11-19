@@ -62,7 +62,7 @@ class App extends Component {
         // Create attendance assignments for any courses the user is teaching,
         // if the user is teaching any. This won't do anything if the teacher
         // is not teaching any classes.
-//        createAttendanceAssignmentsAPI(body)
+        createAttendanceAssignmentsAPI(body)
 
     }
     render() {
