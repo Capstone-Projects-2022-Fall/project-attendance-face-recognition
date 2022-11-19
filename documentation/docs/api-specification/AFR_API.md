@@ -92,6 +92,25 @@ The API will return four error types when requests fail:
   {
     "detail": "Authentication credentials were not provided."
   }
+  
+### GET /assignments/
+* General:
+  * Automatically creates Attendance assignments for all classes the professor is teaching
+* Sample: ``` curl --location --request GET 'http://localhost:5000/api/v1/assignments/' \
+--header 'Authorization: Token...'```
+* Response
+  * code 200
+  ```bash 
+  {
+    "message": "Assignments created!"
+  }
+  ```
+  * code 400 
+  ```bash 
+  {
+    "detail": "Could not create assignments."
+  }
+  ```
 
 ### GET /report/today/
 * General:
