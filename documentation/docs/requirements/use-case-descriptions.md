@@ -73,3 +73,14 @@ Use Case:
 -	As they are redirected to the home page, they click on the 'Issues' tab
 -	They can see the issues reported by the students from different classes and sections
 -	They can click to view the issues
+
+4. User Story:
+As a professor, I want a faster way to get attendance grades recorded into the gradebook.<br/>
+
+Use Case:
+ - An admin user signs in through Canvas
+ - They click on "Attendance Face Recognition" from the navigation menu on the left at the beginning of the semester
+ - An attendance assignment is automatically created in the Canvas gradebook for every student user in the professor's class/section
+ - Once a student has taken their attendance through AFR, they recieve a grade automatically in Canvas
+ - The professor views the gradebook on Canvas after class
+ - They are then able to see attendance grades for all students without needing to enter grades themself
