@@ -10,18 +10,23 @@ import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import Box from "@mui/material/Box";
 import {NavLink} from "react-router-dom";
+
+// This is dumb but it fixes the grammar on the screen the user sees - "surprise" => "surprised"
+const calculatedEmotions = ["happy", "sad", "angry", "surprise", "fear"];
+const displayedEmotions = ["happy", "sad", "angry", "surprised", "fear"];
+// Generate a list of 5 random numbers between 0 and 3 - these represent happy through surprised.
+// Fear is not currently used as it is difficult to show
+const emotionSelections = [Math.floor(Math.random()*4), Math.floor(Math.random()*4), Math.floor(Math.random()*4), Math.floor(Math.random()*4), Math.floor(Math.random()*4)];
     
 class TakingAttendance extends Component{
     state = {
         imageProfile:"",
         image2Profile:"",
-        imageEmotion:"",
         numPic : 0,
         authorization: 1,
         message:"",
         successMessage:"",
         errorMessage:"",
-        emotion:"",
         first_name:"",
         last_name:"",
         email: "",
@@ -45,7 +50,6 @@ class TakingAttendance extends Component{
                     this.setState({
                         authorization:r.authorization,
                         message: r.message,
-                        emotion: r.emotion[0]
                     })
             })
     }
@@ -74,7 +78,7 @@ class TakingAttendance extends Component{
         let formData = new FormData()
         formData.append("regularImage", blob1Image,"regularStudent.jpeg")
         formData.append("emotionImage", blob2Image,"emotionStudent.jpeg")
-        formData.append("emotion",this.state.emotion)
+        formData.append("emotion", calculatedEmotions[emotionSelections[this.state.numAttempt-1]])
 
         attendanceSubmissionAPI(formData)
             .then((r)=>{
@@ -174,7 +178,7 @@ class TakingAttendance extends Component{
                                 this.state.numPic ===1?
                                     (
                                         <Alert severity={"warning"}>
-                                            Show that you are {this.state.emotion} while looking at the camera
+                                            Show that you are {displayedEmotions[emotionSelections[this.state.numAttempt-1]]} while looking at the camera
                                         </Alert>
                                     ):
                                     (

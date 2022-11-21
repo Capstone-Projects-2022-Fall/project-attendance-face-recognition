@@ -199,11 +199,11 @@ class AttendanceStudentAPIView(APIView):
 
     def get(self, request):
         data = {}
-        emotions = ["happy", "sad", "angry", "surprised","fear"]
-        rand_emotions = emotions[random.randint(0, 3)]
         user = self.request.user
         student = get_object_or_404(Student, user=user)
         images_loaded = StudentImage.objects.filter(student=student).count()
+        print("AttendanceStudentAPIView: Found this many images for the student:")
+        print(images_loaded)
         attendanceExist = Attendance.objects.filter(student=student, section=currentCourse(user)[1],
                                                     recordedDate=date.today()).exists()
         if images_loaded ==0:
@@ -224,7 +224,6 @@ class AttendanceStudentAPIView(APIView):
             data["message"] = "You are ready to take attendance but you are recommended to upload more picture in the " \
                               "future" if 1<=images_loaded<5 else "Ready to take attendance"
             data["authorization"] = 1
-            data["emotion"] = rand_emotions,
             return Response(
                 data,
                 status=status.HTTP_200_OK
@@ -233,7 +232,11 @@ class AttendanceStudentAPIView(APIView):
     def post(self, request):
         print(request.FILES)
         data = request.data
+        print("AttendanceStudentAPIView: Requested emotion is:")
+        print(data["emotion"])
         verifyEmotion = detectUserEmotion(request.FILES["emotionImage"])
+        print("AttendanceStudentAPIView: Found emotion is:")
+        print(verifyEmotion)
         id = recognize_image(request.FILES["regularImage"], self.request.user)
         if verifyEmotion == data["emotion"] and id["id"] is not None:
             student = get_object_or_404(Student, id=id["id"])
