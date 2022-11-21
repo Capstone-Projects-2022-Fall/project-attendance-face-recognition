@@ -10,8 +10,7 @@ import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import Box from "@mui/material/Box";
 import {NavLink} from "react-router-dom";
-
-
+    
 class TakingAttendance extends Component{
     state = {
         imageProfile:"",
@@ -27,7 +26,9 @@ class TakingAttendance extends Component{
         last_name:"",
         email: "",
         completed:null,
-        numAttempt:1
+        numAttempt:1,
+	numSubmissions:0,
+	maxAttempts:5
     }
     componentDidMount() {
         attendanceInstruction()
@@ -90,6 +91,11 @@ class TakingAttendance extends Component{
                         errorMessage: r.message
                     })
             })
+
+	// Increment the number of submissions every time the student attempts to take attendance
+	this.setState({
+	    numSubmissions: this.state.numSubmissions+1
+	})
     }
 
     handleRestart = ()=>{
@@ -105,7 +111,8 @@ class TakingAttendance extends Component{
             last_name:"",
             email: "",
             completed:null,
-            numAttempt: this.state.numAttempt+1
+            numAttempt: this.state.numAttempt+1,
+	    maxAttempts: 5
         })
     }
 
@@ -177,7 +184,7 @@ class TakingAttendance extends Component{
                         </div>
                         <div className={"card"}>
                             {
-                                this.state.completed === false?
+                                this.state.completed === false && this.state.numAttempt < this.state.maxAttempts ?
                                     (
                                         <Fragment>
                                             <Alert
@@ -189,7 +196,7 @@ class TakingAttendance extends Component{
                                                 }
                                             >
                                                 <AlertTitle>Not Found</AlertTitle>
-                                                {this.state.errorMessage}
+                                                {this.state.errorMessage} You have used {this.state.numAttempt} attempt(s) out of {this.state.maxAttempts}.
 
                                             </Alert>
                                         </Fragment>
@@ -205,7 +212,7 @@ class TakingAttendance extends Component{
                                                 severity={"success"}
                                                 action={
                                                     <Button color={"inherit"} component={NavLink} to="/">
-                                                        Home
+                                                        Back to AFR Home
                                                     </Button>
                                                 }
                                             >
@@ -217,6 +224,25 @@ class TakingAttendance extends Component{
                                     ):<Fragment></Fragment>
                             }
                         </div>
+			<div className={"card"}>
+			    {
+				this.state.completed === false && this.state.numAttempt === this.state.maxAttempts ?
+				    (
+					<Fragment>
+					    <Alert
+						severity={"error"}
+						action={
+						    <Button color={"inherit"}>
+						        Report Issue
+						    </Button>
+						}
+					    >
+					    <AlertTitle>Maximum Number of Attempts Reached!</AlertTitle>
+					    </Alert>
+					</Fragment>
+				    ):<Fragment></Fragment>
+			    }
+			</div>		
                         <Box
                             sx={{
                                 display: 'flex',
