@@ -60,6 +60,33 @@ class GenerateTokenAPIView(APIView):
             status=status.HTTP_200_OK
         )
 
+class GenerateAssignmentAPIView(APIView):
+    """
+    Generate assignments for automatic attendance
+    """
+    parser_classes = [parsers.FormParser, parsers.JSONParser, parsers.MultiPartParser]
+
+    def post(self, request):
+        data = request.data
+        canvas = CanvasUtils()
+        # If the canvas code is in the data passed in through the request...
+        if "canvas_code" in data:
+            # Call the canvas util that will create assignments for attendance
+            canvas.createAttendanceAssignments(data["canvas_code"])
+            return Response(
+                {
+                    "message": "Assignments created!"
+                },
+                status=status.HTTP_200_OK
+            )
+        # This request will not work without the canvas code. Signify as much.
+        else:
+            return Reponse(
+                {
+                    "message": "Could not create assignments!"
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 class InitialInfoAPIView(APIView):
     """

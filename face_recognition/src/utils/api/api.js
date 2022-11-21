@@ -1,6 +1,9 @@
 const API_URL = process.env.REACT_APP_API_URL;
-
+// This is helpful for clearing the token when switching from student and user views
+// Leave commented if you don't want to switch
+//localStorage.removeItem("token");
 const token = localStorage.getItem("token");
+console.log("received token is")
 console.log(token)
 export const getInitialInfoAPI = async ()=>{
     const headers = {
@@ -37,6 +40,18 @@ export const getCurrentCourseAPI = async ()=>{
         .then(res => res.json())
         .then(data => data)
         .catch(error => console.log("error", error))
+}
+
+export const createAttendanceAssignmentsAPI = async (body)=>{
+    return fetch(`${API_URL}/assignments/`,{
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json',
+        },
+        body:JSON.stringify(body)
+    }).then(res => res.json())
+         .then(data=>{return data})
+         .catch(error=> console.log('error',error))
 }
 
 export const getTodayReport = async ()=>{

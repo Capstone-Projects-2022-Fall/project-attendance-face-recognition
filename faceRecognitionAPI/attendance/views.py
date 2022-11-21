@@ -239,6 +239,10 @@ class AttendanceStudentAPIView(APIView):
             student = get_object_or_404(Student, id=id["id"])
             attendance = Attendance(status="Present", section=currentCourse(student.user)[1], student=student)
             attendance.save()
+            # Now that attendance has been taken, we can update the corresponding assignment on Canvas.
+            # We need the course the student took attendance for, as well as the student.
+            canvas = CanvasUtils()
+            canvas.updateAttendanceScore(currentCourse(student.user)[1], student)
             print(attendance)
             return Response({
                 "message": "You have been marked present",

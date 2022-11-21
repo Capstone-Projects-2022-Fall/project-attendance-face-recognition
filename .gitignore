@@ -13,6 +13,7 @@ venv
 **.pyc
 db.sqlite3
 faceRecognitionAPI/**/migrations/**
+faceRecognitionAPI/set_afr_environment_variables.sh
 **/__pycache__/**
 */media
 
