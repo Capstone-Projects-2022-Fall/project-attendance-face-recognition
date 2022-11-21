@@ -15,7 +15,7 @@ const AdminPage = lazy(()=>import("./pages/Dashboard/index"));
 const ConfigurationPage = lazy(()=>import("./pages/Configuration/index"));
 const Page404 = lazy(()=>import("./pages/Error/404/index"))
 const RecordPage = lazy(()=>import("./pages/Record/index"))
-
+const IssueFormPage = lazy(()=>import("./pages/Issue/index"))
 
 class App extends Component {
     state = {
@@ -89,6 +89,7 @@ class App extends Component {
                         <Route path="/record" exact element={<RecordPage/>}/>
                         <Route path="/registration" exact element={<RegistrationPage/>}/>
                         <Route path="/attendance" exact element={<AttendancePage/>}/>
+			<Route path="/issueForm" exact element={<IssueFormPage/>}/>
                         <Route path='*' exact element={<Page404/>}/>
                     </Routes>
                 </Suspense>
