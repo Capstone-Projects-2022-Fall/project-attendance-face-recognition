@@ -236,7 +236,7 @@ class TakingAttendance extends Component{
 					    <Alert
 						severity={"error"}
 						action={
-						    <Button color={"inherit"}>
+						    <Button color={"inherit"} component={NavLink} to="/issueForm">
 						        Report Issue
 						    </Button>
 						}
