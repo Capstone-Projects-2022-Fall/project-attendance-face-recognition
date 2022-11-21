@@ -252,7 +252,7 @@ class TakingAttendance extends Component{
                                 bgcolor: 'background.paper',
                             }}
                         >
-                            {this.state.numPic==2?
+                            {this.state.completed != true && this.state.numPic==2 && this.state.numSubmissions < this.state.maxAttempts ?
                                 <Button variant={"contained"} color={"info"} onClick={this.handleSubmit}>
                                     Submit attendance
                                 </Button>:
