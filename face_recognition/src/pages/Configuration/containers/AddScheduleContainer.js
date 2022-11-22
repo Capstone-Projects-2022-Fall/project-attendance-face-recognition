@@ -7,6 +7,18 @@ import Button from "@mui/material/Button";
 
 class AddScheduleContainer extends Component {
 
+    state = {
+	dateSelected:""
+    }
+
+    handleChange = (event) => {
+        this.setState({
+	    dateSelected: event.target.value
+	})
+	console.log("Dropdown menu selection changed! It is now:")
+	console.log(event.target.value)
+    }
+
     render() {
 	return(
 	    <Fragment>
@@ -27,6 +39,7 @@ class AddScheduleContainer extends Component {
 			    <InputLabel>Day of the Week</InputLabel>
 			    <Select
 				label={"weekday"}
+				onChange={this.handleChange}
 			    >
 				<MenuItem value={"0"}>Monday</MenuItem>
 				<MenuItem value={"1"}>Tuesday</MenuItem>
