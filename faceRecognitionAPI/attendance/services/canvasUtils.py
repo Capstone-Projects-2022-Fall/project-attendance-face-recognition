@@ -256,55 +256,21 @@ class CanvasUtils:
                                 s.students.add(student)
                                 print("adding to course")
 
-    def currentCanvasCourse(self, user):
+    def getUserCourses(self, user):
         """
-        View list of current canvas courses not saved on AFr
-        :param user:
-        :return: list of courses
+        Get all courses the teacher is teaching
         """
-        # canvas API Key
+        print("Getting the teacher's Canvas courses")
+        # canvas API key
         access_token = self.getCanvasToken(user)
         print(access_token)
         # initialize a new canvas object
         canvas = Canvas(self.API_URL, access_token)
-        # get student
-        # teacher = get_object_or_404(Instructor, user=user)
+        # get current canvas user
         canvas_user = canvas.get_current_user()
+        # get current courses the user is partaking in
         courses = canvas_user.get_courses(enrollment_state=["active"])
-        courseToBeAdded = []
-        for course in courses:
-            print(course)
-            today = datetime.today()
-            if datetime.strptime(course.start_at, "%Y-%m-%dT%H:%M:%SZ") <= today <= datetime.strptime(course.end_at, "%Y-%m-%dT%H:%M:%SZ"):
-                if not Course.objects.filter(canvasId=course.id).exists():
-                    courseObject = {}
-                    courseObject["canvasId"] = course.id
-                    courseObject["name"] = course.name
-                    courseObject["course_number"] = course.course_code
-                    courseObject["start_date"] = datetime.strptime(course.start_at, "%Y-%m-%dT%H:%M:%SZ").date()
-                    courseObject["end_date"] = datetime.strptime(course.end_at, "%Y-%m-%dT%H:%M:%SZ").date()
-                    courseObject["section"] = []
-                    for section in course.get_sections():
-                        courseObject["section"].append({
-                            "name": section.name,
-                            "canvasId": section.id,
-                        })
-                else:
-                    courseObject = {}
-                    courseObject["canvasId"] = course.id
-                    courseObject["name"] = course.name
-                    courseObject["course_number"] = course.course_code
-                    courseObject["start_date"] = datetime.strptime(course.start_at, "%Y-%m-%dT%H:%M:%SZ").date()
-                    courseObject["end_date"] = datetime.strptime(course.end_at, "%Y-%m-%dT%H:%M:%SZ").date()
-                    courseObject["section"] = []
-                    for section in course.get_sections():
-                        if not Section.objects.filter(canvasId=section.id):
-                            courseObject["section"].append({
-                                "name": section.name,
-                                "canvasId": section.id,
-                            })
-                courseToBeAdded.append(courseObject)
-        return courseToBeAdded
+        return courses
 
     def updateAttendanceScore(self, submittedCourse, submittedStudent):
         """
