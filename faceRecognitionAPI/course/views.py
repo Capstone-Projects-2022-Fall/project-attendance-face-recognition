@@ -10,6 +10,7 @@ from course.permissions import InstructionPermission
 from account.models import Instructor
 
 from course.models import Course, Section, Schedule
+from account.models import Student
 
 from course.serializers import CourseSerializer, SectionSerializer
 
@@ -153,4 +154,84 @@ class SetupSectionDetailAPIView(APIView):
         section.delete()
         return Response(
             status=status.HTTP_204_NO_CONTENT
+        )
+
+
+class ImportCourseAPIView(APIView):
+    """
+    Auto-import the course the instructor is teaching
+    """
+    def post(self, request):
+        print("ImportCourseAPIView: Ready to import courses on the backend!")
+        # Get the user that made the request
+        user = self.request.user
+        # Verify that the user is an instructor
+        instructor = get_object_or_404(Instructor, user=user)
+        print("ImportCourseAPIView: Found an instructor! They are:")
+        print(instructor)
+        # Get the course the instructor is currently teaching on Canvas
+        canvas = CanvasUtils()
+        current_course = canvas.currentCanvasCourse(user)
+        print("ImportCourseAPIView: Found the course for the instructor! It is:")
+        print(current_course)
+        # Save the course in the backend if it does not exist already
+        if not (Course.objects.filter(canvasId=current_course[0]["canvasId"])).exists():
+            print("ImportCourseAPIView: The course has not been added to the backend yet!")
+            course = Course(canvasId=current_course[0]["canvasId"], name=current_course[0]["name"], course_number=current_course[0]["course_number"],
+                            start_date=current_course[0]["start_date"], end_date=current_course[0]["end_date"])
+            course.save()
+            # Save the sections in the backend
+            for course_section in current_course[0]["section"]:
+                print("ImportCourseAPIView: Creating a section!")
+                # Create the corresponding object
+                # We have already determined the instructor and the course, so we can bring those in.
+                # Unfortunately, I don't see a way to pull the student's section from Canvas. Until I can figure that
+                # out, just assume that all students are in all sections. This will work for the demo
+                section = Section.objects.get_or_create(name=course_section["name"], canvasId=course_section["canvasId"], course=course, instructor=instructor)[0]
+                students = Student.objects.all()
+                section.students.add(*students)
+                # Save the section
+                # We don't need to see if it exists, beacuse the sections can't exist if the course doesn't exist.
+                section.save()
+                print("ImportCourseAPIView: Added a section!")
+        return Response({
+            "message": "Course has been imported!",
+            "completed": True
+        },
+            status=status.HTTP_200_OK
+        )
+
+
+class SubmitScheduleAPIView(APIView):
+    """
+    Set up the schedule for the section
+    """
+    def post(self, request):
+        print("SubmitScheduleAPIView: Submitting a schedule!")
+        data = request.data
+        # Get the request fields
+        section_name = data["section"]
+        weekday = data["weekday"]
+        start_time = data["start_time"]
+        end_time = data["end_time"]
+        # Get the user and verify that they are an instructor
+        user = self.request.user
+        instructor = get_object_or_404(Instructor, user=user)
+        # Get the sections associated with the instructor
+        sections = Section.objects.filter(instructor=instructor)
+        # Determine which section the schedule is for
+        for section in sections:
+            if (section.name==section_name):
+                # Create a Schedule object for the section and save it
+                # Classes can only have one schedule for now, so don't save it if one
+                # already exists
+                if not (Schedule.objects.filter(section=section).exists()):
+                    schedule = Schedule(weekday=weekday, start_time=start_time, end_time=end_time, section=section)
+                    schedule.save()
+
+        return Response({
+            "message": "Schedule has been created!",
+            "completed": True
+        },
+            status=status.HTTP_200_OK
         )

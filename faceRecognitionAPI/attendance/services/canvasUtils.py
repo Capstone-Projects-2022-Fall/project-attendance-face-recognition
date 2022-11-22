@@ -102,13 +102,13 @@ class CanvasUtils:
                 "grant_type": "refresh_token",
                 "client_id": self.client_id,
                 "client_secret": self.client_secret,
-                "redirect_token": canvasToken.refreshToken
+                "refresh_token": canvasToken.refreshToken
             }
             try:
                 r = requests.post(url=self.API_URL + "/login/oauth2/token", data=data)
                 data = r.json()
+		# The response will have a new access token, but not a new refresh token
                 canvasToken.accessToken = data["access_token"]
-                canvasToken.refreshToken = data["refresh_token"]
                 canvasToken.expires = data["expires_in"]
                 canvasToken.save()
             except:
@@ -278,7 +278,7 @@ class CanvasUtils:
             if datetime.strptime(course.start_at, "%Y-%m-%dT%H:%M:%SZ") <= today <= datetime.strptime(course.end_at, "%Y-%m-%dT%H:%M:%SZ"):
                 if not Course.objects.filter(canvasId=course.id).exists():
                     courseObject = {}
-                    courseObject["id"] = course.id
+                    courseObject["canvasId"] = course.id
                     courseObject["name"] = course.name
                     courseObject["course_number"] = course.course_code
                     courseObject["start_date"] = datetime.strptime(course.start_at, "%Y-%m-%dT%H:%M:%SZ").date()
@@ -291,7 +291,7 @@ class CanvasUtils:
                         })
                 else:
                     courseObject = {}
-                    courseObject["id"] = course.id
+                    courseObject["canvasId"] = course.id
                     courseObject["name"] = course.name
                     courseObject["course_number"] = course.course_code
                     courseObject["start_date"] = datetime.strptime(course.start_at, "%Y-%m-%dT%H:%M:%SZ").date()

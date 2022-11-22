@@ -3,7 +3,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Navbar from "../../component/Navbar";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import AddClassContainer from "./containers/AddClassContainer";
+import AddScheduleContainer from "./containers/AddScheduleContainer";
 
 class Configuration extends Component{
     render(){
@@ -12,7 +12,7 @@ class Configuration extends Component{
                 <CssBaseline />
                 <Navbar/>
                 <Container fixed>
-                    <AddClassContainer/>
+                    <AddScheduleContainer/>
                 </Container>
             </Fragment>
         )
