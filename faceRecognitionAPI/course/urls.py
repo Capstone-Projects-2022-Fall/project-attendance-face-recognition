@@ -5,6 +5,7 @@ from course import views
 urlpatterns = [
     path('courses/', views.SetupCourseAPIView.as_view()),
     path('course_importing/', views.ImportCourseAPIView.as_view()),
+    path('schedule_submission/', views.SubmitScheduleAPIView.as_view()),
     path('courses/<int:pk>/', views.SetupCourseDetailAPIView.as_view()),
     path('sections/<int:course>/', views.SetupSectionAPIView.as_view()),
     path('sections/<int:pk>/', views.SetupSectionDetailAPIView.as_view()),

@@ -4,12 +4,28 @@ import {connect} from "react-redux";
 import {FormControl, InputLabel, OutlinedInput, Select, TextField} from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
+import {scheduleAdditionAPI} from "../../../utils/api/api";
 import {NavLink} from 'react-router-dom';
 
 class AddScheduleContainer extends Component {
 
     state = {
 	dateSelected:""
+    }
+
+    addSectionSchedule = async (e) => {
+	e.preventDefault()
+	console.log("Going to add a schedule!")
+	let formData = new FormData()
+	formData.append("section", document.getElementById("section_to_update").value)
+	formData.append("weekday", this.state.dateSelected)
+	formData.append("start_time", document.getElementById("start_time").value)
+	formData.append("end_time", document.getElementById("end_time").value)
+	console.log(formData)
+	scheduleAdditionAPI(formData)
+	    .then((r)=>{
+		console.log("schedule has been added!")
+	    })
     }
 
     handleChange = (event) => {
@@ -68,7 +84,7 @@ class AddScheduleContainer extends Component {
 			    />
 			</FormControl>
 			<FormControl fullWidth sx={{ m: 1 }}>
-			    <Button color={"inherit"}>
+			    <Button color={"inherit"} onClick={this.addSectionSchedule}>
 				Add Schedule
 			    </Button>
 			</FormControl>

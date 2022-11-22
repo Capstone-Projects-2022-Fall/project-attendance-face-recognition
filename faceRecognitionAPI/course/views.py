@@ -200,3 +200,38 @@ class ImportCourseAPIView(APIView):
         },
             status=status.HTTP_200_OK
         )
+
+
+class SubmitScheduleAPIView(APIView):
+    """
+    Set up the schedule for the section
+    """
+    def post(self, request):
+        print("SubmitScheduleAPIView: Submitting a schedule!")
+        data = request.data
+        # Get the request fields
+        section_name = data["section"]
+        weekday = data["weekday"]
+        start_time = data["start_time"]
+        end_time = data["end_time"]
+        # Get the user and verify that they are an instructor
+        user = self.request.user
+        instructor = get_object_or_404(Instructor, user=user)
+        # Get the sections associated with the instructor
+        sections = Section.objects.filter(instructor=instructor)
+        # Determine which section the schedule is for
+        for section in sections:
+            if (section.name==section_name):
+                # Create a Schedule object for the section and save it
+                # Classes can only have one schedule for now, so don't save it if one
+                # already exists
+                if not (Schedule.objects.filter(section=section).exists()):
+                    schedule = Schedule(weekday=weekday, start_time=start_time, end_time=end_time, section=section)
+                    schedule.save()
+
+        return Response({
+            "message": "Schedule has been created!",
+            "completed": True
+        },
+            status=status.HTTP_200_OK
+        )
