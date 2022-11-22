@@ -4,6 +4,7 @@ import {connect} from "react-redux";
 import {FormControl, InputLabel, OutlinedInput, Select, TextField} from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
+import {NavLink} from 'react-router-dom';
 
 class AddScheduleContainer extends Component {
 
@@ -72,7 +73,7 @@ class AddScheduleContainer extends Component {
 			    </Button>
 			</FormControl>
 			<FormControl fullWidth sx={{ m: 1 }}>
-			    <Button color={"inherit"}>
+			    <Button color={"inherit"} component={NavLink} to="/">
 				Return To Dashboard
 			    </Button>
 			</FormControl>
