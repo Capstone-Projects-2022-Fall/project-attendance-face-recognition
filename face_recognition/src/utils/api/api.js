@@ -128,6 +128,36 @@ export const issueSubmissionAPI = async(body)=>
 
 
 /*
+* approve issues
+*/
+export const issueApprovalAPI = async(body)=>
+    fetch(`${API_URL}/issue_approval/`,{
+	method:'POST',
+	headers:{
+	    'Authorization': `Token ${localStorage.getItem("token")}`,
+	},
+	body:(body)
+    }).then(res => res.json())
+	.then(data =>{return data})
+	.catch(error=> console.log("error", error))
+
+
+/*
+* reject issues
+*/
+export const issueRejectionAPI = async(body)=>
+    fetch(`${API_URL}/issue_rejection/`,{
+	method:'POST',
+	headers:{
+	    'Authorization': `Token ${localStorage.getItem("token")}`,
+	},
+	body:(body)
+    }).then(res => res.json())
+	.then(data =>{return data})
+	.catch(error=> console.log("error", error))
+
+
+/*
 
  */
 export const attendanceMonitoring = async ()=>{

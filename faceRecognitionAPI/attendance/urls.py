@@ -4,7 +4,8 @@ from attendance import views
 
 urlpatterns = [
     path('issue_submission/', views.IssueSubmissionAPIView.as_view()),
-    path('issues/admin/', views.TeacherIssuesAPIView.as_view()),
+    path('issue_approval/', views.IssueApprovalAPIView.as_view()),
+    path('issue_rejection/', views.IssueRejectionAPIView.as_view()),
     path('report/today/', views.TeacherDailyReportAPIView.as_view()),
     path('statistics/attendance/', views.AttendanceStatisticsAPIView.as_view()),
     path('statistics/sections/', views.SectionStatisticsAPIView.as_view()),
