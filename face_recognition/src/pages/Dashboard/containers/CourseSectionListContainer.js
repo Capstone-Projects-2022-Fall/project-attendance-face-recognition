@@ -56,24 +56,33 @@ class CourseSectionListContainer extends Component{
         const {schedule} = this.props
 
         return(
-            <div className={"card"}>
-                <div className={"card-body"}>
-                    <DataTable
-                        columns={this.state.columns}
-                        data={Object.values(schedule)}
-                        pagination
-                        dense
-                        expandableRows
-                        expandableRowsComponent={this.expandedComponent}
-                    />
-                </div>
-            </div>
-        )
+	    <Fragment>
+		<div className={"card"}>
+		    <Button color={"inherit"}>
+			Import Course(s) From Canvas
+		    </Button>
+		</div>
+		<div className={"card"}>
+		    <div className={"card-body"}>
+			<DataTable
+			    columns={this.state.columns}
+			    data={Object.values(schedule)}
+			    pagination
+			    dense
+			    expandableRows
+			    expandableRowsComponent={this.expandedComponent}
+			/>
+		    </div>
+		</div>
+	    </Fragment>
+	)
     }
 }
+
 function mapStateToProps({schedule}){
     return{
         schedule
     }
 }
+
 export default connect(mapStateToProps)(CourseSectionListContainer)
