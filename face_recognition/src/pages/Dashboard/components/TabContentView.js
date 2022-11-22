@@ -67,7 +67,7 @@ export default function TabContentView() {
                     component={NavLink}
                     to={"/setup"}
                 >
-                    New Course/Section
+                    Set Schedule For Section
                 </Button>
                 <CourseSectionListContainer/>
             </TabPanel>
