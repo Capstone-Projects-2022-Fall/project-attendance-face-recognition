@@ -74,7 +74,7 @@ export default function EmptyAppBar() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={logoutUser}>Sign Out</MenuItem>
+            <MenuItem onClick={logoutUser}><a href="https://3.235.17.130">Back to Canvas</a></MenuItem>
         </Menu>
     );
 
@@ -130,7 +130,7 @@ export default function EmptyAppBar() {
                             component="div"
                             sx={{ display: { xs: 'none', sm: 'block' } }}
                         >
-                            AFR
+                            ◉ AFR
                         </Typography>
                         <Box sx={{ flexGrow: 1 }} />
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
