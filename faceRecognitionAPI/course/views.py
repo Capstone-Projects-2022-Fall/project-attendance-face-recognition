@@ -8,6 +8,7 @@ from attendance.services.canvasUtils import CanvasUtils
 from rest_framework.views import APIView
 from course.permissions import InstructionPermission
 from account.models import Instructor
+from datetime import datetime
 
 from course.models import Course, Section, Schedule
 from account.models import Student
@@ -157,46 +158,108 @@ class SetupSectionDetailAPIView(APIView):
         )
 
 
-class ImportCourseAPIView(APIView):
+class SyncWithCanvasAPIView(APIView):
     """
-    Auto-import the course the instructor is teaching
+    Sync with Canvas. Add courses, sections, and students.
     """
     def post(self, request):
-        print("ImportCourseAPIView: Ready to import courses on the backend!")
-        # Get the user that made the request
-        user = self.request.user
-        # Verify that the user is an instructor
-        instructor = get_object_or_404(Instructor, user=user)
-        print("ImportCourseAPIView: Found an instructor! They are:")
-        print(instructor)
-        # Get the course the instructor is currently teaching on Canvas
+        # Log in to canvas and get the instructor's courses
         canvas = CanvasUtils()
-        current_course = canvas.currentCanvasCourse(user)
-        print("ImportCourseAPIView: Found the course for the instructor! It is:")
-        print(current_course)
-        # Save the course in the backend if it does not exist already
-        if not (Course.objects.filter(canvasId=current_course[0]["canvasId"])).exists():
-            print("ImportCourseAPIView: The course has not been added to the backend yet!")
-            course = Course(canvasId=current_course[0]["canvasId"], name=current_course[0]["name"], course_number=current_course[0]["course_number"],
-                            start_date=current_course[0]["start_date"], end_date=current_course[0]["end_date"])
-            course.save()
-            # Save the sections in the backend
-            for course_section in current_course[0]["section"]:
-                print("ImportCourseAPIView: Creating a section!")
-                # Create the corresponding object
-                # We have already determined the instructor and the course, so we can bring those in.
-                # Unfortunately, I don't see a way to pull the student's section from Canvas. Until I can figure that
-                # out, just assume that all students are in all sections. This will work for the demo
-                section = Section.objects.get_or_create(name=course_section["name"], canvasId=course_section["canvasId"], course=course, instructor=instructor)[0]
-                students = Student.objects.all()
-                section.students.add(*students)
-                # Save the section
-                # We don't need to see if it exists, beacuse the sections can't exist if the course doesn't exist.
-                section.save()
-                print("ImportCourseAPIView: Added a section!")
+        instructor_courses = canvas.getUserCourses(self.request.user)
+        # Get the instructor object for the user
+        instructor = get_object_or_404(Instructor, user=self.request.user)
+        print("SyncWithCanvasAPIView: Found courses for the instructor! They are:")
+        print(instructor_courses)
+        # For each course...
+        for instructor_course in instructor_courses:
+            # Save the course in the backend
+            # First, make sure that the course does not already exist as we do not want to duplicate courses
+            if not (Course.objects.filter(canvasId=instructor_course.id)).exists():
+                print("SyncWithCanvasAPIView: Need to add this course to the backend!")
+                # Fill out the course fields
+                course = Course(canvasId=instructor_course.id, name=instructor_course.name, course_number=instructor_course.course_code, 
+                                start_date=datetime.strptime(instructor_course.start_at, "%Y-%m-%dT%H:%M:%SZ").date(),
+                                end_date=datetime.strptime(instructor_course.end_at, "%Y-%m-%dT%H:%M:%SZ").date())
+                # Save the course to the backend
+                course.save()
+            else:
+                # The course already exists - grab it here.
+                course = Course.objects.get(canvasId=instructor_course.id)
+
+            # Even if the course already exists, the section will constantly need to be updated with new students as they log onto AFR
+            # for the first time. We also want to create a Section object if one did not exist before.
+            sections = instructor_course.get_sections()
+            try:
+                # The section exists on the backend, so we only want to update the students
+                backend_section = Section.objects.get(course=course, instructor=instructor)
+                print("SyncWithCanvasAPIView: The section already exists!")
+                # Get the corresponding section on Canvas
+                for canvas_section in sections:
+                    if (canvas_section.name == backend_section.name):
+                        section = canvas_section
+                # Get the Canvas IDs of the students enrolled in the section
+                student_IDs = []
+                for enrollment in section.get_enrollments():
+                    # Enrollee is a student
+                    if (enrollment.role == "StudentEnrollment"):
+                        student_IDs.append(int(enrollment.user_id))
+                # Get the students in the section
+                curr_section_students = backend_section.students
+                # Iterate over all students on AFR
+                for student in Student.objects.all():
+                    # If the student is enrolled in the section but was not previously in it on AFR, add them here.
+                    if (int(student.canvasId) in student_IDs):
+                        # Set a flag that indicates whether or not to add the student
+                        should_add_student = 1
+                        # Iterate through all current students
+                        for curr_student in backend_section.students.all():
+                            if (student.canvasId == curr_student.canvasId):
+                                should_add_student = 0
+                        if (should_add_student == 1):
+                            print("SyncWithCanvasAPIView: Should add the student!")
+                            section.students.add(student)
+                        else:
+                            print("SyncWithCanvasAPIView: The student already exists!")
+
+            except:
+                # The section does not exist - this would raise a NotFound error that we catch here.
+                print("SyncWithCanvasAPIView: The section does not exist yet!")
+                for section in sections:
+                    # Get the Canvas IDs of the instructors and students enrolled in the section
+                    instructor_IDs = []
+                    student_IDs = []
+                    for enrollment in section.get_enrollments():
+                        # Enrollee is a teacher
+                        if (enrollment.role == "TeacherEnrollment"):
+                            instructor_IDs.append(int(enrollment.user_id))
+                        # Enrollee is a student
+                        if (enrollment.role == "StudentEnrollment"):
+                            student_IDs.append(int(enrollment.user_id))
+                    # This is the instructor's section if their ID matches that of an instructor in the section
+                    if (int(instructor.canvasId) in instructor_IDs):
+                        print("SyncWithCanvasAPIView: Found the section for the instructor!")
+                        # Form an object to store the students in that section
+                        students_in_section = []
+                        # Iterate over all students on AFR
+                        for student in Student.objects.all():
+                            if (int(student.canvasId) in student_IDs):
+                                print("SyncWithCanvasAPIView: Found a student for that section!")
+                                students_in_section.append(student)
+                                print("Added the student, does this work?")
+                        # Now that we have all the students we can create the section
+                        # The students have to be added later as they may be an array of objects, but we can initialize everything else here
+                        new_section = Section.objects.get_or_create(name=section.name, canvasId=section.id, course=course, instructor=instructor)[0]
+                        print("created the section")
+                        # Add the students to the section
+                        new_section.students.add(*students_in_section)
+                        print("added the students")
+                        # Save the section
+                        new_section.save()
+                        print("SyncWithCanvasAPIView: Added a section!")
+
         return Response({
             "message": "Course has been imported!",
-            "completed": True
+            "completed": True 
         },
             status=status.HTTP_200_OK
         )

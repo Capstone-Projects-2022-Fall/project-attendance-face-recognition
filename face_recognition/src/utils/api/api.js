@@ -173,10 +173,10 @@ export const scheduleAdditionAPI = async(body)=>
 
 
 /*
-* import course from canvas
+* sync with canvas
 */
-export const courseImportingAPI = async(body)=>
-    fetch(`${API_URL}/course_importing/`,{
+export const canvasSyncAPI = async(body)=>
+    fetch(`${API_URL}/canvas_sync/`,{
 	method:'POST',
 	headers:{
 	    'Authorization': `Token ${localStorage.getItem("token")}`

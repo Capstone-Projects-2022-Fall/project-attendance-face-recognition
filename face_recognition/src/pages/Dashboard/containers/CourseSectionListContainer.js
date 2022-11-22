@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 import DataTable from "react-data-table-component";
 import Avatar from "@mui/material/Avatar";
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
-import {courseImportingAPI} from "../../../utils/api/api";
+import {canvasSyncAPI} from "../../../utils/api/api";
 
 
 class CourseSectionListContainer extends Component{
@@ -31,17 +31,17 @@ class CourseSectionListContainer extends Component{
         ],
     }
 
-    importCourse = async (e) =>{
+    syncWithCanvas = async (e) =>{
 	e.preventDefault()
-	console.log("Going to import courses!")
+	console.log("Going to sync with canvas!")
 	// I'm not sure I need this but it clears a warning I was seeing regarding bad JSON formatting
 	// It's just dummy data. It doesn't do anything in the backend
 	let formData = new FormData()
 	formData.append("body", 1)
-	courseImportingAPI()
+	canvasSyncAPI()
 	    .then((r)=>{
-		console.log("courses have been imported!")
-		// Refresh the page to show the new courses
+		console.log("synced with canvas!")
+		// Refresh the page to show the updates
 		window.location.reload()
 	    })
     }
@@ -75,8 +75,8 @@ class CourseSectionListContainer extends Component{
         return(
 	    <Fragment>
 		<div className={"card"}>
-		    <Button color={"inherit"} onClick={this.importCourse}>
-			Import Course(s) From Canvas
+		    <Button color={"inherit"} onClick={this.syncWithCanvas}>
+			Sync With Canvas
 		    </Button>
 		</div>
 		<div className={"card"}>
