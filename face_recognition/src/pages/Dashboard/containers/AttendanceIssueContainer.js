@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import AttendanceIssueView from "../components/AttendanceIssueView";
 import {FormControl, InputLabel, OutlinedInput, Select, TextField} from "@mui/material";
 import {Button} from "@mui/material";
+import {issueApprovalAPI, issueRejectionAPI} from "../../../utils/api/api";
 
 class AttendanceIssueContainer extends Component{
     state = {
@@ -32,6 +33,37 @@ class AttendanceIssueContainer extends Component{
 	    }
         ],
     }
+
+    approveIssues = async (e) => {
+	e.preventDefault()
+	console.log("Going to approve issues!")
+
+	// Send in the list of issues to modify
+	let formData = new FormData()
+	formData.append("issues_to_modify", document.getElementById("issues_to_modify").value)
+	issueApprovalAPI(formData)
+	    .then((r)=>{
+		console.log("issues have been approved!")
+		// Refresh the page to show the remaining issues
+		window.location.reload()
+	    })
+    }
+
+    rejectIssues = async (e) => {
+	e.preventDefault()
+	console.log("Going to reject issues!")
+
+	// Send in the list of issues to modify
+	let formData = new FormData()
+	formData.append("issues_to_modify", document.getElementById("issues_to_modify").value)
+	issueRejectionAPI(formData)
+	    .then((r)=>{
+		console.log("issues have been rejected!")
+		// Refresh the page to show the remaining issues
+		window.location.reload()
+	    })
+    }
+
     render() {
         const {issues} = this.props
 	return(
@@ -52,10 +84,10 @@ class AttendanceIssueContainer extends Component{
 		    </div>
 		</div>
 		<div className={"card"}>
-		    <Button color={"inherit"}>
+		    <Button color={"inherit"} onClick={this.approveIssues}>
 			Approve Selected Issues
 		    </Button>
-		    <Button color={"inherit"}>
+		    <Button color={"inherit"} onClick={this.rejectIssues}>
 			Reject Selected Issues
 		    </Button>
 		</div>
