@@ -7,6 +7,11 @@ import {Button} from "@mui/material";
 class AttendanceIssueContainer extends Component{
     state = {
         columns : [
+	    {
+		name:"ID",
+		selector: row => row.id,
+		sortable: true
+	    },
             {
                 name:"Name",
                 selector: row => row.name,
@@ -20,7 +25,11 @@ class AttendanceIssueContainer extends Component{
             {
                 name: "Subject",
                 selector: row => row.subject
-            }
+            },
+	    {
+		name: "Message",
+		selector: row => row.message
+	    }
         ],
     }
     render() {
