@@ -28,45 +28,6 @@ from recognition.models import StudentImage
 from recognition.services.recognize_image import recognize_image
 
 
-class StudentIssuesAPIView(APIView):
-    """
-    Submit and view created issue
-    """
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
-    def get(self, request, id):
-        user = self.request.user
-        student = get_object_or_404(Student, user=user)
-        section = get_object_or_404(Section, id=id)
-        issues = Issue.objects.filter(section__student=student, section=section)
-        serializer = IssueSerializer(issues, many=True)
-        return Response(
-            serializer.data,
-            status=status.HTTP_200_OK
-        )
-
-    def post(self, request, id):
-        data = request.data
-        if isinstance(data, QueryDict):
-            data._mutable = True
-        user = self.request.user
-        student = get_object_or_404(Student, user=user)
-        data["student"] = student.id
-        data["section"] = id
-        serializer = IssueSerializer(context={'request': request}, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                serializer.data,
-                status=status.HTTP_201_CREATED
-            )
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-
 class TeacherIssuesAPIView(APIView):
     """
     View students issues and resolve them
@@ -199,11 +160,11 @@ class AttendanceStudentAPIView(APIView):
 
     def get(self, request):
         data = {}
-        emotions = ["happy", "sad", "angry", "surprised","fear"]
-        rand_emotions = emotions[random.randint(0, 3)]
         user = self.request.user
         student = get_object_or_404(Student, user=user)
         images_loaded = StudentImage.objects.filter(student=student).count()
+        print("AttendanceStudentAPIView: Found this many images for the student:")
+        print(images_loaded)
         attendanceExist = Attendance.objects.filter(student=student, section=currentCourse(user)[1],
                                                     recordedDate=date.today()).exists()
         if images_loaded ==0:
@@ -224,7 +185,6 @@ class AttendanceStudentAPIView(APIView):
             data["message"] = "You are ready to take attendance but you are recommended to upload more picture in the " \
                               "future" if 1<=images_loaded<5 else "Ready to take attendance"
             data["authorization"] = 1
-            data["emotion"] = rand_emotions,
             return Response(
                 data,
                 status=status.HTTP_200_OK
@@ -233,7 +193,11 @@ class AttendanceStudentAPIView(APIView):
     def post(self, request):
         print(request.FILES)
         data = request.data
+        print("AttendanceStudentAPIView: Requested emotion is:")
+        print(data["emotion"])
         verifyEmotion = detectUserEmotion(request.FILES["emotionImage"])
+        print("AttendanceStudentAPIView: Found emotion is:")
+        print(verifyEmotion)
         id = recognize_image(request.FILES["regularImage"], self.request.user)
         if verifyEmotion == data["emotion"] and id["id"] is not None:
             student = get_object_or_404(Student, id=id["id"])
@@ -258,4 +222,48 @@ class AttendanceStudentAPIView(APIView):
         )
 
 
-
+class IssueSubmissionAPIView(APIView):
+    """
+    submitting an issue
+    """
+    def post(self, request):
+        # Pull the subject and message from the request
+        data = request.data
+        request_subject = data["subject"]
+        request_message = data["message"]
+        print("IssueSubmissionAPIView: The issue's subject is:")
+        print(request_subject)
+        print("IssueSubmissionAPIView: The issue's description is:")
+        print(request_message)
+        # Do not allow empty requests to be submitted
+        if (len(request_subject) == 0 or len(request_message) == 0):
+            return Response({
+                "message": "Cannot submnit a blank issue!",
+                "completed": False
+            },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # If the request is not blank, get the user that made it
+        request_user = self.request.user
+        # Verify that the user is a student
+        request_student = get_object_or_404(Student, user=request_user)
+        print("IssueSubmissionAPIView: Got a student! Their canvas ID is:")
+        print(request_student.canvasId)
+        # Get the section that the user is making the issue for
+        curr_section = currentCourse(request_student.user)[1]
+        print("IssueSubmissionAPIView: Found a section for the student! It is:")
+        print(curr_section)
+        # Now we have all the information we need to complete the issue, so make it.
+        # The student is allowed to have multiple issues, so no need to check if one exists already.
+        issue = Issue(student=request_student, section=curr_section, subject=request_subject, message=request_message)
+        # Save the issue in the backend
+        issue.save()
+        # Return a response indicating that the issue has been created. This will autoredirect the user back to the
+        # home page, since completed is set to True here.
+        return Response({
+            "message": "Issue has been submitted!",
+            "completed": True
+        },
+            status=status.HTTP_200_OK
+        )
