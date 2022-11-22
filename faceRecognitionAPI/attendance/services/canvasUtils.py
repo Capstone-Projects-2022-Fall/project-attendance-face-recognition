@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from account.models import CanvasToken
 from account.models import Instructor, Student
 from course.models import Course, Section
-
+import json
 
 env = environ.Env(
     DEBUG=(bool, False)
