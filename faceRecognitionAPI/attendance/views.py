@@ -28,25 +28,6 @@ from recognition.models import StudentImage
 from recognition.services.recognize_image import recognize_image
 
 
-class TeacherIssuesAPIView(APIView):
-    """
-    View students issues and resolve them
-    """
-    permission_classes = [IsAuthenticatedOrReadOnly, InstructionPermission]
-
-    def get(self, request, id):
-        user = self.request.user
-        instructor = get_object_or_404(Instructor, user=user)
-        section = get_object_or_404(Section, id=id)
-        issues = Issue.objects.filter(section__instructor=instructor, section=section)
-        serializer = IssueSerializer(issues, many=True)
-        return Response(
-            serializer.data,
-            status=status.HTTP_200_OK
-        )
-    # add a way for teacher to modify tiket
-
-
 class TeacherDailyReportAPIView(APIView):
     """
     View attendance report
@@ -267,3 +248,110 @@ class IssueSubmissionAPIView(APIView):
         },
             status=status.HTTP_200_OK
         )
+
+
+class IssueApprovalAPIView(APIView):
+    """
+    approving issues
+    """
+    def post(self, request):
+        print("IssueApprovalAPIView: Going to approve issues!")
+        # Get the request field. This contains the list of issues to modify
+        data = request.data
+        issues_to_modify_raw = data["issues_to_modify"]
+        print("IssueApprovalAPIView: The issues to modify are:")
+        print(issues_to_modify_raw)
+        # Split the comma-separated list into its constituents
+        # TODO add checking to make sure the list follows the right format
+        issues_to_modify_list = issues_to_modify_raw.split(",")
+        # Create an empty list to store the actual issues
+        issues_to_accept_ids = []
+        # At this point, issues_to_modify_list is a list of either individual numbers
+        # or ranges (separated by the "-" character)
+        # Iterate through each entry
+        for issue_range in issues_to_modify_list:
+            # If the entry is a range...
+            if "-" in issue_range:
+                # Find the starting and stopping points
+                entries = issue_range.split("-")
+                # Add all of the values in that range to the list
+                for entry in range(int(entries[0]), int(entries[1])+1):
+                    issues_to_accept_ids.append(entry)
+            # Otherwise, the entry is just a number, so add it to the list
+            else:
+                issues_to_accept_ids.append(int(issue_range))
+        print("IssueApprovalAPIView: The issues to approve are now:")
+        print(issues_to_accept_ids)
+        
+        # For each issue that should be accepted...
+        for issue_to_accept_id in issues_to_accept_ids:
+            # Get the issue with the matching ID if it exists
+            if (Issue.objects.filter(id=issue_to_accept_id).exists()):
+                issue_to_accept = Issue.objects.filter(id=issue_to_accept_id)[0]
+                # Find the student that had the issue
+                student_with_issue = issue_to_accept.student
+                # Find the section the issue was associated with
+                section_with_issue = issue_to_accept.section
+                # Increment the attendance score associated with the student in that section
+                canvas = CanvasUtils()
+                canvas.updateAttendanceScore(section_with_issue, student_with_issue)
+                print("IssueApprovalAPIView: Updated the score!")
+                # Delete the issue once the score has been updated - no need to see it anymore!
+                Issue.objects.filter(id=issue_to_accept_id).delete()
+        
+        return Response({
+            "message": "Issues have been approved!",
+            "completed": True
+        },
+            status=status.HTTP_200_OK
+        )
+
+
+class IssueRejectionAPIView(APIView):
+    """
+    rejecting issues
+    """
+    def post(self, request):
+        print("IssueRemovalAPIView: Going to reject issues!")
+        # Get the request field. This contains a list of issues to modify
+        data = request.data
+        issues_to_modify_raw = data["issues_to_modify"]
+        # Split the comma-separated list into its constituents
+        # TODO add checking to make sure the list follows the right format
+        issues_to_modify_list = issues_to_modify_raw.split(",")
+        # Create an empty list to store the actual issues
+        issues_to_reject_ids = []
+        # At this point, issues_to_modify_list is a list of either individual numbers
+        # or ranges (separated by the "-" character)
+        # Iterate through each entry
+        for issue_range in issues_to_modify_list:
+            # If the entry is a range...
+            if "-" in issue_range:
+                # Find the starting and stopping points
+                entries = issue_range.split("-")
+                # Add all of the values in that range to the list
+                for entry in range(int(entries[0]), int(entries[1])+1):
+                    issues_to_reject_ids.append(entry)
+            # Otherwise, the entry is just a number, so add it to the list
+            else:
+                issues_to_reject_ids.append(int(issue_range))
+        print("IssueRejectionAPIView: The issues to reject are now:")
+        print(issues_to_reject_ids)
+
+        # For each issue that should be rejected...
+        for issue_to_reject_id in issues_to_reject_ids:
+            # Delete the issue if it exists. There's no need to update a score
+            # or save the issue, since it will be rejected.
+            # TODO figure out if there's a way to send a message to the student
+            # on Canvas letting them know that their issue was rejected
+            if (Issue.objects.filter(id=issue_to_reject_id).exists()):
+                print("IssueRejectionAPIView: Found a matching issue!")
+                Issue.objects.filter(id=issue_to_reject_id).delete()
+
+        return Response({
+            "message": "Issues have been rejected!",
+            "completed": True
+        },
+            status=status.HTTP_200_OK
+        )
+

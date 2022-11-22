@@ -50,7 +50,8 @@ def retrieve_issues_admin(instructor):
             "id": issue.pk,
             "name": issue.student.user.first_name + " " + issue.student.user.last_name,
             "status": "Resolved" if issue.status else "Unresolved",
-            "subject": issue.subject
+            "subject": issue.subject,
+	    "message": issue.message
         })
     return data
 

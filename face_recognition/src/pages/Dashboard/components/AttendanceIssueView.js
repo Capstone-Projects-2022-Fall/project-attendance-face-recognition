@@ -11,8 +11,9 @@ export default function AttendanceIssueView(props){
             columns={props.columns}
             data={props.data}
             pagination
-            selectableRows
             onSelectedRowsChange={handleChange}
+	    responsive={true}
+	    scrollX={true}
         />
     )
 }
