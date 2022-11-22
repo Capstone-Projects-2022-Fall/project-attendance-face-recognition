@@ -278,7 +278,7 @@ class CanvasUtils:
             if datetime.strptime(course.start_at, "%Y-%m-%dT%H:%M:%SZ") <= today <= datetime.strptime(course.end_at, "%Y-%m-%dT%H:%M:%SZ"):
                 if not Course.objects.filter(canvasId=course.id).exists():
                     courseObject = {}
-                    courseObject["id"] = course.id
+                    courseObject["canvasId"] = course.id
                     courseObject["name"] = course.name
                     courseObject["course_number"] = course.course_code
                     courseObject["start_date"] = datetime.strptime(course.start_at, "%Y-%m-%dT%H:%M:%SZ").date()
@@ -291,7 +291,7 @@ class CanvasUtils:
                         })
                 else:
                     courseObject = {}
-                    courseObject["id"] = course.id
+                    courseObject["canvasId"] = course.id
                     courseObject["name"] = course.name
                     courseObject["course_number"] = course.course_code
                     courseObject["start_date"] = datetime.strptime(course.start_at, "%Y-%m-%dT%H:%M:%SZ").date()

@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 import DataTable from "react-data-table-component";
 import Avatar from "@mui/material/Avatar";
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
+import {courseImportingAPI} from "../../../utils/api/api";
 
 
 class CourseSectionListContainer extends Component{
@@ -29,6 +30,22 @@ class CourseSectionListContainer extends Component{
             }
         ],
     }
+
+    importCourse = async (e) =>{
+	e.preventDefault()
+	console.log("Going to import courses!")
+	// I'm not sure I need this but it clears a warning I was seeing regarding bad JSON formatting
+	// It's just dummy data. It doesn't do anything in the backend
+	let formData = new FormData()
+	formData.append("body", 1)
+	courseImportingAPI()
+	    .then((r)=>{
+		console.log("courses have been imported!")
+		// Refresh the page to show the new courses
+		window.location.reload()
+	    })
+    }
+
     expandedComponent = ({data})=>{
         let mySchedule = data.schedule.split(";")
         mySchedule.pop();
@@ -58,7 +75,7 @@ class CourseSectionListContainer extends Component{
         return(
 	    <Fragment>
 		<div className={"card"}>
-		    <Button color={"inherit"}>
+		    <Button color={"inherit"} onClick={this.importCourse}>
 			Import Course(s) From Canvas
 		    </Button>
 		</div>
