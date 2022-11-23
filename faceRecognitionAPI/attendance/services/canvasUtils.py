@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 import environ
 import requests
@@ -13,6 +14,8 @@ env = environ.Env(
     DEBUG=(bool, False)
 )
 environ.Env.read_env()
+# obtain logger instance
+logger = logging.getLogger(__name__)
 
 
 class CanvasUtils:
@@ -37,22 +40,11 @@ class CanvasUtils:
             "client_id": self.client_id,
             "client_secret": self.client_secret,
             "redirect_uri": env("AFR_URL"),
-            "code": canvas_code
+            "code": canvas_code,
+            "replace_tokens": 1
         }
-        print("getUserAndCanvasToken: client id is:")
-        print(self.client_id)
-        print("getUserAndCanvasToken: client secret is:")
-        print(self.client_secret)
-        print("getUserAndCanvasToken: redirect uri is:")
-        print(env("AFR_URL"))
-        print("getUserAndCanvasToken: canvas code is:")
-        print(canvas_code)
-        print(self.API_URL)
         r = requests.post(url=self.API_URL + "/login/oauth2/token", data=data)
         data = r.json()
-        print("getUserAndCanvasToken: got a response!")
-        print("the response is:")
-        print(data)
 
         # canvas API Key
         access_token = data["access_token"]
@@ -62,8 +54,10 @@ class CanvasUtils:
         canvas_user = canvas.get_current_user().get_profile()
 
         if User.objects.filter(email=canvas_user["primary_email"]).exists():
+            logger.info("Retrieving user")
             user = get_object_or_404(User, email=canvas_user["primary_email"], username=canvas_user["primary_email"])
         else:
+            logger.info("Creating new user")
             name = str(canvas_user["sortable_name"]).split(",")
             user = User(username=canvas_user["primary_email"], email=canvas_user["primary_email"],
                         first_name=name[1].strip(),
@@ -83,12 +77,14 @@ class CanvasUtils:
                 instructor = Instructor(canvasId=canvas_user["id"], user=user)
                 instructor.save()
             else:
+                """
+                To figure out a way to automatically add student
+                """
                 student = Student(canvasId=canvas_user["id"], user=user)
                 student.save()
-                self.addingStudentToCourse(user)
+                #self.addingStudentToCourse(user)
         else:
             self.getCanvasToken(user)
-        print(user)
         return user
 
     def getCanvasToken(self, user):
@@ -107,12 +103,12 @@ class CanvasUtils:
             try:
                 r = requests.post(url=self.API_URL + "/login/oauth2/token", data=data)
                 data = r.json()
-		# The response will have a new access token, but not a new refresh token
+                logger.info("Get a new Access token from a refresh token", data)
                 canvasToken.accessToken = data["access_token"]
                 canvasToken.expires = data["expires_in"]
                 canvasToken.save()
             except:
-                print("error getting token")
+                logger.error("Not able to get new access token")
                 return None
         return canvasToken.accessToken
 

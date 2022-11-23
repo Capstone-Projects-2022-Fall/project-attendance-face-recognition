@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 import environ
-
+from django.utils.log import DEFAULT_LOGGING
 
 env = environ.Env(
     DEBUG=(bool,  False)
@@ -173,3 +173,39 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # setting up celery
 CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+
+# logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            # exact format is not important, this is the minimum information
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+        },
+        'django.server': DEFAULT_LOGGING['formatters']['django.server'],
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'default',
+        },
+        'django.server': DEFAULT_LOGGING['handlers']['django.server'],
+    },
+    'info': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'warning': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+    'error': {
+        'handlers': ['console'],
+        'level': 'ERROR',
+    },
+    'debug': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}

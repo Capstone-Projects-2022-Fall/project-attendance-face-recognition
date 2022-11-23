@@ -1,4 +1,5 @@
 from datetime import date
+import logging
 
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
@@ -6,7 +7,6 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status, parsers
 from rest_framework.authtoken.models import Token
-from rest_framework.authentication import TokenAuthentication
 
 from attendance.services.canvasUtils import CanvasUtils
 from course.services.schedule import currentCourse
@@ -20,12 +20,10 @@ from attendance.serializers import IssueSerializer, AttendanceSerializer
 from account.models import Instructor, Student
 from attendance.models import Issue, Attendance
 
-'''
-class BaseView(APIView):
-    authentication_classes = [
-        TokenAuthentication,
-    ]'''
+from account.tasks import testPrint
 
+# obtain logger instance
+logger = logging.getLogger(__name__)
 
 class GenerateTokenAPIView(APIView):
     """
@@ -60,6 +58,7 @@ class GenerateTokenAPIView(APIView):
             status=status.HTTP_200_OK
         )
 
+
 class GenerateAssignmentAPIView(APIView):
     """
     Generate assignments for automatic attendance
@@ -72,7 +71,7 @@ class GenerateAssignmentAPIView(APIView):
         # If the canvas code is in the data passed in through the request...
         if "canvas_code" in data:
             # Call the canvas util that will create assignments for attendance
-            canvas.createAttendanceAssignments(data["canvas_code"])
+            # canvas.createAttendanceAssignments(data["canvas_code"])
             return Response(
                 {
                     "message": "Assignments created!"
@@ -81,12 +80,13 @@ class GenerateAssignmentAPIView(APIView):
             )
         # This request will not work without the canvas code. Signify as much.
         else:
-            return Reponse(
+            return Response(
                 {
                     "message": "Could not create assignments!"
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
+
 
 class InitialInfoAPIView(APIView):
     """
@@ -95,6 +95,8 @@ class InitialInfoAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        logger.info("Testing logger")
+        logger.warning("Testing logger")
         data = {}
         user = self.request.user
         canvas = CanvasUtils()
