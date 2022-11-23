@@ -31,12 +31,13 @@ classDiagram
         -String client_secret
         -String grader_access_token
         +getUserAndCanvasToken(canvas_code) User
-        +getCanvasToken(canvas_course_id) Course
+        +getCanvasToken(user) CanvasToken
+        +deleteCanvasToken()
+        +createAttendanceAssignments(canvas_code)
         +getCourseInfo(canvas_course_id, user) Course
         +isTeacher(user) bool
         +addingStudentToCourse(user)
-        +currentCanvasCourse(user) Course
-        +createAttendanceAssignments(canvas_code)
+        +getUserCourses(user) Course(s)
         +updateAttendanceScore(submittedCourse, submittedStudent)
     }
     class User{
@@ -48,10 +49,12 @@ classDiagram
     }
     class Student{
         -String canvasId
+        -User user
         +__str__() String
     }
     class Instructor{
         -String canvasId
+        -User user
         +__str__() String
     }
     class CanvasToken{
@@ -59,6 +62,7 @@ classDiagram
         -String refreshToken
         -int expires
         -date created
+        -User user
         +is_valid() bool
     }
     class Issue{
@@ -91,11 +95,10 @@ classDiagram
         +__str__() String
     }
     class Section{
-        -String canvasId
         -String name
+        -String canvasId
         -Course course
         -Instructor instructor
-        -date end_date
         -List~Student~ students
         +__str__() String
     }
@@ -110,6 +113,7 @@ classDiagram
     class AttendanceSetting{
         -int duration
         -Section section
+        +__str__() String
     }
     class StudentImage{
         -File imageFile
