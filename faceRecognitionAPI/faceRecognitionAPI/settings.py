@@ -54,7 +54,9 @@ INSTALLED_APPS = [
     'recognition',
     'storages',
     'corsheaders',
-    'course'
+    'course',
+    'django_celery_beat',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -113,7 +115,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(env('REDIS_URL'), env('REDIS_PORT'))],
+            "hosts": [(env("REDIS_URL"),(env("REDIS_PORT")))],
         }
     }
 }
@@ -168,3 +170,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# setting up celery
+CELERY_BROKER_URL = env('CELERY_BROKER_URL')
