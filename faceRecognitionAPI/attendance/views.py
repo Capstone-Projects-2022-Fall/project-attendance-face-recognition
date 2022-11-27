@@ -369,12 +369,19 @@ class StudentAttendanceReportAPIView(APIView):
         # Get all attendance associated with the student if there are any
         # Throw an error if no attendances were found
         if not Attendance.objects.filter(student=student).exists():
-            return Response({
-                "message": "Could not find any attendances for the student!",
-                "completed": True
-            },
-                status=status.HTTP_200_OK
-            )
+             # Create a dummy attendance object so the table still renders properly
+             # if the student calls it when class isn't present
+             data = []
+             next_attendance = {}
+             next_attendance["course"] = None
+             next_attendance["section"] = None
+             next_attendance["date"] = None
+             next_attendance["attendance"] = None
+             data.append(next_attendance)
+             return Response(
+                  data,
+                  status=status.HTTP_400_BAD_REQUEST
+             )
 
         # If we make it to this point attendances exists. Get them.
         student_attendances = Attendance.objects.filter(student=student)
