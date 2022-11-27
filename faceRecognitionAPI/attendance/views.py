@@ -355,3 +355,10 @@ class IssueRejectionAPIView(APIView):
             status=status.HTTP_200_OK
         )
 
+
+class StudentAttendanceReportAPIView(APIView):
+    """
+    get the student's attendance report
+    """
+    def post(self, request):
+        print("StudentAttendanceReportAPIView: Going to get the student's attendance!")

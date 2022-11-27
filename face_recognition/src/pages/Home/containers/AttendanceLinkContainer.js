@@ -18,8 +18,8 @@ class AttendanceLinkContainer extends Component{
                             <Button variant="contained" color={"info"} component={NavLink} to="/attendance">
                                 Record Attendance
                             </Button>
-                            <Button variant="outlined" color={"info"}>
-                                View Report
+                            <Button variant="outlined" color={"info"} component={NavLink} to="/student_report">
+                                View Attendance Report
                             </Button>
                         </Stack>
                     </Fragment>
@@ -32,8 +32,8 @@ class AttendanceLinkContainer extends Component{
                             <Button variant="contained" color={"info"} disabled>
                                 Record Attendance
                             </Button>
-                            <Button variant="outlined" color={"info"}>
-                                View Report
+                            <Button variant="outlined" color={"info"} component={NavLink} to="/student_report">
+                                View Attendance Report
                             </Button>
                         </Stack>
                     </Fragment>

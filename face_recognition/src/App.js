@@ -16,6 +16,7 @@ const ConfigurationPage = lazy(()=>import("./pages/Configuration/index"));
 const Page404 = lazy(()=>import("./pages/Error/404/index"))
 const RecordPage = lazy(()=>import("./pages/Record/index"))
 const IssueFormPage = lazy(()=>import("./pages/Issue/index"))
+const StudentReportPage = lazy(()=>import("./pages/Report/index"))
 
 class App extends Component {
     state = {
@@ -86,7 +87,7 @@ class App extends Component {
                 <Suspense fallback={<div>Loading...</div>}>
                     <Routes>
                         <Route path="/" exact element={<HomePage/>}/>
-                        <Route path="/record" exact element={<RecordPage/>}/>
+			<Route path="/student_report" exact element={<StudentReportPage/>}/>
                         <Route path="/registration" exact element={<RegistrationPage/>}/>
                         <Route path="/attendance" exact element={<AttendancePage/>}/>
 			<Route path="/issueForm" exact element={<IssueFormPage/>}/>

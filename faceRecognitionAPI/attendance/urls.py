@@ -11,6 +11,7 @@ urlpatterns = [
     path('statistics/sections/', views.SectionStatisticsAPIView.as_view()),
     path('attendance/', views.AttendanceStudentAPIView.as_view()),
     path('attendance/monitoring/', views.AttendanceSectionAPIView.as_view()),
+    path('attendance/report/', views.StudentAttendanceReportAPIView.as_view())
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -186,6 +186,21 @@ export const canvasSyncAPI = async(body)=>
 	.then(data =>{return data})
 	.catch(error=> console.log("error", error))
 
+
+/*
+* fetch a specific student's attendance record
+*/
+export const attendanceReportAPI = async(body)=>
+    fetch(`${API_URL}/attendance/report`,{
+	method:'POST',
+	headers:{
+	    'Authorization': `Token ${localStorage.getItem("token")}`
+	},
+	body:(body)
+    }).then(res => res.json())
+	.then(data => {return data})
+	.catch(error => console.log('error', error))
+
 /*
 
  */
