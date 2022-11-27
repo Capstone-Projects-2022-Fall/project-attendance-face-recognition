@@ -191,7 +191,7 @@ export const canvasSyncAPI = async(body)=>
 * fetch a specific student's attendance record
 */
 export const attendanceReportAPI = async(body)=>
-    fetch(`${API_URL}/attendance/report`,{
+    fetch(`${API_URL}/attendance/report/`,{
 	method:'POST',
 	headers:{
 	    'Authorization': `Token ${localStorage.getItem("token")}`
