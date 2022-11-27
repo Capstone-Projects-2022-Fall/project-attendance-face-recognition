@@ -1,5 +1,6 @@
 import random
 from datetime import date
+from datetime import timedelta
 
 from django.http import QueryDict
 from django.shortcuts import render
@@ -21,7 +22,7 @@ from attendance.services.canvasUtils import CanvasUtils
 
 from account.models import Student, Instructor
 from attendance.models import Issue, Attendance
-from course.models import Section
+from course.models import Section, Schedule
 from attendance.serializers import IssueSerializer, AttendanceSerializer
 from course.services.schedule import currentCourse
 from recognition.models import StudentImage
@@ -362,3 +363,80 @@ class StudentAttendanceReportAPIView(APIView):
     """
     def post(self, request):
         print("StudentAttendanceReportAPIView: Going to get the student's attendance!")
+        # Get the student that made the request
+        request_user = self.request.user
+        student = get_object_or_404(Student, user=request_user)
+        # Get all attendance associated with the student if there are any
+        # Throw an error if no attendances were found
+        if not Attendance.objects.filter(student=student).exists():
+            return Response({
+                "message": "Could not find any attendances for the student!",
+                "completed": True
+            },
+                status=status.HTTP_200_OK
+            )
+
+        # If we make it to this point attendances exists. Get them.
+        student_attendances = Attendance.objects.filter(student=student)
+        # Get the section that the user is making the submission for
+        curr_section = currentCourse(student.user)[1]
+        # Get the schedule for the section
+        # We can use get because the section will only have one section
+        curr_schedule = Schedule.objects.get(section=curr_section)
+        # Get the days the student was marked present for this section
+        section_attendances = []
+        for attendance in student_attendances:
+            if (attendance.section == curr_section):
+                section_attendances.append(attendance.recordedDate)
+        # Get the course's start date and end date
+        start_date = curr_section.course.start_date
+        end_date = curr_section.course.end_date
+        # Get the course's class date
+        class_weekday = curr_schedule.weekday
+
+        # Find all days the class is held between the start date and end date
+        class_meeting_days = []
+        # First find the first occurrence of the class
+        # Get the weekday the course starts
+        course_start_weekday = start_date.weekday()
+        # Get the number of days to advance from the course's start date to find the
+        # first date the course meets
+        num_days_to_advance = (class_weekday - course_start_weekday) % 7
+        # Get the first date the course meets
+        class_date = start_date + timedelta(days=num_days_to_advance)
+        # Since the schedule only allows for one class per week, this allows us to get
+        # all days the course meets
+        while class_date <= end_date and class_date <= date.today():
+            # Store the current class date and move forward in time a week.
+            class_meeting_days.append(class_date)
+            class_date = class_date + timedelta(days=7)
+
+        # Get the student's attendance for each class meeting. If no attendance object
+        # was found for a meeting, mark the student as absent.
+        student_attendances = []
+        course_names = []
+        section_names = []
+        for class_meeting_day in class_meeting_days:
+            if class_meeting_day in section_attendances:
+                student_attendances.append("Present")
+            else:
+                student_attendances.append("Absent")
+            # Replicate the course and section names in an array so all of the lengths match
+            course_names.append(curr_section.course.name)
+            section_names.append(curr_section.name)
+
+        # Send the message up to the frontend
+        # We need the course name, section name, date array, and attendance array
+        data = []
+        for attendance_idx in range(len(student_attendances)):
+            next_attendance = {}
+            next_attendance["course"] = course_names[attendance_idx]
+            next_attendance["section"] = section_names[attendance_idx]
+            next_attendance["date"] = class_meeting_days[attendance_idx]
+            next_attendance["attendance"] = student_attendances[attendance_idx]
+            data.append(next_attendance)
+
+        return Response(
+            data,
+            status=status.HTTP_200_OK
+        )
