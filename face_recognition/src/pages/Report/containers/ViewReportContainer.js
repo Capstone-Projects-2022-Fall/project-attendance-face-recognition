@@ -52,6 +52,11 @@ class ViewReportContainer extends Component{
 	return(
 	    <Fragment>
 		<div className={"card"}>
+		    <div className={"card-header"}>
+			Attendance Report
+		    </div>
+		</div>
+		<div className={"card"}>
 		    <div className={"card-body"}>
 			<DataTable
 			    columns={this.state.columns}
