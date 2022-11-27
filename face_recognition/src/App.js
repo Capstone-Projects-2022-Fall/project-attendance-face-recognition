@@ -6,6 +6,7 @@ import {authenticateUserAPI, createAttendanceAssignmentsAPI} from "./utils/api/a
 import {connect} from "react-redux";
 import {handleInitialData} from "./redux/action/shared";
 import {handleGetAttendance} from "./redux/action/attendance";
+import {Navigate} from "react-router-dom";
 
 const HomePage = lazy(()=>import("./pages/Home/index"));
 const AttendancePage = lazy(()=>import("./pages/Attendance/index"));
@@ -21,7 +22,8 @@ const StudentReportPage = lazy(()=>import("./pages/Report/index"))
 class App extends Component {
     state = {
         "completed_registration":true,
-        "is_instructor":false
+        "is_instructor":false,
+	"redirect_to_registration":false
     }
     componentDidMount() {
         let code = (new URLSearchParams(window.location.search)).get("code")
@@ -41,6 +43,12 @@ class App extends Component {
                                 is_instructor: isInstructor.instructor,
                                 completed_registration:registered.completed
                             })
+			    if (isInstructor.instructor != true) {
+				console.log("New student logged on, need to redirect them to registration!")
+				this.setState({
+				    redirect_to_registration: true
+				})
+			    }
                         })
                 })
         }
@@ -57,6 +65,9 @@ class App extends Component {
                             completed_registration:registered.completed
                         })
                     }
+		    this.setState({
+			redirect_to_registration:false
+		    })
                 })
         }
 
@@ -86,7 +97,7 @@ class App extends Component {
             <Router>
                 <Suspense fallback={<div>Loading...</div>}>
                     <Routes>
-                        <Route path="/" exact element={<HomePage/>}/>
+                        <Route path="/" exact element={this.state.redirect_to_registration ? <Navigate to="/registration"/> : <HomePage/>}/>
 			<Route path="/student_report" exact element={<StudentReportPage/>}/>
                         <Route path="/registration" exact element={<RegistrationPage/>}/>
                         <Route path="/attendance" exact element={<AttendancePage/>}/>
