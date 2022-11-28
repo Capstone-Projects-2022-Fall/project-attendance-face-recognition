@@ -8,17 +8,18 @@ from rest_framework.response import Response
 from rest_framework import status, parsers
 from django.shortcuts import get_object_or_404
 
-import course.views
 from attendance.services.canvasUtils import CanvasUtils
 from rest_framework.views import APIView
 from course.permissions import InstructionPermission
 from account.models import Instructor
 from datetime import datetime
 
-from course.models import Course, Section, Schedule
+from course.models import Course, Section, Schedule, AttendanceSetting
 from account.models import Student
 
 from course.serializers import CourseSerializer, SectionSerializer, ScheduleSerializer
+
+from course.tasks import sectionSettingTask
 
 # obtain logger instance
 logger = logging.getLogger(__name__)
@@ -386,8 +387,9 @@ class SectionSettingAndScheduleAPIView(APIView):
                             end_time=data["end_time"])
         schedule.save()
         # handle assignment and setting
-        logger.info("setting duration of attendance")
-
+        logger.info("setting duration of attendance and create assignment")
+        if not AttendanceSetting.objects.filter(section=section).exists():
+            sectionSettingTask.delay(section.id, data["duration"])
         return Response({
             "schedule": ScheduleSerializer(schedule).data
         },

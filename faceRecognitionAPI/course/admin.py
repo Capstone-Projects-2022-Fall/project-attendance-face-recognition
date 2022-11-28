@@ -1,5 +1,5 @@
 from django.contrib import admin
-from course.models import Course, Section, Schedule
+from course.models import Course, Section, Schedule, AttendanceSetting
 
 
 @admin.register(Course)
@@ -18,3 +18,8 @@ class SectionAdmin(admin.ModelAdmin):
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
     list_display = ('id', 'weekday', 'start_time', 'end_time','section','dayOfWeek')
+
+
+@admin.register(AttendanceSetting)
+class AttendanceSettingAdmin(admin.ModelAdmin):
+    list_display = ('id','duration','assignment','section')
