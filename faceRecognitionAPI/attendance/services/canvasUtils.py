@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from account.models import CanvasToken
 from account.models import Instructor, Student
 from account.tasks import newCanvasToken
-from course.models import Course, Section
+from course.models import Course, Section, AttendanceSetting
 import json
 
 env = environ.Env(
@@ -152,78 +152,33 @@ class CanvasUtils:
         logger.info("Get section info")
         return section
 
-    def createAttendanceAssignments(self, canvas_code):
+    def createAttendanceAssignment(self, user, section_id):
         """
-        create an attendance assignment in each class the instructor is teaching
+        create an attendance assignment in a course the user is teaching
         """
-        # First submit a request to Canvas to get the instructor's access token
-        data = {
-            "grant_type": "authorization_code",
-            "client_id": self.client_id,
-            "client_secret": self.client_secret,
-            "redirect_uri": env("AFR_URL"),
-            "code": canvas_code
-        }
-        print("createAttendanceAssignments: Submitting a request!")
-        print("client_id is:")
-        print(self.client_id)
-        print("canvas code is:")
-        print(canvas_code)
-        r = requests.post(url=self.API_URL + "/login/oauth2/token", data=data)
-        print("createAttendanceAssignments: Got a response!")
-        print(r)
-        # See if there's anything in the response
-        try:
-            # The request should be in JSON format
-            data = r.json()
-        # Otherwise throw an error
-        except json.decoder.JSONDecodeError:
-            print("createAttendanceAssignments: Caught a JSON decode error, didn't get data!")
-            return
-
-        # Otherwise we have the response, so get the access token
-        access_token = data["access_token"]
+        access_token = self.getCanvasToken(user)
         # initialize a new canvas object
         canvas = Canvas(self.API_URL, access_token)
-        # get the current canvas user
-        user = canvas.get_current_user()
-        # get all of the courses the user is assigned to
-        courses = user.get_courses()
-        # The user is a teacher if their type is teacher or TA
-        type_list = ['teacher', 'ta']
-        # For each course the user is assigned to...
-        for course in courses:
-            # Get the instructors for the course
-            usersInCourse = course.get_users(enrollment_type=type_list)
-            # Go through the users in the course and determine if the current user is an instructor there
-            for enrollee in usersInCourse:
-                # If the user is an instructor for this course...
-                if enrollee.id == user.id:
-                    # Create an attendance assignment for that course
-                    # First, check to make sure an assignment matching the attendance assignment's name does not already exist.
-                    # If it does, then there is no need to make any additional assignments.
-                    assignments = course.get_assignments()
-                    # Initialize the "found assignment" flag to 0
-                    found_attendance_assignment = 0
-                    for assignment in assignments:
-                        # Set the flag to 1 if an assignment is found so we know not to make it again
-                        if (assignment.name == "Attendance (attended out of total)"):
-                            found_attendance_assignment = 1
-                    # No attendance assignment was found, so one must be made.
-                    if (found_attendance_assignment == 0):
-                        # Create the assignment
-                        # The assignment is scored out of the number of classes held
-                        # every semester. It is NOT included in the final grade, as
-                        # the scores would start out quite low at the beginning and
-                        # all teachers use attendance scores differently.
-                        course.create_assignment({
-                            'name': 'Attendance (attended out of total)',
-                            'description': 'Number of classes attended this semester.',
-                            'submission_types': 'online_text_entry',
-                            'points_possible': 42,
-                            'omit_from_final_grade': True,
-                            'published': True
-                        })
+        logger.info("retrieving course and section")
+        instructor= get_object_or_404(Instructor, user=user)
+        section = get_object_or_404(Section, id=section_id, instructor=instructor)
+        course = section.course
+        if not AttendanceSetting.objects.filter(section=section, assignment=True):
+            logger.info("create attendance assignment")
+            attendanceSetting = get_object_or_404(AttendanceSetting, section=section)
+            canvas_course = canvas.get_course(int(course.canvasId))
+            canvas_course.create_assignment({
+                "name": "Attendance",
+                "description": "Student's Attendance during the semester",
+                "submission_types": ["online_text_entry"],
+                "points_possible": 100,
+                "omit_from_final_grade": True,
+                "notify_of_update": True,
+                "published": True
+            })
+            logger.info("Record that assignment has been created")
+            attendanceSetting.assignment = True
+            attendanceSetting.save()
 
     def isTeacher(self, user):
         """
