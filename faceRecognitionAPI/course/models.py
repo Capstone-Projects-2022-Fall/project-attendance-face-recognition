@@ -63,6 +63,7 @@ class Schedule(models.Model):
 
 class AttendanceSetting(models.Model):
     duration = models.IntegerField(default=5)
+    assignment = models.BooleanField(default=False)
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
 
     def __str__(self):

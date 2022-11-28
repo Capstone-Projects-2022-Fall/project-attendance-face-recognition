@@ -8,6 +8,7 @@ import StudentListContainer from "../containers/StudentListContainer";
 import CourseSectionListContainer from "../containers/CourseSectionListContainer";
 import Button from "@mui/material/Button";
 import {Navigate, NavLink} from "react-router-dom";
+import ViewScheduleContainer from "../../../container/ViewScheduleContainer";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -69,7 +70,9 @@ export default function TabContentView() {
                 >
                     Set Schedule For Section
                 </Button>
-                <CourseSectionListContainer/>
+                <ViewScheduleContainer
+                    scheduleList={null}
+                />
             </TabPanel>
         </Box>
     );

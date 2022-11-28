@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from account.models import CanvasToken
 from account.models import Instructor, Student
+from account.tasks import newCanvasToken
 from course.models import Course, Section
 import json
 
@@ -43,6 +44,7 @@ class CanvasUtils:
             "code": canvas_code,
             "replace_tokens": 1
         }
+        logger.error("Requesting new access token")
         r = requests.post(url=self.API_URL + "/login/oauth2/token", data=data)
         data = r.json()
 
@@ -64,15 +66,8 @@ class CanvasUtils:
                         last_name=name[0].strip())
             user.save()
 
+        newCanvasToken.delay(data, user.id)
         if not CanvasToken.objects.filter(user=user).exists():
-            canvas_token = CanvasToken(
-                accessToken=data["access_token"],
-                refreshToken=data["refresh_token"],
-                expires=data["expires_in"],
-                user=user
-            )
-            canvas_token.save()
-            # verify if student or teacher
             if self.isTeacher(user):
                 instructor = Instructor(canvasId=canvas_user["id"], user=user)
                 instructor.save()
@@ -82,9 +77,7 @@ class CanvasUtils:
                 """
                 student = Student(canvasId=canvas_user["id"], user=user)
                 student.save()
-                #self.addingStudentToCourse(user)
-        else:
-            self.getCanvasToken(user)
+                # self.addingStudentToCourse(user)
         return user
 
     def getCanvasToken(self, user):
@@ -94,16 +87,18 @@ class CanvasUtils:
         """
         canvasToken = get_object_or_404(CanvasToken, user=user)
         if not canvasToken.is_valid():
-            data = {
+            data_value = {
                 "grant_type": "refresh_token",
                 "client_id": self.client_id,
                 "client_secret": self.client_secret,
                 "refresh_token": canvasToken.refreshToken
             }
             try:
-                r = requests.post(url=self.API_URL + "/login/oauth2/token", data=data)
+                r = requests.post(url=self.API_URL + "/login/oauth2/token", data=data_value)
                 data = r.json()
-                logger.info("Get a new Access token from a refresh token", data)
+                print(data_value)
+                print(data)
+                logger.info("Get a new Access token from a refresh token")
                 canvasToken.accessToken = data["access_token"]
                 canvasToken.expires = data["expires_in"]
                 canvasToken.save()
@@ -112,12 +107,50 @@ class CanvasUtils:
                 return None
         return canvasToken.accessToken
 
-    def deleteCanvasToken(self):
+    def canvasActiveCourses(self, user):
         """
-        delete canvas token
+        return a list of active courses from canvas
+        """
+        access_token = self.getCanvasToken(user)
+        # initialize a new canvas object
+        canvas = Canvas(self.API_URL, access_token)
+        logger.info("Retrieving list of active courses")
+        prof = canvas.get_current_user()
+        courses = prof.get_courses()
+        return courses
+
+    def getCourseInfo(self, canvas_course_id, user):
+        """
+        Get course info
         :return:
         """
-        pass
+        # canvas API Key
+        access_token = self.getCanvasToken(user)
+        # initialize a new canvas object
+        canvas = Canvas(self.API_URL, access_token)
+        course = canvas.get_course(canvas_course_id)
+        logger.info("Get course info")
+        return course
+
+    def canvasActiveSection(self, user, id):
+        """
+        return a list of active section from a course
+        """
+        course = self.getCourseInfo(id, user)
+        sections = course.get_sections()
+        return sections, course
+
+    def canvasSectionInfo(self, user, id):
+        """
+        return detail about a section
+        """
+        # canvas API Key
+        access_token = self.getCanvasToken(user)
+        # initialize a new canvas object
+        canvas = Canvas(self.API_URL, access_token)
+        section = canvas.get_section(id)
+        logger.info("Get section info")
+        return section
 
     def createAttendanceAssignments(self, canvas_code):
         """
@@ -166,45 +199,31 @@ class CanvasUtils:
             for enrollee in usersInCourse:
                 # If the user is an instructor for this course...
                 if enrollee.id == user.id:
-                     # Create an attendance assignment for that course
-                     # First, check to make sure an assignment matching the attendance assignment's name does not already exist.
-                     # If it does, then there is no need to make any additional assignments.
-                     assignments = course.get_assignments()
-                     # Initialize the "found assignment" flag to 0
-                     found_attendance_assignment = 0
-                     for assignment in assignments:
-                         # Set the flag to 1 if an assignment is found so we know not to make it again
-                         if (assignment.name == "Attendance (attended out of total)"):
-                             found_attendance_assignment = 1
-                     # No attendance assignment was found, so one must be made.
-                     if (found_attendance_assignment == 0):
-                         # Create the assignment
-                         # The assignment is scored out of the number of classes held
-                         # every semester. It is NOT included in the final grade, as
-                         # the scores would start out quite low at the beginning and
-                         # all teachers use attendance scores differently.
-                         course.create_assignment({
-                             'name': 'Attendance (attended out of total)',
-                             'description': 'Number of classes attended this semester.',
-                             'submission_types': 'online_text_entry',
-                             'points_possible': 42,
-                             'omit_from_final_grade': True,
-                             'published': True
-                         })
-
-    def getCourseInfo(self, canvas_course_id, user):
-        """
-        Get course info
-        :return:
-        """
-        # canvas API Key
-        access_token = self.getCanvasToken(user)
-        # initialize a new canvas object
-        canvas = Canvas(self.API_URL, access_token)
-        course = canvas.get_course(canvas_course_id)
-        print(course)
-        return course
-        # if Course.objects.filter(canvasId=canvas_course_id):
+                    # Create an attendance assignment for that course
+                    # First, check to make sure an assignment matching the attendance assignment's name does not already exist.
+                    # If it does, then there is no need to make any additional assignments.
+                    assignments = course.get_assignments()
+                    # Initialize the "found assignment" flag to 0
+                    found_attendance_assignment = 0
+                    for assignment in assignments:
+                        # Set the flag to 1 if an assignment is found so we know not to make it again
+                        if (assignment.name == "Attendance (attended out of total)"):
+                            found_attendance_assignment = 1
+                    # No attendance assignment was found, so one must be made.
+                    if (found_attendance_assignment == 0):
+                        # Create the assignment
+                        # The assignment is scored out of the number of classes held
+                        # every semester. It is NOT included in the final grade, as
+                        # the scores would start out quite low at the beginning and
+                        # all teachers use attendance scores differently.
+                        course.create_assignment({
+                            'name': 'Attendance (attended out of total)',
+                            'description': 'Number of classes attended this semester.',
+                            'submission_types': 'online_text_entry',
+                            'points_possible': 42,
+                            'omit_from_final_grade': True,
+                            'published': True
+                        })
 
     def isTeacher(self, user):
         """
@@ -216,7 +235,7 @@ class CanvasUtils:
         # initialize a new canvas object
         canvas = Canvas(self.API_URL, access_token)
 
-        type_list = ['teacher','ta']
+        type_list = ['teacher', 'ta']
         user = canvas.get_current_user()
         courses = user.get_courses()
         for course in courses:
@@ -242,7 +261,8 @@ class CanvasUtils:
         courses_taken = canvas_user.get_courses()
         for course in courses_taken:
             today = datetime.today()
-            if datetime.strptime(course.start_at, "%Y-%m-%dT%H:%M:%SZ") <= today <= datetime.strptime(course.end_at, "%Y-%m-%dT%H:%M:%SZ"):
+            if datetime.strptime(course.start_at, "%Y-%m-%dT%H:%M:%SZ") <= today <= datetime.strptime(course.end_at,
+                                                                                                      "%Y-%m-%dT%H:%M:%SZ"):
                 '''go through all sections'''
                 for section in course.get_sections():
                     for enrollment in section.get_enrollments():
@@ -300,28 +320,28 @@ class CanvasUtils:
             # If the course's canvas ID matches the canvas ID of the course the user submitted attendance for...
             # Note that the course's canvasId comes back as a string, so we need to convert to int before using it
             if (course.id == int(submittedCourse.canvasId)):
-                 print("updateAttendanceScore: Found a matching course! Its ID is:")
-                 print(course.id)
-                 # Get the assignment for the course
-                 assignments = course.get_assignments()
-                 # Find the attendance assignment
-                 for assignment in assignments:
-                     if (assignment.name == "Attendance (attended out of total)"):
-                         # Pull the student's submission
-                         submission = assignment.get_submission(student_canvas_ID)
-                         print("updateAttendanceScore: The current submission is:")
-                         print(submission)
-                         # Get the current submission's grade
-                         submission_grade = submission.score
-                         print("updateattendanceScore: The submission's score is:")
-                         print(submission_grade)
-                         # Update the submission's grade. If attendance was never taken, the score will be None; update
-                         # to 1 to reflect that this is the first time attendance has been taken.
-                         # Otherwise, increment the number of attendances.
-                         if (submission.grade == None):
-                              submission_grade = 1
-                         else:
-                              submission_grade = submission_grade + 1
-                         # Update the submission's grade
-                         submission.edit(submission={'posted_grade':submission_grade})
-                         print("updateAttendanceScore: updated the grade!")
+                print("updateAttendanceScore: Found a matching course! Its ID is:")
+                print(course.id)
+                # Get the assignment for the course
+                assignments = course.get_assignments()
+                # Find the attendance assignment
+                for assignment in assignments:
+                    if (assignment.name == "Attendance (attended out of total)"):
+                        # Pull the student's submission
+                        submission = assignment.get_submission(student_canvas_ID)
+                        print("updateAttendanceScore: The current submission is:")
+                        print(submission)
+                        # Get the current submission's grade
+                        submission_grade = submission.score
+                        print("updateattendanceScore: The submission's score is:")
+                        print(submission_grade)
+                        # Update the submission's grade. If attendance was never taken, the score will be None; update
+                        # to 1 to reflect that this is the first time attendance has been taken.
+                        # Otherwise, increment the number of attendances.
+                        if (submission.grade == None):
+                            submission_grade = 1
+                        else:
+                            submission_grade = submission_grade + 1
+                        # Update the submission's grade
+                        submission.edit(submission={'posted_grade': submission_grade})
+                        print("updateAttendanceScore: updated the grade!")

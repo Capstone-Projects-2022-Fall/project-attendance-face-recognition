@@ -5,12 +5,12 @@ const API_URL = process.env.REACT_APP_API_URL;
 const token = localStorage.getItem("token");
 console.log("received token is")
 console.log(token)
-export const getInitialInfoAPI = async ()=>{
+export const getInitialInfoAPI = async (initial_token)=>{
     const headers = {
         'Accept': 'application/json',
-        'Authorization': `Token ${token}`,
+        'Authorization': `Token ${initial_token}`,
     }
-    return fetch(`${API_URL}/`,{headers})
+    return await fetch(`${API_URL}/`,{headers})
         .then(res => res.json())
         .then(data => data)
         .catch(error => console.log("error", error))
@@ -20,7 +20,7 @@ export const getInitialInfoAPI = async ()=>{
 * request access token
  */
 export const authenticateUserAPI = async (body)=>
-    fetch(`${API_URL}/token/`,{
+    await fetch(`${API_URL}/token/`,{
         method:'POST',
         headers:{
             'Content-Type':'application/json',
@@ -161,12 +161,14 @@ export const issueRejectionAPI = async(body)=>
 * create schedule for section
 */
 export const scheduleAdditionAPI = async(body)=>
-    fetch(`${API_URL}/schedule_submission/`,{
+    fetch(`${API_URL}/section/schedule/`,{
 	method:'POST',
 	headers:{
+        'Accept': 'application/json',
+        'Content-Type':'application/json',
 	    'Authorization': `Token ${localStorage.getItem("token")}`
 	},
-	body:(body)
+        body:JSON.stringify(body)
     }).then(res => res.json())
 	.then(data =>{return data})
 	.catch(error => console.log("error", error))
@@ -195,6 +197,77 @@ export const attendanceMonitoring = async ()=>{
         'Authorization': `Token ${localStorage.getItem("token")}`,
     }
     return fetch(`${API_URL}/attendance/monitoring/`,{headers})
+        .then(res => res.json())
+        .then(data => data)
+        .catch(error => console.log("error", error))
+}
+
+/*
+ * retrieve a list of active canvas courses
+ */
+export const canvasActiveCoursesAPI = async ()=>{
+    const headers = {
+        'Accept': 'application/json',
+        'Authorization': `Token ${localStorage.getItem("token")}`,
+    }
+    return await fetch(`${API_URL}/canvas/courses/`,{headers})
+        .then(res => res.json())
+        .then(data => data)
+        .catch(error => console.log("error", error))
+}
+
+/*
+ * retrieve a list of active canvas section from a course
+ */
+export const canvasActiveSectionAPI = async (id)=>{
+    const headers = {
+        'Accept': 'application/json',
+        'Authorization': `Token ${localStorage.getItem("token")}`,
+    }
+    return await fetch(`${API_URL}/canvas/${id}/sections/`,{headers})
+        .then(res => res.json())
+        .then(data => data)
+        .catch(error => console.log("error", error))
+}
+
+/*
+ * adding a new section to AFR
+ */
+export const canvasActiveCreateSectionAPI = async(body, id)=>
+    await fetch(`${API_URL}/canvas/${id}/sections/`,{
+        method:'POST',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type':'application/json',
+            'Authorization': `Token ${localStorage.getItem("token")}`
+        },
+        body:JSON.stringify(body)
+    }).then(res => res.json())
+        .then(data =>{return data})
+        .catch(error=> console.log("error", error))
+
+
+/*
+ * delete schedule
+ */
+export const removeSchedule = async (id) =>
+    await fetch(`${API_URL}/schedule/${id}/`,{
+        method:'DELETE',
+        headers:{
+            'Authorization': `Token ${localStorage.getItem("token")}`,
+            'Content-Type':'application/json'
+        },
+    }).catch(error=> console.log('error',error))
+
+/*
+ * get section info
+ */
+export const retrieveSectionInfoAPI = async (id)=>{
+    const headers = {
+        'Accept': 'application/json',
+        'Authorization': `Token ${localStorage.getItem("token")}`,
+    }
+    return await fetch(`${API_URL}/sections/${id}/`,{headers})
         .then(res => res.json())
         .then(data => data)
         .catch(error => console.log("error", error))

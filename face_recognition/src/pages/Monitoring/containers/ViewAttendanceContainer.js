@@ -59,6 +59,7 @@ class ViewAttendanceContainer extends Component{
             this.props.dispatch(handleAddAttendance(JSON.parse(ev.data).instance))
         }
     }
+
     render() {
         const {attendance} = this.props
         return(
