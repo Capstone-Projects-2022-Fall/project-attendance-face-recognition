@@ -9,12 +9,13 @@ from rest_framework import status, parsers
 from rest_framework.authtoken.models import Token
 
 from attendance.services.canvasUtils import CanvasUtils
+from course.models import Schedule
 from course.services.schedule import currentCourse
 from account.services import account_registration_verification, retrieve_students_from_sections, \
     retrieve_issues_admin, retrieve_section_schedule
 
 from account.serializers import UserSerializer, StudentSerializer
-from course.serializers import CourseSerializer, SectionSerializer
+from course.serializers import CourseSerializer, SectionSerializer, ScheduleSerializer
 from attendance.serializers import IssueSerializer, AttendanceSerializer
 
 from account.models import Instructor, Student
@@ -24,6 +25,7 @@ from account.tasks import testPrint
 
 # obtain logger instance
 logger = logging.getLogger(__name__)
+
 
 class GenerateTokenAPIView(APIView):
     """
@@ -95,11 +97,8 @@ class InitialInfoAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        logger.info("Testing logger")
-        logger.warning("Testing logger")
         data = {}
         user = self.request.user
-        canvas = CanvasUtils()
         isInstructor = Instructor.objects.filter(user=user).exists()
         data["user"] = UserSerializer(user).data
         data["current_course"] = CourseSerializer(currentCourse(user)[0]).data
@@ -111,7 +110,7 @@ class InitialInfoAPIView(APIView):
             issues = Issue.objects.filter(section__instructor=instructor)
             data["issues"] = retrieve_issues_admin(instructor)
             data["students"] = retrieve_students_from_sections(instructor)
-            data["schedule"] = retrieve_section_schedule(instructor)
+            data["schedule"] = ScheduleSerializer(Schedule.objects.filter(section__instructor=instructor), many=True).data
             data["report"] = AttendanceSerializer(Attendance.objects.filter(section__instructor=instructor,
                                                                             section__course__end_date__gte=date.today()),
                                                   many=True).data
