@@ -234,7 +234,7 @@ Use Case:
 - The professor views the gradebook on Canvas after class
 - They are then able to see attendance grades for all students without needing to enter grades themself
 
-<br/><b/>Instructor Sequence Diagram:<b/><br/>
+<br/>Instructor Sequence Diagram:<br/>
 
 ```mermaid
 sequenceDiagram
@@ -273,7 +273,7 @@ sequenceDiagram
   Canvas-->>Instructor: Shows the attendance assignment
 ```
 
-<br><b>Student sequence diagram:</b></br>
+<br/>Student sequence diagram:<br/>
 ```mermaid
 sequenceDiagram
   actor Student
