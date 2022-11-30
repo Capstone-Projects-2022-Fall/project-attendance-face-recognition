@@ -22,18 +22,18 @@ class App extends Component {
         "completed_registration":true,
         "is_instructor":false
     }
+
     componentDidMount() {
         let code = (new URLSearchParams(window.location.search)).get("code")
         const body = {
             "canvas_code": code
         }
-	console.log("canvas code is:")
-	console.log(body)
+
         if (!localStorage.getItem("token")){
             authenticateUserAPI(body)
                 .then((token)=>{
-                    localStorage.setItem("token", token.access_token);
-                    this.props.dispatch(handleInitialData())
+                    localStorage.setItem("token", token.access_token)
+                    this.props.dispatch(handleInitialData(token.access_token))
                         .then(()=>{
                             const {registered, isInstructor} = this.props
                             this.setState({
@@ -44,8 +44,8 @@ class App extends Component {
                 })
         }
         else{
-            console.log(localStorage.getItem("token"))
-            this.props.dispatch(handleInitialData())
+            const token = localStorage.getItem("token")
+            this.props.dispatch(handleInitialData(token))
                 .then(data=>{
                     const {registered, isInstructor} = this.props
                     this.setState({
@@ -62,7 +62,7 @@ class App extends Component {
         // Create attendance assignments for any courses the user is teaching,
         // if the user is teaching any. This won't do anything if the teacher
         // is not teaching any classes.
-        createAttendanceAssignmentsAPI(body)
+        //createAttendanceAssignmentsAPI(body)
 
     }
     render() {
@@ -89,7 +89,7 @@ class App extends Component {
                         <Route path="/record" exact element={<RecordPage/>}/>
                         <Route path="/registration" exact element={<RegistrationPage/>}/>
                         <Route path="/attendance" exact element={<AttendancePage/>}/>
-			<Route path="/issueForm" exact element={<IssueFormPage/>}/>
+			            <Route path="/issue" exact element={<IssueFormPage/>}/>
                         <Route path='*' exact element={<Page404/>}/>
                     </Routes>
                 </Suspense>

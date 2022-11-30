@@ -26,7 +26,7 @@ class Section(models.Model):
     # seat_taken = models.IntegerField(default=0)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, null=True, blank=True)
-    students = models.ManyToManyField(Student, null=True, blank=True)
+    students = models.ManyToManyField(Student, blank=True)
 
     def __str__(self):
         return self.name
@@ -63,7 +63,9 @@ class Schedule(models.Model):
 
 class AttendanceSetting(models.Model):
     duration = models.IntegerField(default=5)
-    section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    assignment = models.BooleanField(default=False)
+    assignmentCanvasId = models.CharField(max_length=50, null=True)
+    section = models.OneToOneField(Section, on_delete=models.CASCADE)
 
     def __str__(self):
         return "attendance duration for {} is {}".format(self.section.name, self.duration)

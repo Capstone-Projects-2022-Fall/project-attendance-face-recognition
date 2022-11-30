@@ -5,18 +5,18 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import AddIssueContainer from "./containers/AddIssueContainer";
 
-class Configuration extends Component {
+class IssuePage extends Component {
     render(){
-	return(
-	    <Fragment>
-		<CssBaseline/>
-		<Navbar/>
-		<Container fixed>
-		    <AddIssueContainer/>
-		</Container>
-	    </Fragment>
-	)
+		return(
+			<Fragment>
+				<CssBaseline/>
+				<Navbar/>
+				<Container fixed>
+					<AddIssueContainer/>
+				</Container>
+			</Fragment>
+		)
     }
 }
 
-export default Configuration
+export default IssuePage

@@ -74,7 +74,7 @@ export default function EmptyAppBar() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={logoutUser}><a href="https://3.235.17.130">Back to Canvas</a></MenuItem>
+            <MenuItem onClick={logoutUser}>logout</MenuItem>
         </Menu>
     );
 

@@ -1,3 +1,4 @@
+import logging
 import random
 from datetime import date
 
@@ -15,6 +16,7 @@ from rest_live.mixins import RealtimeMixin
 
 from attendance.services.emotionDetector import detectUserEmotion
 from attendance.services.statistics import attendanceSummary, studentPerSection
+from attendance.tasks import updateCanvasAttendanceTask
 from course.permissions import InstructionPermission
 
 from attendance.services.canvasUtils import CanvasUtils
@@ -26,6 +28,9 @@ from attendance.serializers import IssueSerializer, AttendanceSerializer
 from course.services.schedule import currentCourse
 from recognition.models import StudentImage
 from recognition.services.recognize_image import recognize_image
+
+# obtain logger instance
+logger = logging.getLogger(__name__)
 
 
 class TeacherDailyReportAPIView(APIView):
@@ -42,22 +47,6 @@ class TeacherDailyReportAPIView(APIView):
         return Response(
             data,
             status=status.HTTP_200_OK
-        )
-
-
-class StudentNameAPIView(APIView):
-    """
-    get student name
-    """
-    permission_classes = [IsAuthenticatedOrReadOnly, InstructionPermission]
-
-    def get(self, request, id):
-        student = get_object_or_404(Student, pk=id)
-        user = student.user
-        return Response({
-            "first_name": user.first_name,
-            "last_name": user.last_name
-        },status=status.HTTP_200_OK
         )
 
 
@@ -91,16 +80,16 @@ class SectionStatisticsAPIView(APIView):
 
 class AttendanceLiveViewSet(generics.ListCreateAPIView, RealtimeMixin):
     """
-    taking attendance
+    view attendance in real time
     """
     queryset = Attendance.objects.none()
     serializer_class = AttendanceSerializer
     #permission_classes = [IsAuthenticatedOrReadOnly, InstructionPermission]
 
     def get_queryset(self):
-        id = self.kwargs.get("section",1)
-        print(id)
-        section = get_object_or_404(Section, id=id)
+        section_id = self.kwargs["section"]
+        user = self.kwargs["user"]
+        section = get_object_or_404(Section, id=section_id, instructor__user=user)
         return Attendance.objects.filter(section=section)
 
 
@@ -141,15 +130,17 @@ class AttendanceStudentAPIView(APIView):
 
     def get(self, request):
         data = {}
+        emotions = ["happy", "sad", "angry", "surprised", "neutral"]
+        random.seed(random.random())
+        rand_emotions = emotions[random.randint(0, 4)]
         user = self.request.user
         student = get_object_or_404(Student, user=user)
         images_loaded = StudentImage.objects.filter(student=student).count()
-        print("AttendanceStudentAPIView: Found this many images for the student:")
-        print(images_loaded)
         attendanceExist = Attendance.objects.filter(student=student, section=currentCourse(user)[1],
                                                     recordedDate=date.today()).exists()
-        if images_loaded ==0:
-            data["message"] = "Attendance already recorded"
+        logger.info("Verifying if student can take attendance")
+        if images_loaded == 0:
+            data["message"] = "Attendance cannot be recorded. Please upload images"
             data["authorization"] = 0
             return Response(
                 data,
@@ -166,20 +157,19 @@ class AttendanceStudentAPIView(APIView):
             data["message"] = "You are ready to take attendance but you are recommended to upload more picture in the " \
                               "future" if 1<=images_loaded<5 else "Ready to take attendance"
             data["authorization"] = 1
+            data["emotion"] = rand_emotions,
             return Response(
                 data,
                 status=status.HTTP_200_OK
             )
 
     def post(self, request):
-        print(request.FILES)
         data = request.data
-        print("AttendanceStudentAPIView: Requested emotion is:")
-        print(data["emotion"])
         verifyEmotion = detectUserEmotion(request.FILES["emotionImage"])
-        print("AttendanceStudentAPIView: Found emotion is:")
-        print(verifyEmotion)
         id = recognize_image(request.FILES["regularImage"], self.request.user)
+        emotions = ["happy", "sad", "angry", "surprised", "neutral"]
+        random.seed(random.random())
+        rand_emotions = emotions[random.randint(0, 4)]
         if verifyEmotion == data["emotion"] and id["id"] is not None:
             student = get_object_or_404(Student, id=id["id"])
             attendance = Attendance(status="Present", section=currentCourse(student.user)[1], student=student)
@@ -187,8 +177,8 @@ class AttendanceStudentAPIView(APIView):
             # Now that attendance has been taken, we can update the corresponding assignment on Canvas.
             # We need the course the student took attendance for, as well as the student.
             canvas = CanvasUtils()
-            canvas.updateAttendanceScore(currentCourse(student.user)[1], student)
-            print(attendance)
+            #canvas.updateAttendanceScore(currentCourse(student.user)[1], student)
+            updateCanvasAttendanceTask.delay(student.user.id,attendance.id)
             return Response({
                 "message": "You have been marked present",
                 "completed": True
@@ -197,6 +187,7 @@ class AttendanceStudentAPIView(APIView):
             )
         return Response({
                 "message": "Please try again. You could not be identified",
+                "emotion": rand_emotions,
                 "completed": False
             },
                 status=status.HTTP_200_OK
@@ -294,7 +285,7 @@ class IssueApprovalAPIView(APIView):
                 section_with_issue = issue_to_accept.section
                 # Increment the attendance score associated with the student in that section
                 canvas = CanvasUtils()
-                canvas.updateAttendanceScore(section_with_issue, student_with_issue)
+                #canvas.updateAttendanceScore(section_with_issue, student_with_issue)
                 print("IssueApprovalAPIView: Updated the score!")
                 # Delete the issue once the score has been updated - no need to see it anymore!
                 Issue.objects.filter(id=issue_to_accept_id).delete()

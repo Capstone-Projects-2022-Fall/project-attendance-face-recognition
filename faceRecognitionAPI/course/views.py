@@ -1,19 +1,28 @@
+import logging
+
+from django.db.models import Q
 from django.http import QueryDict
 from django.shortcuts import render
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status, parsers
 from django.shortcuts import get_object_or_404
+
 from attendance.services.canvasUtils import CanvasUtils
 from rest_framework.views import APIView
 from course.permissions import InstructionPermission
 from account.models import Instructor
 from datetime import datetime
 
-from course.models import Course, Section, Schedule
+from course.models import Course, Section, Schedule, AttendanceSetting
 from account.models import Student
 
-from course.serializers import CourseSerializer, SectionSerializer
+from course.serializers import CourseSerializer, SectionSerializer, ScheduleSerializer
+
+from course.tasks import sectionSettingTask, retrievingStudentToSectionTask
+
+# obtain logger instance
+logger = logging.getLogger(__name__)
 
 
 class TeacherCanvasCoursesAPIView(APIView):
@@ -101,6 +110,7 @@ class SetupSectionAPIView(APIView):
     """
     Teacher section attendance configuration
     """
+
     def get(self, request, course):
         sections = Section.objects.filter(course=course)
         return Response(
@@ -136,6 +146,7 @@ class SetupSectionDetailAPIView(APIView):
     """
     Teacher section attendance configuration
     """
+
     def get(self, request, pk):
         sections = get_object_or_404(Section, pk=pk)
         return Response(
@@ -162,6 +173,7 @@ class SyncWithCanvasAPIView(APIView):
     """
     Sync with Canvas. Add courses, sections, and students.
     """
+
     def post(self, request):
         # Log in to canvas and get the instructor's courses
         canvas = CanvasUtils()
@@ -177,7 +189,8 @@ class SyncWithCanvasAPIView(APIView):
             if not (Course.objects.filter(canvasId=instructor_course.id)).exists():
                 print("SyncWithCanvasAPIView: Need to add this course to the backend!")
                 # Fill out the course fields
-                course = Course(canvasId=instructor_course.id, name=instructor_course.name, course_number=instructor_course.course_code, 
+                course = Course(canvasId=instructor_course.id, name=instructor_course.name,
+                                course_number=instructor_course.course_code,
                                 start_date=datetime.strptime(instructor_course.start_at, "%Y-%m-%dT%H:%M:%SZ").date(),
                                 end_date=datetime.strptime(instructor_course.end_at, "%Y-%m-%dT%H:%M:%SZ").date())
                 # Save the course to the backend
@@ -248,7 +261,9 @@ class SyncWithCanvasAPIView(APIView):
                                 print("Added the student, does this work?")
                         # Now that we have all the students we can create the section
                         # The students have to be added later as they may be an array of objects, but we can initialize everything else here
-                        new_section = Section.objects.get_or_create(name=section.name, canvasId=section.id, course=course, instructor=instructor)[0]
+                        new_section = \
+                            Section.objects.get_or_create(name=section.name, canvasId=section.id, course=course,
+                                                          instructor=instructor)[0]
                         print("created the section")
                         # Add the students to the section
                         new_section.students.add(*students_in_section)
@@ -259,42 +274,182 @@ class SyncWithCanvasAPIView(APIView):
 
         return Response({
             "message": "Course has been imported!",
-            "completed": True 
-        },
-            status=status.HTTP_200_OK
-        )
-
-
-class SubmitScheduleAPIView(APIView):
-    """
-    Set up the schedule for the section
-    """
-    def post(self, request):
-        print("SubmitScheduleAPIView: Submitting a schedule!")
-        data = request.data
-        # Get the request fields
-        section_name = data["section"]
-        weekday = data["weekday"]
-        start_time = data["start_time"]
-        end_time = data["end_time"]
-        # Get the user and verify that they are an instructor
-        user = self.request.user
-        instructor = get_object_or_404(Instructor, user=user)
-        # Get the sections associated with the instructor
-        sections = Section.objects.filter(instructor=instructor)
-        # Determine which section the schedule is for
-        for section in sections:
-            if (section.name==section_name):
-                # Create a Schedule object for the section and save it
-                # Classes can only have one schedule for now, so don't save it if one
-                # already exists
-                if not (Schedule.objects.filter(section=section).exists()):
-                    schedule = Schedule(weekday=weekday, start_time=start_time, end_time=end_time, section=section)
-                    schedule.save()
-
-        return Response({
-            "message": "Schedule has been created!",
             "completed": True
         },
             status=status.HTTP_200_OK
         )
+
+
+class CanvasActiveCoursesAPIView(APIView):
+    """
+    View prof's active canvas courses
+    """
+    permission_classes = [IsAuthenticated, InstructionPermission]
+
+    def get(self, request):
+        canvas = CanvasUtils()
+        canvasCourses = canvas.canvasActiveCourses(self.request.user)
+        courses = []
+        for c in canvasCourses:
+            courses.append({
+                "id": c.id,
+                "name": c.name,
+                "course_code": c.course_code
+            })
+        return Response(
+            courses,
+            status=status.HTTP_200_OK
+        )
+
+
+class CanvasActiveSectionsAPIView(APIView):
+    """
+    View prof's active canvas section from a course
+    """
+    permission_classes = [IsAuthenticated, InstructionPermission]
+    parser_classes = [parsers.FormParser, parsers.JSONParser, parsers.MultiPartParser]
+
+    def get(self, request, id):
+        canvas = CanvasUtils()
+        canvasCourseSections = canvas.canvasActiveSection(self.request.user, id)
+        savedSection = []
+        unsavedSection = []
+        sect_ids = [int(val.canvasId) for val in Section.objects.filter(course__canvasId=id)]
+        for s in canvasCourseSections[0]:
+            if s.id not in sect_ids:
+                unsavedSection.append({
+                    "id": s.id,
+                    "name": s.name
+                })
+            else:
+                savedSection.append({
+                    "id": s.id,
+                    "name": s.name
+                })
+        return Response({
+            "course": canvasCourseSections[1].name,
+            "unrecordedSection": unsavedSection,
+            "recordedSection": savedSection
+        },
+            status=status.HTTP_200_OK
+        )
+
+    def post(self, request, id):
+        data = request.data
+        section = None
+        canvas = CanvasUtils()
+        canvasCourseSections = canvas.canvasActiveSection(self.request.user, id)
+        instructor = get_object_or_404(Instructor, user=self.request.user)
+        if Course.objects.filter(canvasId=id).exists():
+            savedCourse = get_object_or_404(Course, canvasId=id)
+            section = Section(course=savedCourse, name=data["name"], canvasId=data["id"], instructor=instructor)
+            section.save()
+        else:
+            newCourse = Course(canvasId=id, name=canvasCourseSections[1].name,
+                               course_number=canvasCourseSections[1].course_code,
+                               start_date=datetime.strptime(canvasCourseSections[1].start_at, "%Y-%m-%dT%H:%M:%SZ"),
+                               end_date=datetime.strptime(canvasCourseSections[1].end_at, "%Y-%m-%dT%H:%M:%SZ"))
+            newCourse.save()
+            section = Section(course=newCourse, name=data["name"], canvasId=data["id"], instructor=instructor)
+            section.save()
+        # retrieving student for this section
+        logging.info("retrieving students for this section")
+        retrievingStudentToSectionTask.delay(section.instructor.user.id, section.canvasId)
+        return Response({
+            "section": SectionSerializer(section).data
+        },
+            status=status.HTTP_201_CREATED)
+
+
+class SectionSettingAndScheduleAPIView(APIView):
+    """
+    handling submission of section's schedule
+    """
+    permission_classes = [IsAuthenticated, InstructionPermission]
+    parser_classes = [parsers.FormParser, parsers.JSONParser, parsers.MultiPartParser]
+
+    def post(self, request):
+        data = request.data
+        logger.info("Validating time")
+        if datetime.strptime(data["start_time"], "%H:%M") > datetime.strptime(data["end_time"], "%H:%M"):
+            return Response({
+                "detail": "Start time should be less than End time"
+            },
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY
+            )
+        logging.info("Verify if unique")
+        section = get_object_or_404(Section, id=data["section"])
+        if Schedule.objects.filter(section=section, weekday=data["weekday"], start_time=data["start_time"]).exists():
+            return Response({
+                "detail": "this schedule already exists"
+            },
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY
+            )
+        logging.info("adding schedule to section")
+        schedule = Schedule(section=section, weekday=data["weekday"], start_time=data["start_time"],
+                            end_time=data["end_time"])
+        schedule.save()
+        # handle assignment and setting
+        logger.info("setting duration of attendance and create assignment")
+        if not AttendanceSetting.objects.filter(section=section).exists():
+            sectionSettingTask.delay(section.id, data["duration"])
+        return Response({
+            "schedule": ScheduleSerializer(schedule).data
+        },
+            status=status.HTTP_201_CREATED
+        )
+
+
+class ScheduleDetailAPIView(APIView):
+    """
+    make changes to schedule
+    """
+    permission_classes = [IsAuthenticated, InstructionPermission]
+    parser_classes = [parsers.FormParser, parsers.JSONParser, parsers.MultiPartParser]
+
+    def delete(self, request, id):
+        schedule = get_object_or_404(Schedule, id=id)
+        schedule.delete()
+        return Response(
+            status=status.HTTP_204_NO_CONTENT
+        )
+
+
+class SectionDetailAPIView(APIView):
+    """
+    view or make changes to section
+    """
+    permission_classes = [IsAuthenticated, InstructionPermission]
+    parser_classes = [parsers.FormParser, parsers.JSONParser, parsers.MultiPartParser]
+
+    def get(self, request, id):
+        instructor = get_object_or_404(Instructor,user=self.request.user)
+        section = get_object_or_404(Section, canvasId=id, instructor=instructor)
+        return Response({
+            "section": SectionSerializer(section).data,
+            "course": section.course.name
+        })
+
+    def delete(self, request, id):
+        instructor = get_object_or_404(Instructor, user=self.request.user)
+        section = get_object_or_404(Section, canvasId=id, instructor=instructor)
+        section.delete()
+        return Response(
+            status=status.HTTP_204_NO_CONTENT
+        )
+
+
+class SectionInfoAPIView(APIView):
+    """
+    view or make changes to section
+    """
+    permission_classes = [IsAuthenticated, InstructionPermission]
+    parser_classes = [parsers.FormParser, parsers.JSONParser, parsers.MultiPartParser]
+
+    def get(self, request, id):
+        instructor = get_object_or_404(Instructor,user=self.request.user)
+        section = get_object_or_404(Section, id=id, instructor=instructor)
+        return Response({
+            "section": SectionSerializer(section).data,
+            "course": section.course.name
+        })

@@ -1,4 +1,5 @@
 from datetime import date
+import logging
 
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
@@ -6,25 +7,23 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status, parsers
 from rest_framework.authtoken.models import Token
-from rest_framework.authentication import TokenAuthentication
 
 from attendance.services.canvasUtils import CanvasUtils
+from course.models import Schedule
 from course.services.schedule import currentCourse
 from account.services import account_registration_verification, retrieve_students_from_sections, \
     retrieve_issues_admin, retrieve_section_schedule
 
 from account.serializers import UserSerializer, StudentSerializer
-from course.serializers import CourseSerializer, SectionSerializer
+from course.serializers import CourseSerializer, SectionSerializer, ScheduleSerializer
 from attendance.serializers import IssueSerializer, AttendanceSerializer
 
 from account.models import Instructor, Student
 from attendance.models import Issue, Attendance
 
-'''
-class BaseView(APIView):
-    authentication_classes = [
-        TokenAuthentication,
-    ]'''
+
+# obtain logger instance
+logger = logging.getLogger(__name__)
 
 
 class GenerateTokenAPIView(APIView):
@@ -39,7 +38,7 @@ class GenerateTokenAPIView(APIView):
         canvas = CanvasUtils()
         if "canvas_code" in data:
             user = canvas.getUserAndCanvasToken(data["canvas_code"])
-            print(user)
+            print("user view", user)
             token = Token.objects.get_or_create(user=user)
             print(token)
         elif self.request.user:
@@ -60,6 +59,7 @@ class GenerateTokenAPIView(APIView):
             status=status.HTTP_200_OK
         )
 
+
 class GenerateAssignmentAPIView(APIView):
     """
     Generate assignments for automatic attendance
@@ -72,7 +72,7 @@ class GenerateAssignmentAPIView(APIView):
         # If the canvas code is in the data passed in through the request...
         if "canvas_code" in data:
             # Call the canvas util that will create assignments for attendance
-            canvas.createAttendanceAssignments(data["canvas_code"])
+            # canvas.createAttendanceAssignments(data["canvas_code"])
             return Response(
                 {
                     "message": "Assignments created!"
@@ -81,12 +81,13 @@ class GenerateAssignmentAPIView(APIView):
             )
         # This request will not work without the canvas code. Signify as much.
         else:
-            return Reponse(
+            return Response(
                 {
                     "message": "Could not create assignments!"
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
+
 
 class InitialInfoAPIView(APIView):
     """
@@ -97,7 +98,6 @@ class InitialInfoAPIView(APIView):
     def get(self, request):
         data = {}
         user = self.request.user
-        canvas = CanvasUtils()
         isInstructor = Instructor.objects.filter(user=user).exists()
         data["user"] = UserSerializer(user).data
         data["current_course"] = CourseSerializer(currentCourse(user)[0]).data
@@ -109,7 +109,7 @@ class InitialInfoAPIView(APIView):
             issues = Issue.objects.filter(section__instructor=instructor)
             data["issues"] = retrieve_issues_admin(instructor)
             data["students"] = retrieve_students_from_sections(instructor)
-            data["schedule"] = retrieve_section_schedule(instructor)
+            data["schedule"] = ScheduleSerializer(Schedule.objects.filter(section__instructor=instructor), many=True).data
             data["report"] = AttendanceSerializer(Attendance.objects.filter(section__instructor=instructor,
                                                                             section__course__end_date__gte=date.today()),
                                                   many=True).data

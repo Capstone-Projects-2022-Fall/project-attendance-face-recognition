@@ -10,10 +10,10 @@ import {retrieveIssues} from "./issues";
 import {retrieveStudents} from "./students";
 import {getSchedule} from "./schedule";
 
-export function handleInitialData() {
+export function handleInitialData(token) {
     return (dispatch) => {
         dispatch(showLoading())
-        return getInitialInfoAPI()
+        return getInitialInfoAPI(token)
             .then(({user, current_course, current_section, report, registration_completed, role_teacher, issues,
                        students, schedule})=>{
                 dispatch(setAuthedUser(user))

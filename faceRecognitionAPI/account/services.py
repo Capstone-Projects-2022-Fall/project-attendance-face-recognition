@@ -67,3 +67,4 @@ def retrieve_section_schedule(instructor):
             newData["schedule"] = "".join([newData["schedule"], scheduling])
         data.append(newData)
     return data
+
