@@ -91,16 +91,16 @@ class SectionStatisticsAPIView(APIView):
 
 class AttendanceLiveViewSet(generics.ListCreateAPIView, RealtimeMixin):
     """
-    taking attendance
+    taking attendance in real time
     """
     queryset = Attendance.objects.none()
     serializer_class = AttendanceSerializer
     #permission_classes = [IsAuthenticatedOrReadOnly, InstructionPermission]
 
     def get_queryset(self):
-        id = self.kwargs.get("section",1)
-        print(id)
-        section = get_object_or_404(Section, id=id)
+        section_id = self.kwargs["section"]
+        user = self.kwargs["user"]
+        section = get_object_or_404(Section, id=section_id, instructor__user=user)
         return Attendance.objects.filter(section=section)
 
 

@@ -35,28 +35,32 @@ class ViewAttendanceContainer extends Component{
     }
     ws = new WebSocket(`ws://localhost:5000/ws/attendance/`);
     componentDidMount() {
+        const {section, authedUser} = this.props
         this.props.dispatch(handleGetAttendance())
             .then(()=>{
             })
-
-        this.ws.onopen = ()=>{
-            console.log("connected")
-            this.ws.send(JSON.stringify({
-                "type": "subscribe",
-                "id": Math.floor(Math.random() * 5000),
-                "model": "attendance.Attendance",
-                "action": "list"
-            }))
-        }
-
-        this.ws.onclose = () => {
-            console.log("closed");
-        };
-
-        this.ws.onmessage = ev => {
-            console.log(ev.data)
-            console.log(JSON.parse(ev.data).instance)
-            this.props.dispatch(handleAddAttendance(JSON.parse(ev.data).instance))
+        if (section.name.length !== 0){
+            this.ws.onopen = ()=>{
+                console.log("connected")
+                this.ws.send(JSON.stringify({
+                    "type": "subscribe",
+                    "id": Math.floor(Math.random() * 5000),
+                    "model": "attendance.Attendance",
+                    "action": "list",
+                    "view_kwargs": {
+                        "section": section.id,
+                        "user": authedUser.id
+                    }
+                }))
+            }
+            this.ws.onclose = () => {
+                console.log("closed");
+            };
+            this.ws.onmessage = ev => {
+                console.log(ev.data)
+                console.log(JSON.parse(ev.data).instance)
+                this.props.dispatch(handleAddAttendance(JSON.parse(ev.data).instance))
+            }
         }
     }
 
@@ -83,10 +87,11 @@ class ViewAttendanceContainer extends Component{
     }
 }
 
-function mapStateToProps({attendance, section}){
-    console.log(attendance)
+function mapStateToProps({attendance, section, authedUser}){
     return{
-        attendance
+        attendance,
+        section,
+        authedUser
     }
 }
 export default connect(mapStateToProps)(ViewAttendanceContainer)
