@@ -234,7 +234,7 @@ Use Case:
 - The professor views the gradebook on Canvas after class
 - They are then able to see attendance grades for all students without needing to enter grades themself
 
-<br><b>Instructor Sequence Diagram:</b></br>
+<br/><b/>Instructor Sequence Diagram:<b/><br/>
 
 ```mermaid
 sequenceDiagram
