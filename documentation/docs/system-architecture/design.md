@@ -240,35 +240,42 @@ Use Case:
 sequenceDiagram
   actor Instructor
   participant App
-  participant Frontend_API
+  participant Frontend API
   participant GenerateAssignmentAPIView
   participant canvasUtils
   participant Canvas
-  Instructor->>App: Logs On
-  Note over App,Frontend_API: The body contains the Canvas code.
-  App->>Frontend_API: createAttendanceAssignmentsAPI(body)
-  Frontend_API->>GenerateAssignmentAPIView: POST: /api/v1/assignments(body)
-  GenerateAssignmentAPIView->>canvasUtils: createAttendanceAssignments(body)
-  canvasUtils->>Canvas: POST: /login/oauth2/token(body)
-  Canvas-->>canvasUtils: Response: Access Token
-  canvasUtils->>Canvas: Canvas.get_current_user(access_token)
-  Canvas-->>canvasUtils: Response: User
-  canvasUtils->>Canvas: user.get_courses()
-  Canvas-->>canvasUtils: Response: User's Courses
-  loop while user is not in response
-    canvasUtils->>Canvas: get_users["ta", "teacher"]
-    Canvas-->>canvasUtils: Response: Users in course
+  Instructor->>Canvas: Logs On
+  Canvas-->>Instructor: Response: Canvas Code
+  Instructor->>App: Launches AFR, Provides Canvas Code
+  App->>Frontend API: createAttendanceAssignmentsAPI(canvas code)
+  Frontend API->>GenerateAssignmentAPIView: POST: /api/v1/assignments(canvas code)
+  alt Canvas code is undefined
+    GenerateAssignmentAPIView-->>Frontend API: Response: HTTP_400_BAD_REQUEST
+  else Canvas code is defined
+    GenerateAssignmentAPIView->>canvasUtils: createAttendanceAssignments(canvas code)
+    canvasUtils->>Canvas: POST: /login/oauth2/token
+    Canvas-->>canvasUtils: Response: Instructor's Access Token
+    canvasUtils->>Canvas: Canvas.get_current_user(instructor's access token)
+    Canvas-->>canvasUtils: Response: Canvas User
+    canvasUtils->>Canvas: user.get_courses()
+    Canvas-->>canvasUtils: Response: Courses User is Enrolled In
+    loop For each course the user is enrolled in
+      Note over canvasUtils,Canvas: This returns the list of instructors for the course.
+      canvasUtils->>Canvas: course.get_users["ta", "teacher"]
+      Canvas-->>canvasUtils: Response: Course's Instructors
+      alt Canvas User in Course's Instructors
+        canvasUtils->>Canvas: course.get_assignments()
+        Canvas-->>canvasUtils: Response: Assignments in course
+        alt Attendance assignment found
+          canvasUtils->>GenerateAssignmentAPIView: 
+        else No attendance assignment found
+          canvasUtils->>Canvas: create_assignment
+          canvasUtils->>GenerateAssignmentAPIView: 
+        end
+      end
+    end
+    GenerateAssignmentAPIView-->>Frontend API: Response: HTTP_200_OK
   end
-  canvasUtils->>Canvas: course.get_assignments()
-  Canvas-->>canvasUtils: Response: Assignments in course
-  alt Attendance assignment found
-    canvasUtils->>GenerateAssignmentAPIView: 
-  end
-  alt No attendance assignment found
-    canvasUtils->>Canvas: create_assignment
-    canvasUtils->>GenerateAssignmentAPIView: 
-  end
-  GenerateAssignmentAPIView-->>Frontend_API: Response (200 if OK, 400 if bad request)
   Instructor->>Canvas: View assignments
   Canvas-->>Instructor: Shows the attendance assignment
 ```
@@ -280,31 +287,36 @@ sequenceDiagram
   participant App
   participant Frontend_API
   participant AttendanceStudentAPIView
+  participant schedule
   participant canvasUtils
   participant Canvas
-  Student->>App: Logs on
-  Note over App,Frontend_API: Body=regular image, emotion image, emotion
-  App->>Frontend_API: attendanceSubmissionAPI(body)
-  Frontend_API->>AttendanceStudentAPIView: POST: /api/v1/attendance(body)
-  Note over AttendanceStudentAPIView,canvasUtils: This is only called when the student is marked present.
-  AttendanceStudentAPIView->>canvasUtils: updateAttendanceScore(course, student)
-  canvasUtils->>Canvas: Canvas.get_current_user(grader_access_token)
-  Canvas-->>canvasUtils: Response: Grader
-  canvasUtils->>Canvas: user.get_courses()
-  Canvas-->>canvasUtils: Response: Grader's courses
-  loop until matching course for submitting student found
-    canvasUtils->>canvasUtils: Check course
+  Student->>App: Launches AFR
+  Student->>App: Submits attendance
+  App->>Frontend_API: attendanceSubmissionAPI(images, emotion)
+  Frontend_API->>AttendanceStudentAPIView: POST: /api/v1/attendance(images, emotion)
+  alt AFR marks the student present
+    AttendanceStudentAPIView->>schedule: currentCourse(student)
+    schedule-->>AttendanceStudentAPIView: Student's current course and section
+    AttendanceStudentAPIView->>canvasUtils: updateAttendanceScore(course, student)
+    canvasUtils->>Canvas: Canvas.get_current_user(grader_access_token)
+    Canvas-->>canvasUtils: Response: Grader
+    canvasUtils->>Canvas: user.get_courses()
+    Canvas-->>canvasUtils: Response: Grader's courses
+    loop until matching course for submitting student found
+      canvasUtils->>canvasUtils: Check course
+    end
+    canvasUtils->>Canvas: get_assignments(matching course)
+    Canvas-->>canvasUtils: Response: Course's assignments
+    loop until matching assignment found
+      canvasUtils->>canvasUtils: Check assignment
+    end
+    canvasUtils->>Canvas: get_submission(student's canvas ID)
+    Canvas-->>canvasUtils: Response: Student's attendance score
+    canvasUtils->>canvasUtils: Increment student's attendance score
+    canvasUtils->>Canvas: submission.edit(new attendance score)
+    canvasUtils->>AttendanceStudentAPIView: 
+    AttendanceStudentAPIView->>Frontend_API: Response: HTTP_200_OK
   end
-  canvasUtils->>Canvas: get_assignments(matching course)
-  Canvas-->>canvasUtils: Response: Course's assignments
-  loop until matching assignment found
-    canvasUtils->>canvasUtils: Check assignment
-  end
-  canvasUtils->>Canvas: get_submission(student's canvas ID)
-  Canvas-->>canvasUtils: Response: Student's attendance submission
-  Canvas->>Canvas: submission.edit(grade = grade + 1)
-  canvasUtils->>AttendanceStudentAPIView: 
-  AttendanceStudentAPIView->>Frontend_API: Response: 200 (OK)
   Student->>Canvas: View assignments
   Canvas-->>Student: Shows the autograded attendance assignment
 ```
