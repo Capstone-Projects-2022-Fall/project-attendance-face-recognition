@@ -18,7 +18,7 @@ import {scheduleAdditionAPI} from "../../../utils/api/api";
 import {NavLink} from 'react-router-dom';
 import AddScheduleComponent from "../components/AddScheduleComponent";
 import {handleDeleteSchedule, handleSectionSchedule} from "../../../redux/action/schedule";
-import ViewScheduleContainer from "../../../container/ViewScheduleContainer";
+import ViewScheduleContainer from "../../Dashboard/containers/ViewScheduleContainer";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -122,7 +122,9 @@ class AddScheduleContainer extends Component {
 								</TableHead>
 								<TableBody>
 									{this.state.schedules_list.map(r=>(
-										<TableRow>
+										<TableRow
+											key={r[1].id}
+										>
 											<TableCell>{this.DayOfWeek(r[1].weekday)}</TableCell>
 											<TableCell>{r[1].start_time}</TableCell>
 											<TableCell>{r[1].end_time}</TableCell>

@@ -11,6 +11,7 @@ urlpatterns = [
     path('section/schedule/', views.SectionSettingAndScheduleAPIView.as_view()),
     path('schedule/<int:id>/', views.ScheduleDetailAPIView.as_view()),
     path('sections/<int:id>/', views.SectionDetailAPIView.as_view()),
+    path('section/<int:id>/', views.SectionInfoAPIView.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

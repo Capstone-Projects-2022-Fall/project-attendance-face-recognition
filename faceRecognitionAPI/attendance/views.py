@@ -149,7 +149,7 @@ class AttendanceStudentAPIView(APIView):
         attendanceExist = Attendance.objects.filter(student=student, section=currentCourse(user)[1],
                                                     recordedDate=date.today()).exists()
         if images_loaded ==0:
-            data["message"] = "Attendance already recorded"
+            data["message"] = "Attendance cannot be recorded. Please upload images"
             data["authorization"] = 0
             return Response(
                 data,

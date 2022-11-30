@@ -34,6 +34,7 @@ class StudentListContainer extends Component{
     }
     render() {
         const {students} = this.props
+        console.log(students)
         return (
             <div className={"card"}>
                 <div className={"card-body"}>

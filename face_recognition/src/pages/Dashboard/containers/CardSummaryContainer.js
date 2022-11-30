@@ -34,7 +34,13 @@ class CardSummaryContainer extends Component{
 }
 function mapStateToProps({issues, students, schedule}){
     let numberIssues = Object.values(issues).reduce((n, e)=>e.status ==='Unresolved'?n+1:n, 0)
-    let numberCourses = Object.values(schedule).reduce((n,e)=>e.course === e.course?n+1:n, 0)
+    //let numberCourses = Object.values(schedule).reduce((n,e)=>e.course === e.course?n+1:n, 0)
+    let numberCourses = Object.keys(Object.values(schedule).reduce((result,currentValue)=>{
+        (result[currentValue.section] = result[currentValue.section] || []).push(
+            currentValue
+        );
+        return result;
+    },{})).length
     return{
         issues: numberIssues,
         students: Object.values(students).length,

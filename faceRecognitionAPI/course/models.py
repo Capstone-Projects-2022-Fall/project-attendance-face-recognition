@@ -26,7 +26,7 @@ class Section(models.Model):
     # seat_taken = models.IntegerField(default=0)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, null=True, blank=True)
-    students = models.ManyToManyField(Student, null=True, blank=True)
+    students = models.ManyToManyField(Student, blank=True)
 
     def __str__(self):
         return self.name

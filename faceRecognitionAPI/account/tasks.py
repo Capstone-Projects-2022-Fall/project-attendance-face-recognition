@@ -18,7 +18,7 @@ def newCanvasToken(data, id):
             accessToken=data["access_token"],
             refreshToken=data["refresh_token"],
             expires=data["expires_in"],
-            user=user.id
+            user=user
         )
         canvas_token.save()
     else:

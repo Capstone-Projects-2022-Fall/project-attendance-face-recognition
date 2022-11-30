@@ -71,13 +71,6 @@ class CanvasUtils:
             if self.isTeacher(user):
                 instructor = Instructor(canvasId=canvas_user["id"], user=user)
                 instructor.save()
-            else:
-                """
-                To figure out a way to automatically add student
-                """
-                student = Student(canvasId=canvas_user["id"], user=user)
-                student.save()
-                # self.addingStudentToCourse(user)
         return user
 
     def getCanvasToken(self, user):
@@ -200,32 +193,36 @@ class CanvasUtils:
                     return True
         return False
 
-    def addingStudentToCourse(self, user):
+    def registeringStudentToSection(self, user, section_canvas_id):
         """
-        Adding user to course
-        :return:
+        create an account for all students from this section
         """
         # canvas API Key
         access_token = self.getCanvasToken(user)
         # initialize a new canvas object
         canvas = Canvas(self.API_URL, access_token)
-        # get student
-        student = get_object_or_404(Student, user=user)
-        canvas_user = canvas.get_current_user()
-        # get user's course that match the list of course
-        courses_taken = canvas_user.get_courses()
-        for course in courses_taken:
-            today = datetime.today()
-            if datetime.strptime(course.start_at, "%Y-%m-%dT%H:%M:%SZ") <= today <= datetime.strptime(course.end_at,
-                                                                                                      "%Y-%m-%dT%H:%M:%SZ"):
-                '''go through all sections'''
-                for section in course.get_sections():
-                    for enrollment in section.get_enrollments():
-                        if enrollment.user["id"] == canvas_user.id:
-                            if not Section.objects.filter(name=section.name, students=student).exists():
-                                s = get_object_or_404(Section, name=section.name)
-                                s.students.add(student)
-                                print("adding to course")
+        # type to retrieve from enrollment
+        type_list = ["StudentEnrollment", "StudentViewEnrollment"]
+        section = canvas.get_section(int(section_canvas_id))
+        afr_section = get_object_or_404(Section, canvasId=section_canvas_id)
+        studentEnrollment = section.get_enrollments(type=type_list)
+        logger.info("saving students to section")
+        for enrollment in studentEnrollment:
+            student_user = None
+            student = None
+            canvas_student = enrollment.user
+            name = str(canvas_student["name"]).split(" ")
+            if not User.objects.filter(username=canvas_student["login_id"]).exists():
+                student_user = User(username=canvas_student["login_id"], email=canvas_student["login_id"],
+                                    first_name=name[0].strip(), last_name=name[1].strip())
+                student_user.save()
+                student = Student(canvasId=canvas_student["id"], user=student_user)
+                student.save()
+            else:
+                student_user = get_object_or_404(User, username=canvas_student["login_id"])
+                student = get_object_or_404(Student, user=student_user)
+
+            afr_section.students.add(student)
 
     def getUserCourses(self, user):
         """

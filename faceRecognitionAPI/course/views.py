@@ -19,7 +19,7 @@ from account.models import Student
 
 from course.serializers import CourseSerializer, SectionSerializer, ScheduleSerializer
 
-from course.tasks import sectionSettingTask
+from course.tasks import sectionSettingTask, retrievingStudentToSectionTask
 
 # obtain logger instance
 logger = logging.getLogger(__name__)
@@ -352,6 +352,9 @@ class CanvasActiveSectionsAPIView(APIView):
             newCourse.save()
             section = Section(course=newCourse, name=data["name"], canvasId=data["id"], instructor=instructor)
             section.save()
+        # retrieving student for this section
+        logging.info("retrieving students for this section")
+        retrievingStudentToSectionTask.delay(section.instructor.user.id, section.canvasId)
         return Response({
             "section": SectionSerializer(section).data
         },
@@ -435,3 +438,18 @@ class SectionDetailAPIView(APIView):
             status=status.HTTP_204_NO_CONTENT
         )
 
+
+class SectionInfoAPIView(APIView):
+    """
+    view or make changes to section
+    """
+    permission_classes = [IsAuthenticated, InstructionPermission]
+    parser_classes = [parsers.FormParser, parsers.JSONParser, parsers.MultiPartParser]
+
+    def get(self, request, id):
+        instructor = get_object_or_404(Instructor,user=self.request.user)
+        section = get_object_or_404(Section, id=id, instructor=instructor)
+        return Response({
+            "section": SectionSerializer(section).data,
+            "course": section.course.name
+        })

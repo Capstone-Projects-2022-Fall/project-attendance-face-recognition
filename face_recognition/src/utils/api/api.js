@@ -272,3 +272,14 @@ export const retrieveSectionInfoAPI = async (id)=>{
         .then(data => data)
         .catch(error => console.log("error", error))
 }
+
+export const retrieveSectionCourseInfoAPI = async (id)=>{
+    const headers = {
+        'Accept': 'application/json',
+        'Authorization': `Token ${localStorage.getItem("token")}`,
+    }
+    return await fetch(`${API_URL}/section/${id}/`,{headers})
+        .then(res => res.json())
+        .then(data => data)
+        .catch(error => console.log("error", error))
+}
