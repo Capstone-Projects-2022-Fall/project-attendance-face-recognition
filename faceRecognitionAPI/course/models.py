@@ -64,6 +64,7 @@ class Schedule(models.Model):
 class AttendanceSetting(models.Model):
     duration = models.IntegerField(default=5)
     assignment = models.BooleanField(default=False)
+    assignmentCanvasId = models.CharField(max_length=50, null=True)
     section = models.OneToOneField(Section, on_delete=models.CASCADE)
 
     def __str__(self):

@@ -25,8 +25,8 @@ class Attendance(models.Model):
     """
     Attendance object
     """
-    recordedDate = models.DateField(auto_now=True)
-    recordedTime = models.TimeField(auto_now=True)
+    recordedDate = models.DateField(auto_now_add=True)
+    recordedTime = models.TimeField(auto_now_add=True)
     status = models.CharField(max_length=250, default="Absent")
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)

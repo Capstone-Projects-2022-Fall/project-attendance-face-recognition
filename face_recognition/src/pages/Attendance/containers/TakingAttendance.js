@@ -11,29 +11,25 @@ import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied
 import Box from "@mui/material/Box";
 import {NavLink} from "react-router-dom";
 
-// This is dumb but it fixes the grammar on the screen the user sees - "surprise" => "surprised"
-const calculatedEmotions = ["happy", "sad", "angry", "surprise", "fear"];
-const displayedEmotions = ["happy", "sad", "angry", "surprised", "fear"];
-// Generate a list of 5 random numbers between 0 and 3 - these represent happy through surprised.
-// Fear is not currently used as it is difficult to show
-const emotionSelections = [Math.floor(Math.random()*4), Math.floor(Math.random()*4), Math.floor(Math.random()*4), Math.floor(Math.random()*4), Math.floor(Math.random()*4)];
-    
+// maximum number of attempt
+const maxAttempt = 5;
+
 class TakingAttendance extends Component{
     state = {
         imageProfile:"",
         image2Profile:"",
+        imageEmotion:"",
         numPic : 0,
         authorization: 1,
         message:"",
         successMessage:"",
         errorMessage:"",
+        emotion:"",
         first_name:"",
         last_name:"",
         email: "",
         completed:null,
-        numAttempt:1,
-	numSubmissions:0,
-	maxAttempts:5
+        numAttempt:1
     }
     componentDidMount() {
         attendanceInstruction()
@@ -50,6 +46,7 @@ class TakingAttendance extends Component{
                     this.setState({
                         authorization:r.authorization,
                         message: r.message,
+                        emotion: r.emotion[0]
                     })
             })
     }
@@ -78,7 +75,7 @@ class TakingAttendance extends Component{
         let formData = new FormData()
         formData.append("regularImage", blob1Image,"regularStudent.jpeg")
         formData.append("emotionImage", blob2Image,"emotionStudent.jpeg")
-        formData.append("emotion", calculatedEmotions[emotionSelections[this.state.numAttempt-1]])
+        formData.append("emotion",this.state.emotion)
 
         attendanceSubmissionAPI(formData)
             .then((r)=>{
@@ -88,18 +85,16 @@ class TakingAttendance extends Component{
                         completed:r.completed,
                         successMessage: r.message
                     })
+                    this.nextStep()
                 }
                 else
                     this.setState({
                         completed:r.completed,
-                        errorMessage: r.message
+                        errorMessage: r.message,
+                        emotion: r.emotion,
+                        numAttempt: this.state.numAttempt+1
                     })
             })
-
-	// Increment the number of submissions every time the student attempts to take attendance
-	this.setState({
-	    numSubmissions: this.state.numSubmissions+1
-	})
     }
 
     handleRestart = ()=>{
@@ -115,13 +110,12 @@ class TakingAttendance extends Component{
             last_name:"",
             email: "",
             completed:null,
-            numAttempt: this.state.numAttempt+1,
-	    maxAttempts: 5
         })
     }
 
     render() {
         const {current} = this.props
+        console.log(this.state.numAttempt)
         if(!current){
             return (
                 <Fragment>
@@ -134,6 +128,33 @@ class TakingAttendance extends Component{
                         <div className={"card-body"}>
                             <Alert severity="error">
                                 You are not scheduled for a class at this time
+                            </Alert>
+                        </div>
+                    </div>
+                </Fragment>
+            )
+        }
+        else if(this.state.numAttempt > maxAttempt){
+            return (
+                <Fragment>
+                    <div className={"card"}>
+                        <div className={"card-header"}>
+                            Attendance
+                        </div>
+                    </div>
+                    <div className={"card"}>
+                        <div className={"card-body"}>
+                            <Alert
+                                severity={"error"}
+                                action={
+                                    <Button color={"inherit"} component={NavLink} to="/issue">
+                                        Notify Professor
+                                    </Button>
+                                }
+                            >
+                                <AlertTitle>Not Found</AlertTitle>
+                                You have exceeded the maximum number of attempts. Please report issue to the professor.
+
                             </Alert>
                         </div>
                     </div>
@@ -178,7 +199,7 @@ class TakingAttendance extends Component{
                                 this.state.numPic ===1?
                                     (
                                         <Alert severity={"warning"}>
-                                            Show that you are {displayedEmotions[emotionSelections[this.state.numAttempt-1]]} while looking at the camera
+                                            Show that you are {this.state.emotion} while looking at the camera
                                         </Alert>
                                     ):
                                     (
@@ -188,7 +209,7 @@ class TakingAttendance extends Component{
                         </div>
                         <div className={"card"}>
                             {
-                                this.state.completed === false && this.state.numAttempt < this.state.maxAttempts ?
+                                this.state.completed === false?
                                     (
                                         <Fragment>
                                             <Alert
@@ -200,7 +221,7 @@ class TakingAttendance extends Component{
                                                 }
                                             >
                                                 <AlertTitle>Not Found</AlertTitle>
-                                                {this.state.errorMessage} You have used {this.state.numAttempt} attempt(s) out of {this.state.maxAttempts}.
+                                                {this.state.errorMessage}
 
                                             </Alert>
                                         </Fragment>
@@ -216,7 +237,7 @@ class TakingAttendance extends Component{
                                                 severity={"success"}
                                                 action={
                                                     <Button color={"inherit"} component={NavLink} to="/">
-                                                        Back to AFR Home
+                                                        Home
                                                     </Button>
                                                 }
                                             >
@@ -228,25 +249,6 @@ class TakingAttendance extends Component{
                                     ):<Fragment></Fragment>
                             }
                         </div>
-			<div className={"card"}>
-			    {
-				this.state.completed === false && this.state.numAttempt === this.state.maxAttempts ?
-				    (
-					<Fragment>
-					    <Alert
-						severity={"error"}
-						action={
-						    <Button color={"inherit"} component={NavLink} to="/issueForm">
-						        Report Issue
-						    </Button>
-						}
-					    >
-					    <AlertTitle>Maximum Number of Attempts Reached!</AlertTitle>
-					    </Alert>
-					</Fragment>
-				    ):<Fragment></Fragment>
-			    }
-			</div>		
                         <Box
                             sx={{
                                 display: 'flex',
@@ -256,10 +258,12 @@ class TakingAttendance extends Component{
                                 bgcolor: 'background.paper',
                             }}
                         >
-                            {this.state.completed != true && this.state.numPic==2 && this.state.numSubmissions < this.state.maxAttempts ?
-                                <Button variant={"contained"} color={"info"} onClick={this.handleSubmit}>
-                                    Submit attendance
-                                </Button>:
+                            {this.state.numPic==2 && this.state.numAttempt<=maxAttempt?
+                                (
+                                    <Button variant={"contained"} color={"info"} onClick={this.handleSubmit}>
+                                        Submit attendance
+                                    </Button>
+                                ):
                                 <Fragment></Fragment>
                             }
                         </Box>

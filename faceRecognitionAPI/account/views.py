@@ -21,7 +21,6 @@ from attendance.serializers import IssueSerializer, AttendanceSerializer
 from account.models import Instructor, Student
 from attendance.models import Issue, Attendance
 
-from account.tasks import testPrint
 
 # obtain logger instance
 logger = logging.getLogger(__name__)
@@ -39,7 +38,7 @@ class GenerateTokenAPIView(APIView):
         canvas = CanvasUtils()
         if "canvas_code" in data:
             user = canvas.getUserAndCanvasToken(data["canvas_code"])
-            print(user)
+            print("user view", user)
             token = Token.objects.get_or_create(user=user)
             print(token)
         elif self.request.user:
