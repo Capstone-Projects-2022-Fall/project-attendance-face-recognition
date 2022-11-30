@@ -1,7 +1,7 @@
 ![Open in Codespaces](https://classroom.github.com/assets/open-in-codespaces-abfff4d4e15f9e1bd8274d9a39a0befe03a0632bb0f153d0ec72ff541cedbe34.svg)
 <div align="center">
 
-# Attendance Face Recognition
+# Attendance Face Recognition <img width="68" alt="Screenshot 2022-11-16 at 12 57 15 AM" src="https://user-images.githubusercontent.com/34950870/202108327-e1520985-d50b-47c4-bdf4-6da093fcd394.png">
 [![Report Issue on Jira](https://img.shields.io/badge/Report%20Issues-Jira-0052CC?style=flat&logo=jira-software)](https://temple-cis-projects-in-cs.atlassian.net/jira/software/c/projects/AFR/boards/20)
 [![Deploy Docs](https://github.com/ApplebaumIan/tu-cis-4398-docs-template/actions/workflows/deploy.yml/badge.svg)](https://github.com/ApplebaumIan/tu-cis-4398-docs-template/actions/workflows/deploy.yml)
 [![Documentation Website Link](https://img.shields.io/badge/-Documentation%20Website-brightgreen)](https://capstone-projects-2022-fall.github.io/project-attendance-face-recognition/docs/intro)
@@ -12,34 +12,39 @@
 
 ## Keywords
 
-Section 004, Python, Web-based, Django, HTML, CSS, JavaScript, MySQL, Face Recognition, Dlib.
+Section 004, Python, Web-based, Django, HTML5, CSS3, JavaScript, MySQL, Face Recognition, Machine Learning, Dlib.
 
 ## Project Abstract
 
-This document proposes a novel application of a face recognition as a biometric technique to track the attendance of employees and students in companies and schools respectively. When the user uses their camera built in their mobile/laptop, this system identifies each unique face and matches it with the images from the data in the database. If the system does not identify the person, it would alert the required person about it. The attendance report will also be shown to the admin.
+This document proposes a novel application of face recognition as a biometric technique to track the attendance of employees within a remote company, as well as students taking a course virtually. By utilizing built-in cameras that many mobile devices and laptops have nowadays, this application will identify and analyze each unique face within the span of the camera and match it with an image from the database. If the application does not identify the individual, it will let the admin user (eg. boss, professor, etc.) know about it. The attendance report of everyone who was present will also be shown to the admin.
 
 ## High Level Requirement
 
-This application is a web-based application and when the user opens this using the link provided by their organization, the user looks at the camera in a good lighting and the system which will be developed using the python libraries for face recognition.  The database will have the data of the users and will match both to recognize the user. Once recognized, the attendance will be recorded and if not recognized, if gives them few tries to try again and if the limit is met, it alerts the person who checks the attendance.
+This application is fully web-based and facial recognition will be developed using python libraries. There will be a database that contains images of every user within a specific work team or class (set the first time they use the application). The application will work by installing it to their specific organization applications or by itself. When a user opens the application, they'll be prompted to turn on and look at their camera in good lighting. The user will be matched against existing data within the dataset. If a user is recognized, their presence will be recorded. Otherwise, it gives them a few attempts to try again. Once the limited number of attempts is met, the user could report the issue to the admin.
 
 ## Conceptual Design
 
-The initial plan for developing this application as a web-based developed using HTML, CSS, JavaScript, React and by using Django framework on the front end. The back end would be developed using python as the programming language and use libraries like OpenCV, Dlib and Face Recognition package. A database like MySQL is used to store the data of the users. Any operating system could be used as it is a web-based application. Camera built in the devices will be used to scan the faces of the users.
+The initial plan for developing this web-based application is by building the front-end using HTML, CSS, JavaScript, React and Django framework. The backend will be developed using the programming lanugage Python and will utilize libraries such as: OpenCV, Dlib, and Face Recognition package. A database (eg. MySQL) will be used to store the data of the users. Any operating system could be used as it is a web-based application. The camera built into a user's laptop or mobile device will be used to scan their face.
 
 ## Background
-The goal of this project is to build a monitoring system to track the attendance of the users and integrate with the other school application to record it. This system makes the attendance more accurate and efficient, which does not give chances for cheating or flaws. There are many other similar products like https://ubsapp.com/face-recognition-attendance-management/, https://enalytix.com/face-recognition-attendance-system are already in the market, developed but We wanted to add alerting and reporting system for this, so the higher authorities can see the reports without too much of human work. Being able to alert via email if anything to suspect is going on will be a different feature and the idea of integrating that report into other educational/organizational tracking applications would be beneficial for the use. We think the difference from the systems used in schools like code attendance or manually checking in are available, but the face recognition system would be even more accurate and reduce time and human work for the school systems for tracking attendance.
+The goal of this project is to build a monitoring system to track the attendance of its users. This will be a web-based application that has the potential to integrate with other school applications (eg. Canvas) to record attendance. This tool will make taking attendance more accurate and efficient, and will not allow the ability for users to cheat the system. As online classes and jobs become more common, the need for a web-based attendance tracker becomes more evident. Thus, we decided to create our project - AFR.
+There are many other similar products, such as https://ubsapp.com/face-recognition-attendance-management/ and https://enalytix.com/face-recognition-attendance-system, that exist in the market. However, we hope to differentiate ourselves by adding an alerting and reporting system. By doing this, the 'higher up' admin user (eg. boss, professor, etc.) can view attendance reports without need for much human work. There are also other ways to take attendance that exist already, such as manually recording and using numeric code-based attendance, however these come with more human-work and can potentially be 'cheated'. We hope to reduce the time it takes for attendance to be tracked and stored, while also allowing it to be fair for everyone.
+Citations:
+- Face recognition attendance management system: UBS. The Ultimate Business System. (2022, September 19). Retrieved November 15, 2022, from https://ubsapp.com/face-recognition-attendance-management/
+- Face recognition attendance system: Employee productivity. Enalytix. (n.d.). Retrieved November 15, 2022, from https://enalytix.com/face-recognition-attendance-system 
+
 
 ## Required Resources
 
-To develop this, we should have at least minimum knowledge in python or web development. The other knowledge that we must gather are - 
-•	Designing web-based platform and choosing right tool for us for it
-•	Knowledge of using python libraries
-•	Alerting system (may be to send emails)
-•	Database (MySQL) usage and association with application
-•	Django
-•	Usage of Dlib, OpenCV, Face recognition package
-•	More information on access for usage of AWS platforms
-•	Research about Material UI for the web development
+To develop this, our team should have knowledge in python and/or web development. The other knowledge that we must gather are:\
+- Designing a web-based platform and choosing the right tool for it
+- Knowledge of using python libraries
+- An alerting system (for example - send emails)
+- Database (MySQL) usage and association with application
+- Django
+- Usage of Dlib, OpenCV, & Face recognition package
+- More information on access for usage of AWS platforms
+- Research about Material UI for the web development
 
 ## Collaborators
 
