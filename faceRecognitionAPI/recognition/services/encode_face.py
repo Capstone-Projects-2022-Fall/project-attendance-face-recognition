@@ -7,6 +7,7 @@ import os
 from recognition.models import StudentImage
 from account.models import Student
 import numpy as np
+import requests
 
 
 class NpEncoder(json.JSONEncoder):
@@ -26,8 +27,11 @@ def encode_student_face(user, upload_image):
     studentImage = StudentImage(imageFile=upload_image, student=student)
     studentImage.save()
     # convert image from BGR to dlib ordering RGB
-    image = cv2.imread(
-        "/Users/jerrymaurice/Documents/CIS4398/finalProject/project-attendance-face-recognition/faceRecognitionAPI" + studentImage.imageFile.url)
+    print(studentImage.imageFile.url)
+    resp = requests.get(studentImage.imageFile.url, stream=True).raw
+    img = np.asarray(bytearray(resp.read()), dtype="uint8")
+    #image = cv2.imread(studentImage.imageFile.url)
+    image = cv2.imdecode(img, cv2.IMREAD_COLOR)
     rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     # detect the (x, y)-coordinates of the bounding boxes
     # corresponding to each face in the input image
