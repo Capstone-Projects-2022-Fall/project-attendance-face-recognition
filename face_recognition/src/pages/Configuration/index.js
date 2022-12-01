@@ -1,10 +1,10 @@
 import React, {Component, Fragment} from 'react'
 import CssBaseline from "@mui/material/CssBaseline";
-import Navbar from "../../component/Navbar";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import AddScheduleContainer from "./containers/AddScheduleContainer";
 import ActiveCoursesContainer from "./containers/ActiveCoursesContainer";
+import NavbarContainer from "../../container/NavbarContainer";
 
 class Configuration extends Component{
     state = {
@@ -21,7 +21,7 @@ class Configuration extends Component{
                 return (
                     <Fragment>
                         <CssBaseline/>
-                        <Navbar/>
+                        <NavbarContainer/>
                         <Container fixed>
                             <ActiveCoursesContainer/>
                         </Container>

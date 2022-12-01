@@ -1,6 +1,5 @@
 import React, {Component, Fragment} from 'react'
 import CssBaseline from '@mui/material/CssBaseline';
-import Navbar from "../../component/Navbar"
 import {Button} from "@mui/material";
 import Stack from '@mui/material/Stack';
 import Container from "@mui/material/Container";
@@ -8,13 +7,14 @@ import Grid from "@mui/material/Grid";
 import RecordListContainer from "./container/RecordListContainer";
 import StatisticalReportContainer from "./container/StatisticalReportContainer";
 import SectionNumChartContainer from "./container/SectionNumChartContainer";
+import NavbarContainer from "../../container/NavbarContainer";
 
 class RecordPage extends Component{
     render() {
         return(
             <Fragment>
                 <CssBaseline />
-                <Navbar/>
+                <NavbarContainer/>
                 <Container fixed>
                     <Grid container spacing={3}>
                         <Grid item sm xs md={8}>

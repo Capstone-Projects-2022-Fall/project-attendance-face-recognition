@@ -12,11 +12,14 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import MonitorIcon from '@mui/icons-material/Monitor';
+import SettingsIcon from '@mui/icons-material/Settings';
+import HomeIcon from '@mui/icons-material/Home';
+import SummarizeIcon from '@mui/icons-material/Summarize';
 import Avatar from '@mui/material/Avatar';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { ThemeProvider  } from '@mui/material/styles';
+import {NavLink} from "react-router-dom";
 
 
 const theme = createTheme({
@@ -29,7 +32,7 @@ const theme = createTheme({
     },
 });
 
-export default function EmptyAppBar() {
+export default function EmptyAppBar(props) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -42,6 +45,7 @@ export default function EmptyAppBar() {
 
     const logoutUser = ()=>{
         localStorage.removeItem("token")
+
     }
 
     const handleMobileMenuClose = () => {
@@ -105,7 +109,6 @@ export default function EmptyAppBar() {
                 >
                     <AccountCircle />
                 </IconButton>
-                <p>Profile</p>
             </MenuItem>
         </Menu>
     );
@@ -122,7 +125,7 @@ export default function EmptyAppBar() {
                             aria-label="open drawer"
                             sx={{ mr: 2 }}
                         >
-
+                            ◉
                         </IconButton>
                         <Typography
                             variant="h6"
@@ -130,10 +133,25 @@ export default function EmptyAppBar() {
                             component="div"
                             sx={{ display: { xs: 'none', sm: 'block' } }}
                         >
-                            ◉ AFR
+                            AFR
                         </Typography>
                         <Box sx={{ flexGrow: 1 }} />
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                            <IconButton size="large" aria-label="show 4 new mails" color="inherit" component={NavLink} to="/">
+                                <HomeIcon />
+                            </IconButton>
+                            <IconButton size="large" aria-label="show 4 new mails" color="inherit" component={NavLink} to="/record">
+                                <SummarizeIcon />
+                            </IconButton>
+                            {props.professor===true?
+                                (<IconButton size="large" aria-label="show 4 new mails" color="inherit" component={NavLink} to="/monitoring">
+                                    <MonitorIcon />
+                                </IconButton>):
+                                (<></>)}
+
+                            <IconButton size="large" aria-label="show 4 new mails" color="inherit" component={NavLink} to="/setup">
+                                <SettingsIcon />
+                            </IconButton>
                             <IconButton
                                 size="large"
                                 edge="end"
