@@ -5,7 +5,7 @@ import Image from '../../../assets/images/AdobeStock_307390602.jpeg'
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import {NavLink} from 'react-router-dom';
-import Navbar from "../../../component/Navbar";
+import NavbarContainer from "../../../container/NavbarContainer";
 
 
 const styleImg = {
@@ -18,7 +18,7 @@ class Page404 extends Component{
         return(
             <Fragment>
                 <CssBaseline />
-                <Navbar/>
+                <NavbarContainer/>
                 <Container maxWidth="lg">
                     <div style={styleImg}>
                         <img src={Image} alt="404 background" height="350"></img>

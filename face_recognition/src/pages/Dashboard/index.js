@@ -10,13 +10,14 @@ import ChartCurrentContainer from "./containers/ChartCurrentContainer";
 import RecentUserContainer from "./containers/RecentUserContainer";
 import AttendanceIssueContainer from "./containers/AttendanceIssueContainer";
 import TabContentView from "./components/TabContentView";
+import NavbarContainer from "../../container/NavbarContainer";
 
 class AdminPage extends Component{
     render() {
         return(
             <div className="">
                 <CssBaseline />
-                <Navbar/>
+                <NavbarContainer/>
                 <Container fixed>
                     <Grid container spacing={3}>
                         <Grid item sm xs md={8}>

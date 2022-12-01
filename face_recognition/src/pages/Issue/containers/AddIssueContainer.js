@@ -2,7 +2,6 @@ import React, {Component, Fragment} from 'react';
 import Grid from "@mui/material/Grid";
 import {connect} from "react-redux";
 import {FormControl, InputLabel, OutlinedInput, Select, TextField} from "@mui/material";
-import MenuItemn from "@mui/material/Menuitem";
 import Button from "@mui/material/Button";
 import {issueSubmissionAPI} from "../../../utils/api/api";
 import {Navigate} from "react-router-dom";

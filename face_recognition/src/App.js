@@ -87,7 +87,7 @@ class App extends Component {
                     <Routes>
                         <Route path="/" exact element={<HomePage/>}/>
                         <Route path="/record" exact element={<RecordPage/>}/>
-                        <Route path="/registration" exact element={<RegistrationPage/>}/>
+                        <Route path="/setup" exact element={<RegistrationPage/>}/>
                         <Route path="/attendance" exact element={<AttendancePage/>}/>
 			            <Route path="/issue" exact element={<IssueFormPage/>}/>
                         <Route path='*' exact element={<Page404/>}/>

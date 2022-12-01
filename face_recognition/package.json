@@ -2,6 +2,10 @@
   "name": "face_recognition",
   "version": "0.1.1",
   "private": true,
+  "engines": {
+    "node": "14.17.0",
+    "npm": "8.19.2"
+  },
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
@@ -26,6 +30,7 @@
     "react-webcam": "^7.0.1",
     "redux": "^4.2.0",
     "redux-thunk": "^2.4.1",
+    "styled-components": "^5.3.6",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

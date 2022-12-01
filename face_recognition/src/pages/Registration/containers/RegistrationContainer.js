@@ -96,8 +96,8 @@ class RegistrationContainer extends Component{
                                                 this.state.recordedImages.map((img) =>
                                                     <ImageListItem key={img.id}>
                                                         <img
-                                                            src={`http://localhost:5000${img.imageFile}?w=164&h=164&fit=crop&auto=format`}
-                                                            srcSet={`http://localhost:5000${img.imageFile}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                                                            src={`${img.imageFile}&w=164&h=164&fit=crop&auto=format`}
+                                                            srcSet={`${img.imageFile}&w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
                                                             alt={"encoded image"}
                                                             loading="lazy"
                                                         />

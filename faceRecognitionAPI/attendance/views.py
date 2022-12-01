@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 from rest_live.mixins import RealtimeMixin
 
+from attendance.services.attendanceScore import getStatusAttendance
 from attendance.services.emotionDetector import detectUserEmotion
 from attendance.services.statistics import attendanceSummary, studentPerSection
 from attendance.tasks import updateCanvasAttendanceTask
@@ -23,7 +24,7 @@ from attendance.services.canvasUtils import CanvasUtils
 
 from account.models import Student, Instructor
 from attendance.models import Issue, Attendance
-from course.models import Section
+from course.models import Section, AttendanceSetting
 from attendance.serializers import IssueSerializer, AttendanceSerializer
 from course.services.schedule import currentCourse
 from recognition.models import StudentImage
@@ -172,15 +173,13 @@ class AttendanceStudentAPIView(APIView):
         rand_emotions = emotions[random.randint(0, 4)]
         if verifyEmotion == data["emotion"] and id["id"] is not None:
             student = get_object_or_404(Student, id=id["id"])
-            attendance = Attendance(status="Present", section=currentCourse(student.user)[1], student=student)
+            section = currentCourse(student.user)[1]
+            attendanceStatus = getStatusAttendance(section)
+            attendance = Attendance(status=attendanceStatus, section=section, student=student)
             attendance.save()
-            # Now that attendance has been taken, we can update the corresponding assignment on Canvas.
-            # We need the course the student took attendance for, as well as the student.
-            canvas = CanvasUtils()
-            #canvas.updateAttendanceScore(currentCourse(student.user)[1], student)
             updateCanvasAttendanceTask.delay(student.user.id,attendance.id)
             return Response({
-                "message": "You have been marked present",
+                "message": "You have been marked "+ str(attendanceStatus),
                 "completed": True
             },
                 status=status.HTTP_200_OK
