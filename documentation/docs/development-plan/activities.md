@@ -4,21 +4,22 @@ sidebar_position: 1
 
 # Activities
 ## Requirements Gathering
-During our requirements gathering, our number one focus was to figure out a way to improve the attendance system on the Canvas Platform. Each team member was given a task to come up with ways to make the attendance system easier and more efficient for online users. The solution we came up with was to make an automated system using a deep learning technique known as face recognition which reduces the professor's manual work. <br/>
-Since we do not have admin access to our school canvas platform, our team came with a solution to use the canvas docker image to perform our development. Each of us also realized that we have to gain knowledge on using different libraries of python and opencv to get familiar with face recognition using deep learning on the back end. We also decided to use MySQL to store the images of students, so the application will use it to match and identify who is present during attendence. We also decided to use Django framework and react JS to develop the front end. <br/>
-We analyzed the goals for the project and determined that our face recognition system will allow students to access the application from canvas and simply look into the webcam. If their face is recognized, the application will mark the student as present in the record. A new student to the university would have to upload or capture their picture with good lighting once to get into the database and to use the application anytime in the future. If a student does not get recognized, the system will give them multiple tries. If all of them fail, they can report the issue to the professor with a button. On the professor's end, they will be able to see reported issues and have a chance to make changes manually and to view the attendence records.
+During our requirements gathering, our number one focus was to figure out a way to improve the attendance system on the Canvas Platform. Each team member was given a task to come up with ways to make the attendance system easier and more efficient for online users. The solution we came up with was to make an automated system using a deep learning technique known as face recognition in order to reduce the professor's manual work. <br/>
+Since we do not have admin access to our school's Canvas platform, our team came with a solution to use the canvas docker image to perform our development. Each of us also realized that we have to gain knowledge on using different libraries of python and opencv to get familiar with face recognition using deep learning on the back end. We also decided to use MySQL to store the images of students, so the application can use it to match and identify who is present during attendence. We also decided to use Django framework and react JS to develop the front end. For web based hosting, we plan to use Amazon Web Services Lightsail. <br/>
+We analyzed the goals for the project and determined that our face recognition system will allow students to access the application directly from Canvas and simply look into the webcam. If their face is recognized, the application will mark the student as present in both the student and professor records, as well as in Canvas by autograding. A new student to the university would have to upload or capture 5 photos of themself with good lighting just one time in order to get them into the database. These photos will then be used by the application to be matched against when analyzing a student's face when they take attendance. If a student does not get recognized, the system will give them 5 tries. If all of them fail, a report issue button will pop up and they can then report their issue to the professor. On the professor's end, they will be able to see all of the reported issues and decide whether or not to reject or approve them. If approved, the student's grade automatically gets adjusted in both the application and Canvas. The professor can additionally view attendance records of their students.
 
 ## Top-Level Design
-1.	Integrate the web application into canvas
-2.	Create layout with necessary tabs for navigation
+1.	Integrate the web application into Canvas
+2.	Create a layout with the necessary tabs for navigation
 3.	Create the backend and database communication 
 4.	Create an algorithm that detects users’ face in any different angle
-5.	Create an attendance report generator for the professor
-6.	Create a system reminder for students to take their attendence while in class
+5.	Create a scheduler to allow a professor to set the time and days of the week
+6.	Create an attendance report generator for the professor
 7.	Create a form for students to report any issue they may run into
-8.	Create a notification system that notifies issues faced by students to the professor
+8.	Create a method for professors to approve or reject student issues
 9.	Create a summary report for students to view their own attendance
-10.	Testing
+10. Integrate the application with Canvas assignments to allow for autograde
+11. Testing
 
 ## Detailed Design
 1.	Integrate the web application into canvas
