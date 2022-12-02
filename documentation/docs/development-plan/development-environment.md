@@ -12,9 +12,9 @@ sidebar_position: 4
     * Django framework <br/>
     *	Django REST Framework <br/>
 *	JavaScript <br/>
-    *	React JS <br/>
-*	HTML <br/>
-*	CSS <br/>
+    *	ReactJS <br/>
+*	HTML5 <br/>
+*	CSS3 <br/>
     *	Material UI <br/>
 *	Database <br/>
     *	MySQL (in Production) <br/>
@@ -33,6 +33,7 @@ sidebar_position: 4
 ## Testing Tools:
 ●	Django testing framework <br/>
 ●	Postman
+●	Jest
 ## Deployment Platform:
-●	Amazon Web Services <br/>
+●	Amazon Web Services (Lightsail) <br/>
 ●	Canvas
