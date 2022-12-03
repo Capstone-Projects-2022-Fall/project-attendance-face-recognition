@@ -2,46 +2,68 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Attendance Face Recognition
 
-Let's discover **Docusaurus in less than 5 minutes**.
+## Project Abstract
 
-## Getting Started
+This document proposes a novel application of face recognition as a biometric technique to track the attendance of employees within a remote company, as well as students taking a course virtually. By utilizing built-in cameras that many mobile devices and laptops have nowadays, this application will identify and analyze each unique face within the span of the camera and match it with an image from the database. If the application does not identify the individual, it will let the admin user (eg. boss, professor, etc.) know about it. The attendance report of everyone who was present will also be shown to the admin.
 
-Get started by **creating a new site**.
+## High Level Requirement
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+This application is fully web-based and facial recognition will be developed using python libraries. There will be a database that contains images of every user within a specific work team or class (set the first time they use the application). The application will work by installing it to their specific organization applications or by itself. When a user opens the application, they'll be prompted to turn on and look at their camera in good lighting. The user will be matched against existing data within the dataset. If a user is recognized, their presence will be recorded. Otherwise, it gives them a few attempts to try again. Once the limited number of attempts is met, the user could report the issue to the admin.
 
-### What you'll need
+## Conceptual Design
 
-- [Node.js](https://nodejs.org/en/download/) version 14 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+The initial plan for developing this web-based application is by building the front-end using HTML, CSS, JavaScript, React and Django framework. The backend will be developed using the programming lanugage Python and will utilize libraries such as: OpenCV, Dlib, and Face Recognition package. A database (eg. MySQL) will be used to store the data of the users. Any operating system could be used as it is a web-based application. The camera built into a user's laptop or mobile device will be used to scan their face.
 
-## Generate a new site
+## Background
+The goal of this project is to build a monitoring system to track the attendance of its users. This will be a web-based application that has the potential to integrate with other school applications (eg. Canvas) to record attendance. This tool will make taking attendance more accurate and efficient, and will not allow the ability for users to cheat the system. As online classes and jobs become more common, the need for a web-based attendance tracker becomes more evident. Thus, we decided to create our project - AFR.
+There are many other similar products, such as https://ubsapp.com/face-recognition-attendance-management/ and https://enalytix.com/face-recognition-attendance-system, that exist in the market. However, we hope to differentiate ourselves by adding a reporting system, automatic grading, and the providing the ability to set a schedule. This way, there is little need for human work. There are also other ways to take attendance that exist already, such as manually recording and using numeric code-based attendance, however these come with more human-work and can potentially be 'cheated'. We hope to reduce the time it takes for attendance to be tracked and stored, while also allowing it to be fair for everyone.
+Citations:
+- Face recognition attendance management system: UBS. The Ultimate Business System. (2022, September 19). Retrieved November 15, 2022, from https://ubsapp.com/face-recognition-attendance-management/
+- Face recognition attendance system: Employee productivity. Enalytix. (n.d.). Retrieved November 15, 2022, from https://enalytix.com/face-recognition-attendance-system 
 
-Generate a new Docusaurus site using the **classic template**.
 
-The classic template will automatically be added to your project after you run the command:
+## Required Resources
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+To develop this, our team should have knowledge in python and/or web development. The other knowledge that we must gather are:
+- Designing a web-based platform and choosing the right tool for it
+- Knowledge of using python libraries
+- Database (MySQL) usage and association with application
+- Django
+- Usage of Dlib, OpenCV, & Face recognition package
+- More information on access for usage of AWS platforms
+- Research about Material UI for the web development
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+## Collaborators
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+[//]: # ( readme: collaborators -start )
+<table>
+<tr>
+    <td align="center">
+        <a href="https://github.com/tun77242">
+            <br />
+            <sub><b>Hamsa Shaik</b></sub>
+        </a>
+     </td>
+     <td align="center">
+        <a href="https://github.com/jerry-maurice">
+            <br />
+            <sub><b>Jerry Maurice</b></sub>
+        </a>
+      </td>
+     <td align="center">
+        <a href="https://github.com/shiv823">
+            <br />
+            <sub><b>Shiv Patel</b></sub>
+        </a>
+      </td>
+     <td align="center">
+        <a href="https://github.com/anjezabeca">
+            <br />
+            <sub><b>Anjeza Beca</b></sub>
+        </a>
+    </td></tr>
+</table>
 
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+[//]: # ( readme: collaborators -end )
