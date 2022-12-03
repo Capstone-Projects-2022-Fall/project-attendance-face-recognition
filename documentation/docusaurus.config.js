@@ -98,7 +98,7 @@ const config = {
     ({
       navbar: {
         /*TODO: Change to your project's title*/
-        title: 'My Site',
+        title: 'Attendance Face Recognition',
         logo: {
           alt: 'My Site Logo',
           src: logo,
