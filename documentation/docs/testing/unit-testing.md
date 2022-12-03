@@ -191,22 +191,10 @@ To run these tests, navigate to the faceRecognitionAPI directory and run the fol
 ## test_that_student_cannot_add_courses()
 		Test: Verify that the student cannot perform a POST to /courses/
 		Result: Return pass if the response from /courses/ has status code 403 when reached by a student, else fail
-		
-## test_that_teacher_can_view_active_canvas_courses()
-		Test: Verify that the teacher can view their active Canvas courses with a GET to /canvas/courses/
-		Result: Return pass if the response from /canvas/courses contains the created course, else fail
-	
+
 ## test_that_student_cannot_view_active_canvas_courses()
 		Test: Verify that the student cannot perform a GET to /canvas/courses/
 		Result: Return pass if the response from /canvas/courses/ has status code 403 when reached by a student, else fail
-		
-## test_that_teacher_can_view_active_canvas_sections_for_course()
-		Test: Verify that the teacher can view their active Canvas sections for a course with a GET to /canvas/<course id>/sections/
-		Result: Return pass if the response contains the created section, else fail
-		
-## test_that_teacher_can_add_course_and_sections()
-		Test: Verify that the teacher can add a course and associated section with a POST to /canvas/<course id>/sections/
-		Result: Return pass if the course and associated section are added to the backend, else fail
 		
 ## test_that_student_cannot_get_or_modify_sections()
 		Test: Verify that the student cannot perform a GET or POST to /canvas/<course id>/sections/
