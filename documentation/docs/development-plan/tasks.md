@@ -25,9 +25,9 @@ sidebar_position: 2
     *	Implement a method to encode all images in the dataset (~2)
     *	Create it in a way that it compares both faces using features (~2)
 5. Create a scheduler to allow a professor to set the time and days of the week
-   * Create a button for the professor to create a schedule (~1)
-   * Create a form for the professor to select start time, end time, and day of the week for the course section (~2)
-   * Allow a method to have the professor select multiple days of the week (~1)
+    * Create a button for the professor to create a schedule (~1)
+    * Create a form for the professor to select start time, end time, and day of the week for the course section (~2)
+    * Allow a method to have the professor select multiple days of the week (~1)
 6.	Create an attendance report generator for the professor
     *	Display a table from the data with a list of student attendances for the class (~2)
     *	Create an input field to search for any specific student (~1)
