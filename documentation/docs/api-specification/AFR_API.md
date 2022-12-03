@@ -276,6 +276,64 @@ The API will return four error types when requests fail:
   }
   ```
   
+### POST /issue_approval/
+* General:
+  * Allows the instructor to approve selected student issues
+* Sample: ``` curl --location --request POST 'http://localhost:5000/api/v1/issue_approval/' \
+--header 'Authorization: Token ...'
+--form 'issues_to_modify="issue_list"'```
+* Response
+  * code 200
+  ```bash
+  {
+    "message": "Issues have been approved!",
+    "completed": True
+  }
+  
+### POST /issue_rejection/
+* General
+  * Allows the instructor to reject selected student issues
+* Sample: ``` curl --location --request POST 'http://localhost:5000/api/v1/issue_rejection/' \
+--header 'Authorization: Token ...'
+--form 'issues_to_modify="issue_list"'```
+* Response
+  * code 200
+  ```bash
+  {
+    "message": "Issues have been rejected!",
+    "completed": True
+  }
+  
+### POST /canvas_sync/
+* General
+  * Imports and updates courses, sections, and students associated with the instructor
+* Sample: ``` curl --location --request POST 'http://localhost:5000/api/v1/canvas_sync/' \
+--header 'Authorization: Token ...'```
+* Response
+  * code 200
+  ```bash
+  {
+    "message": "Canvas has been synced!",
+    "completed": True
+  }
+  
+### POST /schedule_submission/
+* General
+  * Adds a schedule to the selected Canvas section
+* Sample: ``` curl --location --request POST 'http://localhost:5000/api/v1/schedule_submission/' \
+--header 'Authorization: Token ...'
+--form 'section="section"' \
+--form 'weekday="weekday"' \
+--form 'start_time="start_time"' \
+--form 'end_time="end_time"'```
+* Response
+  * code 200
+  ```bash
+  {
+    "message": Schedule has been created!",
+    "completed": True
+  }
+  
 ### Student
 
 
@@ -405,3 +463,26 @@ The API will return four error types when requests fail:
     "detail": "Unable to process registration."
   }
   ```
+
+### POST /issue_submission/
+* General:
+  * Submit an issue that the instructor can see when they've used up their attendance attempts
+* Sample: ``` curl --location --request POST 'http://localhost:5000/api/v1/issue_submission/' \
+--header 'Authorization: Token ...' \
+--form 'subject="issue_subject"' \
+--form 'message="issue_message"'```
+* Response
+  * code 200
+  ```bash
+  {
+    "message": "Issue has been submitted!",
+    "completed": True
+  }
+  ```
+  
+  * code 400
+  ```bash
+  {
+    "message": "Cannot submit a blank issue!",
+    "completed": False
+  }
