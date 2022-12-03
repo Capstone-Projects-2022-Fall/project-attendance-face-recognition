@@ -111,7 +111,7 @@ const config = {
             label: 'Documentation',
           },{
             to: '/tutorial/Intro',
-            label: 'Docusaurus Tutorial',
+            label: 'AFR',
             position: 'left',
             activeBaseRegex: `/tutorial/`,
           },
