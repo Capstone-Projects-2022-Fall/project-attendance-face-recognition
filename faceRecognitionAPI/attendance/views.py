@@ -166,6 +166,7 @@ class AttendanceStudentAPIView(APIView):
 
     def post(self, request):
         data = request.data
+        student = get_object_or_404(Student, user=self.request.user)
         verifyEmotion = detectUserEmotion(request.FILES["emotionImage"])
         id = recognize_image(request.FILES["regularImage"], self.request.user)
         emotions = ["happy", "sad", "angry", "surprised", "neutral"]
@@ -209,7 +210,7 @@ class IssueSubmissionAPIView(APIView):
         # Do not allow empty requests to be submitted
         if (len(request_subject) == 0 or len(request_message) == 0):
             return Response({
-                "message": "Cannot submnit a blank issue!",
+                "message": "Cannot submit a blank issue!",
                 "completed": False
             },
                 status=status.HTTP_400_BAD_REQUEST
@@ -251,6 +252,8 @@ class IssueApprovalAPIView(APIView):
         issues_to_modify_raw = data["issues_to_modify"]
         print("IssueApprovalAPIView: The issues to modify are:")
         print(issues_to_modify_raw)
+        # Only instructors can approve issues
+        instructor = get_object_or_404(Instructor, user=self.request.user)
         # Split the comma-separated list into its constituents
         # TODO add checking to make sure the list follows the right format
         issues_to_modify_list = issues_to_modify_raw.split(",")
@@ -306,6 +309,8 @@ class IssueRejectionAPIView(APIView):
         # Get the request field. This contains a list of issues to modify
         data = request.data
         issues_to_modify_raw = data["issues_to_modify"]
+        # Only instructors can reject issues
+        instructor = get_object_or_404(Instructor, user=self.request.user)
         # Split the comma-separated list into its constituents
         # TODO add checking to make sure the list follows the right format
         issues_to_modify_list = issues_to_modify_raw.split(",")
