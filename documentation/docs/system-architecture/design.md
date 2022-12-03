@@ -16,7 +16,8 @@ The AFR database is an essential piece to allow this application to function. It
 As a student, AFR stores a reference to the user id found in Canvas to retrieve and update any changes that was done on the Canvas platform. Since AFR is a face recognition application, a student has the possibility to store more than one encoded image which will facilitate the authentication of the user once he/she is trying to mark themselves PRESENT in a particular class. A special table called “attendance_Issue” will store any submitted ticket created by a student once there is a concern in taking attendance, such as if the application is unable to detect their face.
 Students will not be able to explore AFR's complete features if their professor does not properly configure the section prior to the beginning of the semester. For the app to work accurately for each student, AFR stores all sections' configurations that will be retrieved once a student is trying to take attendance.
 
-![newER_AFR](https://user-images.githubusercontent.com/17518043/202818573-e526e259-cc87-4fad-80e9-1daf42d2f5c5.png)
+![ER_updated](https://user-images.githubusercontent.com/17518043/205419917-9ada3af4-cb94-45be-82f3-7bdb4b2219b5.png)
+
 
 
 ## Sequence Diagrams
