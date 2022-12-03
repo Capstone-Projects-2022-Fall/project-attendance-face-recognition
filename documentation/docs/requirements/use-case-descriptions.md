@@ -32,7 +32,7 @@ Use Case:
 
 
 2. User Story:
-As a student, if I’m unable to get my attendance recorded after multiple attempts, I want an alternative method to verify my presence and let the professor know that I'm in class.
+As a student, if I’m unable to get my attendance recorded after multiple attempts, I want an alternative method to verify my presence and let the instructor know that I'm in class.
 
 Use Case:
 If the user is a student, they login to Canvas using their credentials
@@ -44,18 +44,18 @@ If the user is a student, they login to Canvas using their credentials
 - The system allows the student to attempt to take attendance again using another random emotion
 - The student attempts to take attendance again
 - After 5 attempts, the system stops the student from submitting any more attendance attempts
-- After 5 attempts, the student can click the "Report Issue" button to report an issue to the professor
+- After 5 attempts, the student can click the "Report Issue" button to report an issue to the instructor
 - The student fills in the issue's subject and body and clicks the "Submit Issue" button
 - The student is returned to the AFR Home page
--	The professor receives the issue and can view it in their AFR Home page
+-	The instructor receives the issue and can view it in their AFR Home page
 
 
-## Professor
+## Instructor
 1.	User story:
-As a professor, I want to have attendance taken automatically at a specific class time.
+As an instructor, I want to have attendance taken automatically at a specific class time.
 
 Use case:
--	A professor signs in to AFR through Canvas
+-	An instructor signs in to AFR through Canvas
 -	They click on "Course & Sections" to view the courses and sections they are teaching
 -	They click on "Add Schedule for Class" to add a schedule
 -	They select the section, weekday(s) the class is held, class start time, and class end time
@@ -63,10 +63,10 @@ Use case:
 
 
 2.	User story:
-As a professor, I want to have real time access of students' attendance and get a report of the students’ attendance.<br/>
+As an instructor, I want to have real time access of students' attendance and get a report of the students’ attendance.<br/>
 
 Use case:
--	A professor signs in to AFR through Canvas
+-	An instructor signs in to AFR through Canvas
 -	They click on attendance from the navigation menu on the left
 -	As they are redirected to the home page and once the class is finished, they click on the 'Reports' tab
 -	Then they select a specific class to view the report
@@ -75,32 +75,30 @@ Use case:
 
 
 3. User Story:
-As a professor, I want to be notified/informed if any student has issues taking attendance.
+As an instructor, I want to be notified/informed if any student has issues taking attendance.
 
 Use Case:
--	A professor signs in to AFR through Canvas
+-	An instructor signs in to AFR through Canvas
 -	As they are redirected to the home page, they can see all issues reported by students from different classes and sections
 -	They can choose which issues to accept (marking the attendance as present) and which issues to reject (marking the attendance as absent)
 -	The system removes the issue once it has been accepted or rejected
 
 
 4. User Story:
-As a professor, I want attendance grades in Canvas to be automatically updated when attendance is taken.<br/>
+As an instructor, I want attendance grades in Canvas to be automatically updated when attendance is taken.<br/>
 
 Use Case:
- - A professor signs in to AFR through Canvas
- - As the professor is signing in, AFR will automatically create attendance assignments for all courses the professor is teaching if they did not exist already
+ - An instructor signs in to AFR through Canvas
+ - As the instructor is signing in, AFR will automatically create attendance assignments for all courses the professor is teaching if they did not exist already
  - Once a student has taken their attendance through AFR, their attendance grade will automatically be updated in Canvas
- - The professor can view the gradebook in Canvas to see attendance grades without having to import anything themselves
+ - The instructor can view the gradebook in Canvas to see attendance grades without having to import anything themselves
 
 
 5. User story:
-As a professor, I want to be able to import all sections for courses I am teaching, and the corresponding students for those sections, into AFR.
+As an instructor, I want to be able to import a section for a course I am teaching, and the corresponding students, into AFR.
 
 Use case:
- - A professor signs in to AFR through Canvas
- -	They click on "Course & Sections" to view the courses and sections they are teaching
- -	They click on "Sync with Canvas"
- -	The system automatically adds all sections, courses, and students that have logged onto AFR enrolled in those sections into AFR
- -	They can repeatedly sync as the semester progresses to continually add students as they log into AFR for the first time
+ - An instructor signs in to AFR through Canvas
+ -	The system automatically imports their course, section, and students into AFR
+ -	The instructor can set a schedule for that imported section, allowing students to take attendance during those days and timeframe
 
