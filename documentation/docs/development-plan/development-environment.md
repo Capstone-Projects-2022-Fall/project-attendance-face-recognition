@@ -19,6 +19,7 @@ sidebar_position: 4
 *	Database <br/>
     *	MySQL (in Production) <br/>
     *	SQLite (in Development) <br/>
+    *	Redis
 *	Machine Learning <br/>
     *	OpenCV <br/>
     *	Dlib libraries <br/>
