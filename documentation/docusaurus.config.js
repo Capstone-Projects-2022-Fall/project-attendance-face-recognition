@@ -22,8 +22,8 @@ const main_template_jira_scripts = () => {
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   /*TODO: Change to your project's title and tagline*/
-  title: 'CIS 4398 Documentation Template',
-  tagline: 'Owls are cool',
+  title: 'Attendance Face Recognition',
+  tagline: 'Mark yourself',
   /*Unless you move this website to a seperate repo don't change url and baseurl.*/
   url: 'https://'+process.env.ORG_NAME+'.github.io/',
   baseUrl: '/'+process.env.PROJECT_NAME+'/',
