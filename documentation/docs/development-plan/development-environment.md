@@ -34,8 +34,7 @@ sidebar_position: 4
 ●	Microsoft Word
 ## Testing Tools:
 ●	Django testing framework <br/>
-●	Postman
-●	Jest
+●	Postman & Jest
 ## Deployment Platform:
 ●	Amazon Web Services (Lightsail) <br/>
 ●	Canvas
