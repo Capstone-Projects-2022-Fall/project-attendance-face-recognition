@@ -64,4 +64,6 @@ class RecognizeImageAPIView(APIView):
         else:
             return Response({
                 "user": None
-            })
+            },
+                status=status.HTTP_400_BAD_REQUEST
+            )
