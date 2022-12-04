@@ -406,7 +406,7 @@ sequenceDiagram
   Student->>App: Launches AFR
   Student->>App: Submits attendance
   App->>Frontend_API: attendanceSubmissionAPI(images, emotion)
-  Frontend_API->>AttendanceStudentAPIView: POST: /api/v1/attendance(images, emotion)
+  Frontend_API->>AttendanceStudentAPIView: (images, emotion)<br/>POST:/api/v1/attendance
   alt AFR marks the student present
     AttendanceStudentAPIView->>schedule: currentCourse(student)
     schedule-->>AttendanceStudentAPIView: Student's current course and section
