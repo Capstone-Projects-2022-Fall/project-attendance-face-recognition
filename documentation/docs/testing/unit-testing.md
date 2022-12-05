@@ -48,10 +48,6 @@ To run these tests, navigate to the faceRecognitionAPI directory and run the fol
 		Test: Verify that the student is not recognized when they upload an image that is of a different student in the class
 		Result: Return pass if the new image is not recognized as the student, else fail
 
-## test_ability_to_get_student_images()
-		Test: Verify that the student's images are returned when a GET method to /registration is called as the student
-		Result: Return pass if the student's images are returned, else fail
-
 ## test_ability_to_get_student_images_if_empty_set()
 		Test: Verify that no images are returned when a GET method to /registration is called as a student that does not have images uploaded
 		Result: Return pass if no student images are returned, else fail
@@ -67,10 +63,6 @@ To run these tests, navigate to the faceRecognitionAPI directory and run the fol
 ## test_that_student_cannot_access_teacher_daily_report()
 		Test: Verify that students cannot access the teacher's daily report page, /report/today
 		Result: Return pass if the student receives a 403 response, else fail
-		
-## test_teacher_daily_report()
-		Test: Verify that the teacher receives the list of students and attendances for the current day when they call the GET method of /report/today
-		Result: Return pass if the teacher receives the students and attendances, else fail
 		
 ## test_that_student_cannot_access_attendance_statistics()
 		Test: Verify that students cannot access the teacher's attendance statistics page, /statistics/attendance
@@ -115,18 +107,6 @@ To run these tests, navigate to the faceRecognitionAPI directory and run the fol
 ## test_that_student_can_take_attendance_with_five_pictures()
 		Test: Verify that the student is authorized to take attendance if they have five pictures uploaded and have not taken attendance yet
 		Result: Return pass if the authorization in the response is set to 1 and the response's message indicates that they are ready to take attendance, else fail
-		
-## test_student_is_marked_present()
-		Test: Verify that the student is marked present when they upload an image of themselves that matches the requested emotion while taking attendance right after class starts
-		Result: Return pass if the response indicates that the student was marked present and an associated Attendance object exists in the backend, else fail
-		
-## test_student_submitting_the_wrong_emotion()
-		Test: Verify that the student is prompted to take attendance again when they upload an image of themselves that does not match the requested emotion while taking attendance
-		Result: Return pass if the response indicates that the student needs to try to take attendance again, else fail
-		
-## test_student_is_marked_late()
-		Test: Verify that the student is marked late when they upload an image of themselves that matches the requested emotion when taking attendance 10 minutes after class starts
-		Result: Return pass if the response indicates that the student was marked late and an associated Attendance object exists in the backend, else fail
 		
 ## test_that_instructors_cannot_take_attendance()
 		Test: Verify that teachers are not allowed to take attendance
@@ -176,10 +156,6 @@ To run these tests, navigate to the faceRecognitionAPI directory and run the fol
 		Test: Verify that the student cannot perform a GET to /courses/
 		Result: Return pass if the response from /courses/ has status code 403 when reached by a student, else fail
 		
-## test_that_teacher_can_add_courses()
-		Test: Verify that the teacher can add a course upon a POST to /courses/ with valid course data
-		Result: Return pass if the course is added to the backend, else fail
-		
 ## test_that_teacher_cannot_add_invalid_course()
 		Test: Verify that the teacher cannot add a course upon a POST to /courses with invalid course data
 		Result: Return pass if the response from /courses/ has status code 400, else fail
@@ -199,10 +175,6 @@ To run these tests, navigate to the faceRecognitionAPI directory and run the fol
 ## test_that_student_cannot_get_or_modify_sections()
 		Test: Verify that the student cannot perform a GET or POST to /canvas/<course id>/sections/
 		Result: Return pass if the response associated with the GET and POST has status code 403, else fail
-		
-## test_that_teacher_can_add_valid_schedule()
-		Test: Verify that the teacher can add a valid schedule to a section
-		Result: Return pass if the schedule is added to the backend and the response contains status code 201, else fail
 		
 ## test_that_teacher_cannot_add_duplicate_schedule()
 		Test: Verify that the teacher cannot add a schedule to a section that contains the same weekday and start time as another schedule for that section
