@@ -1,7 +1,7 @@
 ---
 sidebar_position: 3
 ---
-# Acceptance test
+# Acceptance Test
 
 Demonstration of all of the functional and non-functional requirements. This can be a combination of automated tests derived from the use-cases (user stories) and manual tests with recorded observation of the results.
 
@@ -50,5 +50,6 @@ Once the student takes attendance, their associated Attendance score on Canvas i
 *Expected result:*<br />
 The Canvas attendance grade for a student should automatically update once the student takes attendance.
 
-This image below is for milestone demo 3:
-![image](https://user-images.githubusercontent.com/78066498/195245224-a820aefe-f7ea-4d0e-b4fd-1013dbd0c5c4.png)
+# Acceptance Test Form
+
+![image](https://user-images.githubusercontent.com/34950870/205520707-90369d96-b1cc-40fa-b1a8-6eb01ef2802e.png)
