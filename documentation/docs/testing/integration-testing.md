@@ -5,6 +5,8 @@ sidebar_position: 2
 
 Tests to demonstrate each use-case based on the use-case descriptions and the sequence diagrams. External input should be provided via mock objects and results verified via mock objects. Integration tests should not require manual entry of data nor require manual interpretation of results.
 
+These tests are ran in the same test suites that run the unit tests. The ```test_that_teacher_can_add_courses()``` and ```test_that_teacher_can_add_valid_schedule()``` tests are in the Course test suite, the ```test_ability_to_get_student_images()``` test is in the Recognition test suite, and the ```test_if_student_is_marked_present()```, ```test_student_submitting_the_wrong_emotion()```, ```test_if_student_is_marked_late()```, and ```test_teacher_daily_report()``` tests are in the Attendance test suite. Refer to the unit test document for a description on how these test suites are ran.
+
 ## API Call Test
 -	Objective: A collection of tests will be run to verify all the API endpoints 
 -	Expected Result: A pass or fail result will be displayed for each endpoint 
